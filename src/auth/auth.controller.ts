@@ -8,14 +8,10 @@ import {
 } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthResponseDto } from './dto/auth-response.dto';
+import { FirebaseLoginDto } from './dto/firebase-login.dto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RefreshTokenPayload } from './strategies/refresh-token.strategy';
-
-class FirebaseLoginDto {
-  @ApiProperty({ description: 'ID Token lấy từ Firebase SDK trên Mobile' })
-  idToken!: string;
-}
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -71,7 +67,7 @@ export class AuthController {
     description: 'Thành công',
     type: AuthResponseDto,
   })
-  firebaseLogin(@Body('idToken') idToken: string) {
-    return this.authService.verifyFirebaseToken(idToken);
+  firebaseLogin(@Body() body: FirebaseLoginDto) {
+    return this.authService.verifyFirebaseToken(body.idToken);
   }
 }

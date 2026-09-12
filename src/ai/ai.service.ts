@@ -90,7 +90,7 @@ export class AiService {
             ],
           },
         ],
-        model: 'llama-3.2-90b-vision-preview',
+        model: 'qwen/qwen3.6-27b',
         temperature: 0.1,
         response_format: { type: 'json_object' },
       });
