@@ -5,6 +5,7 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { UserProfile } from './entities/user-profile.entity';
 import { UserAllergy } from './entities/user-allergy.entity';
+import { UserSetting } from './entities/user-setting.entity';
 import {
   ActivityLevel,
   GoalType,
@@ -14,9 +15,14 @@ import {
 describe('UsersService', () => {
   let service: UsersService;
 
-  const mockUserRepo = { findOne: jest.fn() };
+  const mockUserRepo = { findOne: jest.fn(), update: jest.fn(), delete: jest.fn() };
   const mockProfileRepo = { findOne: jest.fn(), save: jest.fn() };
   const mockAllergyRepo = { delete: jest.fn(), save: jest.fn() };
+  const mockSettingRepo = {
+    findOne: jest.fn(),
+    create: jest.fn(),
+    save: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -25,6 +31,7 @@ describe('UsersService', () => {
         { provide: getRepositoryToken(User), useValue: mockUserRepo },
         { provide: getRepositoryToken(UserProfile), useValue: mockProfileRepo },
         { provide: getRepositoryToken(UserAllergy), useValue: mockAllergyRepo },
+        { provide: getRepositoryToken(UserSetting), useValue: mockSettingRepo },
       ],
     }).compile();
 
@@ -110,11 +117,11 @@ describe('UsersService', () => {
 
   describe('updateAllergies', () => {
     it('should clear old allergies and save new ones', async () => {
-      const allergenCodes = ['en:milk', 'en:peanuts'];
+      const allergies = ['sữa', 'đậu phộng'];
       mockAllergyRepo.delete.mockResolvedValue({ affected: 2 });
       mockAllergyRepo.save.mockResolvedValue([]);
 
-      const result = await service.updateAllergies('user-id', allergenCodes);
+      const result = await service.updateAllergies('user-id', allergies);
 
       expect(mockAllergyRepo.delete).toHaveBeenCalledWith({
         user_id: 'user-id',

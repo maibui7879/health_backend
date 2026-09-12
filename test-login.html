@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Firebase Login</title>
+    <script type="module">
+        // Import Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        // THAY BẰNG CONFIG CỦA BẠN TẠI ĐÂY
+        const firebaseConfig = {
+            apiKey: "AIzaSyBHmtQHBSixI1CV_ekWrqCEb-T9cWujMQs",
+            authDomain: "berotravel-5b448.firebaseapp.com",
+            projectId: "berotravel-5b448",
+            storageBucket: "berotravel-5b448.firebasestorage.app",
+            messagingSenderId: "327004784874",
+            appId: "1:327004784874:web:8c98b5ae4238995ea7ef93"
+        };
+
+        // Khởi tạo Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Xử lý nút bấm
+        document.getElementById('login-btn').addEventListener('click', () => {
+            signInWithPopup(auth, provider)
+                .then(async (result) => {
+                    const user = result.user;
+                    // LẤY ID TOKEN MÀ BACKEND CẦN
+                    const idToken = await user.getIdToken();
+                    
+                    document.getElementById('result').innerHTML = `
+                        <h3>Đăng nhập thành công: ${user.email}</h3>
+                        <p>Copy đoạn Token bên dưới để dán vào Swagger:</p>
+                        <textarea style="width:100%; height:150px">${idToken}</textarea>
+                    `;
+                })
+                .catch((error) => {
+                    document.getElementById('result').innerHTML = `<p style="color:red">Lỗi: ${error.message}</p>`;
+                });
+        });
+    </script>
+</head>
+<body style="font-family: sans-serif; padding: 50px;">
+    <h2>Trình giả lập Mobile App - Google Login</h2>
+    <button id="login-btn" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Đăng nhập bằng Google</button>
+    <div id="result" style="margin-top: 20px; word-break: break-all;"></div>
+</body>
+</html>

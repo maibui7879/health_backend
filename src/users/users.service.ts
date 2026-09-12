@@ -4,11 +4,13 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UserProfile } from './entities/user-profile.entity';
 import { UserAllergy } from './entities/user-allergy.entity';
+import { UserSetting } from './entities/user-setting.entity';
 import {
   ActivityLevel,
   GoalType,
   UpdateProfileDto,
 } from './dto/update-profile.dto';
+import { UpdateSettingDto } from './dto/update-setting.dto';
 
 @Injectable()
 export class UsersService {
@@ -16,6 +18,8 @@ export class UsersService {
     @InjectRepository(User) private userRepo: Repository<User>,
     @InjectRepository(UserProfile) private profileRepo: Repository<UserProfile>,
     @InjectRepository(UserAllergy) private allergyRepo: Repository<UserAllergy>,
+    @InjectRepository(UserSetting)
+    private settingRepo: Repository<UserSetting>,
   ) {}
 
   async getMe(userId: string) {
@@ -83,13 +87,13 @@ export class UsersService {
     return this.profileRepo.save(profile);
   }
 
-  async updateAllergies(userId: string, allergenCodes: string[]) {
+  async updateAllergies(userId: string, allergies: string[]) {
     await this.allergyRepo.delete({ user_id: userId });
 
-    const newAllergies = allergenCodes.map((code) => {
+    const newAllergies = allergies.map((name) => {
       const allergy = new UserAllergy();
       allergy.user_id = userId;
-      allergy.allergen_code = code;
+      allergy.allergen_name = name;
       return allergy;
     });
 
@@ -97,6 +101,28 @@ export class UsersService {
       await this.allergyRepo.save(newAllergies);
     }
 
-    return { message: 'Đã cập nhật hồ sơ dị ứng' };
+    return { message: 'Cập nhật dị ứng thành công' };
+  }
+
+  async updateSettings(userId: string, dto: UpdateSettingDto) {
+    let setting = await this.settingRepo.findOne({ where: { user_id: userId } });
+
+    if (!setting) {
+      setting = this.settingRepo.create({ user_id: userId, ...dto });
+    } else {
+      Object.assign(setting, dto);
+    }
+
+    return this.settingRepo.save(setting);
+  }
+
+  async updateDeviceToken(userId: string, deviceToken: string) {
+    await this.userRepo.update(userId, { device_token: deviceToken });
+    return { message: 'Cập nhật Device Token thành công' };
+  }
+
+  async deleteAccount(userId: string) {
+    await this.userRepo.delete(userId);
+    return { message: 'Tài khoản và toàn bộ dữ liệu đã được xóa vĩnh viễn' };
   }
 }

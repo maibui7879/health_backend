@@ -21,6 +21,7 @@ export class AiService {
     imageBuffer: Buffer,
     mimeType: string,
     userAllergies: string[] = [],
+    dietType: string = 'STANDARD',
     weight_g?: number,
     additional_info?: string,
   ): Promise<Record<string, unknown>> {
@@ -46,15 +47,22 @@ export class AiService {
         extraContext += `- Ghi chú của người dùng: "${additional_info}".\n`;
       }
 
+      let dietContext = '';
+      if (dietType !== 'STANDARD') {
+        dietContext = `CẢNH BÁO CHẾ ĐỘ ĂN: Người dùng đang theo chế độ ăn ${dietType}. Hãy kiểm tra nghiêm ngặt xem món ăn này có vi phạm quy tắc của chế độ ${dietType} hay không.`;
+      }
+
       const prompt = `
 				Bạn là một chuyên gia dinh dưỡng và an toàn thực phẩm. Hãy phân tích món ăn trong ảnh.
 				${allergyContext}
+				${dietContext}
 				${extraContext}
 
 				Nhiệm vụ:
 				1. Nhận diện món ăn và liệt kê chi tiết các nguyên liệu (bao gồm cả gia vị, phụ gia có thể có).
 				2. Ước tính lượng Kcal.
-				3. Đối chiếu nguyên liệu với danh sách dị ứng của người dùng để đưa ra kết luận an toàn.
+				3. Đối chiếu nguyên liệu với danh sách dị ứng và chế độ ăn của người dùng để đưa ra kết luận an toàn.
+				4. Nếu món ăn chứa chất dị ứng HOẶC vi phạm chế độ ăn ${dietType}, hãy đánh dấu is_safe_for_user = false và giải thích rõ trong warnings.
 
 				BẮT BUỘC trả về định dạng JSON chính xác như sau, không kèm bất kỳ văn bản nào khác:
 				{
@@ -62,7 +70,7 @@ export class AiService {
 				  "food_name_en": "English name",
 				  "estimated_kcal": 0,
 				  "is_safe_for_user": true/false,
-				  "warnings": ["Liệt kê các cảnh báo nguy hiểm nếu is_safe_for_user là false, ví dụ: 'Món ăn có chứa đậu phộng'"] ,
+				  "warnings": ["Liệt kê các cảnh báo nguy hiểm nếu is_safe_for_user là false, ví dụ: 'Món ăn có chứa đậu phộng'"],
 				  "ingredients": [
 				    {
 				      "name": "Tên nguyên liệu (Tiếng Việt)",

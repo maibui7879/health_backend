@@ -3,10 +3,10 @@ import { IsArray, IsString } from 'class-validator';
 
 export class UpdateAllergiesDto {
   @ApiProperty({
-    example: ['en:milk', 'en:peanuts'],
-    description: 'Danh sách các mã dị ứng từ hệ thống',
+    example: ['sữa', 'đậu phộng', 'hải sản'],
+    description: 'Danh sách tên các chất dị ứng của người dùng',
   })
   @IsArray()
   @IsString({ each: true })
-  allergen_codes: string[];
+  allergies: string[];
 }

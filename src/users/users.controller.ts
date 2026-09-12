@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -8,7 +15,9 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UpdateAllergiesDto } from './dto/update-allergies.dto';
+import { UpdateDeviceTokenDto } from './dto/update-device-token.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { UpdateSettingDto } from './dto/update-setting.dto';
 import { UsersService } from './users.service';
 
 @ApiTags('Users')
@@ -47,7 +56,36 @@ export class UsersController {
   ) {
     return this.usersService.updateAllergies(
       userId,
-      updateAllergiesDto.allergen_codes,
+      updateAllergiesDto.allergies,
     );
+  }
+
+  @Put('settings')
+  @ApiOperation({ summary: 'Cập nhật cài đặt thông báo' })
+  @ApiResponse({ status: 200, description: 'Cập nhật cài đặt thành công.' })
+  updateSettings(
+    @CurrentUser('sub') userId: string,
+    @Body() dto: UpdateSettingDto,
+  ) {
+    return this.usersService.updateSettings(userId, dto);
+  }
+
+  @Put('device-token')
+  @ApiOperation({ summary: 'Cập nhật FCM Device Token để nhận Push Notification' })
+  @ApiResponse({ status: 200, description: 'Cập nhật Device Token thành công.' })
+  updateDeviceToken(
+    @CurrentUser('sub') userId: string,
+    @Body() dto: UpdateDeviceTokenDto,
+  ) {
+    return this.usersService.updateDeviceToken(userId, dto.device_token);
+  }
+
+  @Delete('me')
+  @ApiOperation({
+    summary: 'Xóa vĩnh viễn tài khoản (Dành cho App Store / Google Play)',
+  })
+  @ApiResponse({ status: 200, description: 'Xóa tài khoản thành công.' })
+  deleteAccount(@CurrentUser('sub') userId: string) {
+    return this.usersService.deleteAccount(userId);
   }
 }

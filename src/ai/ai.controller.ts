@@ -52,10 +52,7 @@ export class AiController {
         callback: FileFilterCallback,
       ) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/i)) {
-          return callback(
-            new BadRequestException('Chỉ chấp nhận ảnh (jpg, png, webp)'),
-            false,
-          );
+          return callback(new Error('Chỉ chấp nhận ảnh (jpg, png, webp)'));
         }
         callback(null, true);
       },
@@ -72,12 +69,14 @@ export class AiController {
 
     const user = await this.usersService.getMe(userId);
     const userAllergies =
-      user.allergies?.map((allergy) => allergy.allergen_code) ?? [];
+      user.allergies?.map((allergy) => allergy.allergen_name) ?? [];
+    const dietType = user.profile?.diet_type ?? 'STANDARD';
 
     const aiResult = await this.aiService.analyzeFoodImage(
       file.buffer,
       file.mimetype,
       userAllergies,
+      dietType,
       body.weight_g,
       body.additional_info,
     );

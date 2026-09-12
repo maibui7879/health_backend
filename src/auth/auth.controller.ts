@@ -1,11 +1,21 @@
 import { Body, Controller, Post, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RefreshTokenPayload } from './strategies/refresh-token.strategy';
+
+class FirebaseLoginDto {
+  @ApiProperty({ description: 'ID Token lấy từ Firebase SDK trên Mobile' })
+  idToken!: string;
+}
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -52,5 +62,16 @@ export class AuthController {
   })
   refresh(@Request() request: { user: RefreshTokenPayload }) {
     return this.authService.refresh(request.user);
+  }
+
+  @Post('firebase/login')
+  @ApiOperation({ summary: 'Đăng nhập bằng Firebase ID Token (Google/Apple)' })
+  @ApiResponse({
+    status: 201,
+    description: 'Thành công',
+    type: AuthResponseDto,
+  })
+  firebaseLogin(@Body('idToken') idToken: string) {
+    return this.authService.verifyFirebaseToken(idToken);
   }
 }

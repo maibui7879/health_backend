@@ -37,25 +37,13 @@ export class User {
   @Column({ default: 'ACTIVE' })
   status!: string;
 
-  @OneToOne(
-    () => require('./user-profile.entity').UserProfile,
-    (profile) => profile.user,
-    { cascade: true },
-  )
+  @OneToOne('UserProfile', 'user', { cascade: true })
   profile!: UserProfile;
 
-  @OneToOne(
-    () => require('./user-setting.entity').UserSetting,
-    (setting) => setting.user,
-    { cascade: true },
-  )
+  @OneToOne('UserSetting', 'user', { cascade: true })
   setting!: UserSetting;
 
-  @OneToMany(
-    () => require('./user-allergy.entity').UserAllergy,
-    (allergy) => allergy.user,
-    { cascade: true },
-  )
+  @OneToMany('UserAllergy', 'user', { cascade: true })
   allergies!: UserAllergy[];
 
   @CreateDateColumn()

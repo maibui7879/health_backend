@@ -6,7 +6,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from './user.entity';
+import type { User } from './user.entity';
 
 @Entity('user_allergies')
 export class UserAllergy {
@@ -16,12 +16,12 @@ export class UserAllergy {
   @Column('uuid')
   user_id!: string;
 
-  @ManyToOne(() => User, (user) => user.allergies, { onDelete: 'CASCADE' })
+  @ManyToOne('User', 'allergies', { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
-  @Column({ type: 'varchar', length: 50 })
-  allergen_code!: string;
+  @Column({ type: 'varchar', length: 100 })
+  allergen_name!: string;
 
   @CreateDateColumn()
   created_at!: Date;

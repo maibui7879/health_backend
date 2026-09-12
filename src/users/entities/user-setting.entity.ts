@@ -13,7 +13,7 @@ export class UserSetting {
   @PrimaryColumn('uuid')
   user_id!: string;
 
-  @OneToOne(() => require('./user.entity').User, (user) => user.setting, {
+  @OneToOne('User', 'setting', {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'user_id' })

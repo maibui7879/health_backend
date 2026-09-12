@@ -14,7 +14,7 @@ export class UserProfile {
   @PrimaryColumn('uuid')
   user_id!: string;
 
-  @OneToOne(() => require('./user.entity').User, (user) => user.profile, {
+  @OneToOne('User', 'profile', {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'user_id' })
@@ -43,6 +43,9 @@ export class UserProfile {
 
   @Column({ type: 'varchar', length: 50, nullable: true })
   activity_level!: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: true, default: 'STANDARD' })
+  diet_type!: string;
 
   @Column({ type: 'int', nullable: true })
   daily_kcal_target!: number;

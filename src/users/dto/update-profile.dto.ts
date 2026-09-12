@@ -20,6 +20,15 @@ export enum GoalType {
   GAIN_MUSCLE = 'GAIN_MUSCLE',
 }
 
+export enum DietType {
+  STANDARD = 'STANDARD',
+  VEGAN = 'VEGAN',
+  VEGETARIAN = 'VEGETARIAN',
+  KETO = 'KETO',
+  PALEO = 'PALEO',
+  HALAL = 'HALAL',
+}
+
 export class UpdateProfileDto {
   @ApiPropertyOptional({ example: '1999-01-01' })
   @IsOptional()
@@ -50,4 +59,9 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsEnum(GoalType)
   goal_type?: string;
+
+  @ApiPropertyOptional({ enum: DietType, example: DietType.VEGAN })
+  @IsOptional()
+  @IsEnum(DietType)
+  diet_type?: string;
 }
