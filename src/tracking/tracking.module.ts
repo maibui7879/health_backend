@@ -7,6 +7,6 @@ import { DailyLog } from './entities/daily-log.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([DailyLog])],
   controllers: [TrackingController],
-  providers: [TrackingService]
+  providers: [TrackingService],
 })
 export class TrackingModule {}

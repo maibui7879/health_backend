@@ -7,14 +7,16 @@ import {
   PrimaryColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
+import type { User } from './user.entity';
 
 @Entity('user_profiles')
 export class UserProfile {
   @PrimaryColumn('uuid')
   user_id!: string;
 
-  @OneToOne(() => User, (user) => user.profile, { onDelete: 'CASCADE' })
+  @OneToOne(() => require('./user.entity').User, (user) => user.profile, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   user!: User;
 

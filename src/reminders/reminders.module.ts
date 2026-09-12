@@ -2,6 +2,6 @@ import { Module } from '@nestjs/common';
 import { RemindersService } from './reminders.service';
 
 @Module({
-  providers: [RemindersService]
+  providers: [RemindersService],
 })
 export class RemindersModule {}

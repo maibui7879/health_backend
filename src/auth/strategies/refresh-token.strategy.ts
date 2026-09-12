@@ -9,15 +9,22 @@ export interface RefreshTokenPayload {
 }
 
 @Injectable()
-export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
+export class RefreshTokenStrategy extends PassportStrategy(
+  Strategy,
+  'jwt-refresh',
+) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (request) => request?.body?.refresh_token ?? null,
+        (
+          request: { body?: { refresh_token?: string } } | undefined,
+        ): string | null => request?.body?.refresh_token ?? null,
       ]),
       ignoreExpiration: false,
       secretOrKey:
-        process.env.JWT_REFRESH_SECRET ?? process.env.JWT_SECRET ?? 'development-refresh-secret',
+        process.env.JWT_REFRESH_SECRET ??
+        process.env.JWT_SECRET ??
+        'development-refresh-secret',
     });
   }
 

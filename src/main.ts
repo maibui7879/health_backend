@@ -26,4 +26,4 @@ async function bootstrap() {
 
   console.log(`Swagger URL: http://localhost:${port}/api`);
 }
-bootstrap();
+void bootstrap();

@@ -4,7 +4,10 @@ export class IngredientAnalysisDto {
   @ApiProperty({ example: 'Đậu phộng' })
   name: string;
 
-  @ApiProperty({ example: true, description: 'True nếu vi phạm dị ứng của user' })
+  @ApiProperty({
+    example: true,
+    description: 'True nếu vi phạm dị ứng của user',
+  })
   is_allergen: boolean;
 }
 

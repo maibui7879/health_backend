@@ -12,7 +12,9 @@ import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
   imports: [
     TypeOrmModule.forFeature([User]),
     PassportModule,
-    JwtModule.register({ secret: process.env.JWT_SECRET ?? 'development-secret' }),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET ?? 'development-secret',
+    }),
   ],
   controllers: [AuthController],
   providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],

@@ -8,6 +8,6 @@ import { MealItem } from './entities/meal-item.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Meal, MealItem])],
   controllers: [NutritionController],
-  providers: [NutritionService]
+  providers: [NutritionService],
 })
 export class NutritionModule {}

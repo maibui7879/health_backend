@@ -8,7 +8,9 @@ import { UserSetting } from './entities/user-setting.entity';
 import { User } from './entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, UserProfile, UserSetting, UserAllergy])],
+  imports: [
+    TypeOrmModule.forFeature([User, UserProfile, UserSetting, UserAllergy]),
+  ],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],

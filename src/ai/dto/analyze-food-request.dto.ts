@@ -12,7 +12,8 @@ export class AnalyzeFoodRequestDto {
 
   @ApiPropertyOptional({
     example: 200,
-    description: 'Khối lượng món ăn thực tế (gram). Nếu có, AI sẽ tính Kcal chính xác hơn.',
+    description:
+      'Khối lượng món ăn thực tế (gram). Nếu có, AI sẽ tính Kcal chính xác hơn.',
   })
   @IsOptional()
   @Type(() => Number)

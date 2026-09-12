@@ -7,9 +7,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserAllergy } from './user-allergy.entity';
-import { UserProfile } from './user-profile.entity';
-import { UserSetting } from './user-setting.entity';
+import type { UserAllergy } from './user-allergy.entity';
+import type { UserProfile } from './user-profile.entity';
+import type { UserSetting } from './user-setting.entity';
 
 export enum AuthProvider {
   LOCAL = 'LOCAL',
@@ -37,13 +37,25 @@ export class User {
   @Column({ default: 'ACTIVE' })
   status!: string;
 
-  @OneToOne(() => UserProfile, (profile) => profile.user, { cascade: true })
+  @OneToOne(
+    () => require('./user-profile.entity').UserProfile,
+    (profile) => profile.user,
+    { cascade: true },
+  )
   profile!: UserProfile;
 
-  @OneToOne(() => UserSetting, (setting) => setting.user, { cascade: true })
+  @OneToOne(
+    () => require('./user-setting.entity').UserSetting,
+    (setting) => setting.user,
+    { cascade: true },
+  )
   setting!: UserSetting;
 
-  @OneToMany(() => UserAllergy, (allergy) => allergy.user, { cascade: true })
+  @OneToMany(
+    () => require('./user-allergy.entity').UserAllergy,
+    (allergy) => allergy.user,
+    { cascade: true },
+  )
   allergies!: UserAllergy[];
 
   @CreateDateColumn()

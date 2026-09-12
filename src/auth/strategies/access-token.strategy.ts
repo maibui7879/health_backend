@@ -9,12 +9,18 @@ export interface AccessTokenPayload {
 }
 
 @Injectable()
-export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt-access') {
+export class AccessTokenStrategy extends PassportStrategy(
+  Strategy,
+  'jwt-access',
+) {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_ACCESS_SECRET ?? process.env.JWT_SECRET ?? 'development-access-secret',
+      secretOrKey:
+        process.env.JWT_ACCESS_SECRET ??
+        process.env.JWT_SECRET ??
+        'development-access-secret',
     });
   }
 

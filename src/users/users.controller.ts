@@ -1,5 +1,10 @@
 import { Body, Controller, Get, Put, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UpdateAllergiesDto } from './dto/update-allergies.dto';
@@ -15,7 +20,10 @@ export class UsersController {
 
   @Get('me')
   @ApiOperation({ summary: 'Lấy hồ sơ cá nhân hiện tại' })
-  @ApiResponse({ status: 200, description: 'Trả về thông tin user, profile, setting và allergies.' })
+  @ApiResponse({
+    status: 200,
+    description: 'Trả về thông tin user, profile, setting và allergies.',
+  })
   getMe(@CurrentUser('sub') userId: string) {
     return this.usersService.getMe(userId);
   }
@@ -37,6 +45,9 @@ export class UsersController {
     @CurrentUser('sub') userId: string,
     @Body() updateAllergiesDto: UpdateAllergiesDto,
   ) {
-    return this.usersService.updateAllergies(userId, updateAllergiesDto.allergen_codes);
+    return this.usersService.updateAllergies(
+      userId,
+      updateAllergiesDto.allergen_codes,
+    );
   }
 }
