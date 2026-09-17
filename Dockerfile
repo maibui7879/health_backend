@@ -16,7 +16,8 @@ RUN npm ci --omit=dev --ignore-scripts
 COPY --from=builder /app/dist ./dist
 
 # Mở cổng 3000 (Khớp với file main.ts)
-EXPOSE 3000
+ENV PORT=7860
+EXPOSE 7860
 
 # Khởi chạy server
 CMD ["node", "dist/main"]
