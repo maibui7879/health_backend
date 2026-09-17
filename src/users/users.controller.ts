@@ -1,11 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Put, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -71,8 +64,13 @@ export class UsersController {
   }
 
   @Put('device-token')
-  @ApiOperation({ summary: 'Cập nhật FCM Device Token để nhận Push Notification' })
-  @ApiResponse({ status: 200, description: 'Cập nhật Device Token thành công.' })
+  @ApiOperation({
+    summary: 'Cập nhật FCM Device Token để nhận Push Notification',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Cập nhật Device Token thành công.',
+  })
   updateDeviceToken(
     @CurrentUser('sub') userId: string,
     @Body() dto: UpdateDeviceTokenDto,

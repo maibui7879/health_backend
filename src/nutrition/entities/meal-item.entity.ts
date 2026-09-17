@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Meal } from './meal.entity';
+import type { Meal } from './meal.entity';
 
 @Entity('meal_items')
 export class MealItem {
@@ -15,22 +15,24 @@ export class MealItem {
   @Column('uuid')
   meal_id!: string;
 
-  @ManyToOne(() => Meal, (meal) => meal.items, { onDelete: 'CASCADE' })
+  @ManyToOne('Meal', 'items', {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'meal_id' })
   meal!: Meal;
 
-  @Column({ type: 'varchar' })
-  food_name!: string;
+  @Column({ type: 'varchar', length: 255 })
+  food_name_vi!: string;
 
-  @Column({ type: 'varchar', nullable: true })
-  dictionary_code!: string;
-
-  @Column({ type: 'float', default: 0 })
-  quantity_grams!: number;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  food_name_en!: string;
 
   @Column({ type: 'float', default: 0 })
-  kcal!: number;
+  estimated_kcal!: number;
 
-  @Column('text', { array: true, default: [] })
-  detected_allergens!: string[];
+  @Column({ type: 'boolean', default: false })
+  is_allergen!: boolean;
+
+  @Column({ type: 'jsonb', nullable: true })
+  warnings!: string[];
 }

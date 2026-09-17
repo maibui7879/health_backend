@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: berohealth_api
+    restart: always
+    ports:
+      - "3000:3000"
+    # Docker sẽ tự động đọc toàn bộ cấu hình từ file .env cùng thư mục
+    env_file:
+      - .env

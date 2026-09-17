@@ -3,41 +3,48 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
-  HttpStatus,
   Injectable,
 } from '@nestjs/common';
+import { Request, Response } from 'express';
+
+type HttpErrorPayload = {
+  message?: string | string[];
+};
 
 @Injectable()
-@Catch()
+@Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
 
-    const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    const status = exception.getStatus();
+    const exceptionResponse = exception.getResponse();
 
-    const errorResponse =
-      exception instanceof HttpException ? exception.getResponse() : null;
+    const payload =
+      typeof exceptionResponse === 'object' && exceptionResponse !== null
+        ? (exceptionResponse as HttpErrorPayload)
+        : null;
 
-    const message =
-      typeof errorResponse === 'object' && errorResponse !== null
-        ? (errorResponse as any).message ?? 'Có lỗi xảy ra'
-        : exception instanceof Error
-          ? exception.message
-          : 'Có lỗi xảy ra';
+    const rawMessage =
+      payload?.message ??
+      (typeof exceptionResponse === 'string'
+        ? exceptionResponse
+        : exception.message);
+
+    const message = Array.isArray(rawMessage)
+      ? (rawMessage[0] ?? 'Có lỗi xảy ra')
+      : typeof rawMessage === 'string'
+        ? rawMessage
+        : 'Có lỗi xảy ra';
 
     response.status(status).json({
       success: false,
       statusCode: status,
-      message: Array.isArray(message) ? message[0] : message,
-      data: null,
-      errors:
-        typeof errorResponse === 'object' && errorResponse !== null
-          ? (errorResponse as any).errors ?? errorResponse
-          : undefined,
+      message,
+      path: request.url,
+      timestamp: new Date().toISOString(),
     });
   }
 }

@@ -38,9 +38,11 @@ export class AuthService {
     }
 
     if (getApps().length === 0) {
-      const serviceAccount = JSON.parse(
-        fs.readFileSync(firebaseKeyPath, 'utf8'),
-      ) as Record<string, string>;
+      const firebaseConfigRaw = fs.readFileSync(firebaseKeyPath, 'utf8');
+      const serviceAccount = JSON.parse(firebaseConfigRaw) as Record<
+        string,
+        string
+      >;
 
       initializeApp({
         credential: cert(serviceAccount),
@@ -104,7 +106,11 @@ export class AuthService {
   async verifyFirebaseToken(idToken: string) {
     try {
       this.initializeFirebase();
-      const decodedToken = await getAuth().verifyIdToken(idToken);
+      const decodedToken = (await getAuth().verifyIdToken(idToken)) as {
+        email?: string;
+        name?: string;
+        picture?: string;
+      };
       const { email, name, picture } = decodedToken;
 
       if (!email) {

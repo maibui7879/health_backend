@@ -2,10 +2,22 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { MealItem } from './meal-item.entity';
+import type { DailyNutrition } from './daily-nutrition.entity';
+import type { MealItem } from './meal-item.entity';
+
+export enum MealType {
+  BREAKFAST = 'BREAKFAST',
+  LUNCH = 'LUNCH',
+  DINNER = 'DINNER',
+  SNACK = 'SNACK',
+  PRE_WORKOUT = 'PRE_WORKOUT',
+  POST_WORKOUT = 'POST_WORKOUT',
+}
 
 @Entity('meals')
 export class Meal {
@@ -13,23 +25,26 @@ export class Meal {
   id!: string;
 
   @Column('uuid')
-  user_id!: string;
+  daily_nutrition_id!: string;
 
-  @Column({ type: 'date' })
-  log_date!: Date;
+  @ManyToOne('DailyNutrition', 'meals', {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'daily_nutrition_id' })
+  daily_nutrition!: DailyNutrition;
 
-  @Column({ type: 'varchar', length: 50 })
-  meal_type!: string;
+  @Column({ type: 'enum', enum: MealType })
+  meal_type!: MealType;
 
-  @Column({ type: 'varchar', nullable: true })
-  ai_image_url!: string;
+  @Column({ type: 'float', default: 0 })
+  meal_kcal!: number;
 
-  @Column({ type: 'int', default: 0 })
-  total_meal_kcal!: number;
+  @Column({ type: 'boolean', default: true })
+  is_safe!: boolean;
 
-  @OneToMany(() => MealItem, (item) => item.meal, { cascade: true })
+  @OneToMany('MealItem', 'meal', { cascade: true })
   items!: MealItem[];
 
   @CreateDateColumn()
-  created_at!: Date;
+  logged_at!: Date;
 }

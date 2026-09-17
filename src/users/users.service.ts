@@ -105,7 +105,9 @@ export class UsersService {
   }
 
   async updateSettings(userId: string, dto: UpdateSettingDto) {
-    let setting = await this.settingRepo.findOne({ where: { user_id: userId } });
+    let setting = await this.settingRepo.findOne({
+      where: { user_id: userId },
+    });
 
     if (!setting) {
       setting = this.settingRepo.create({ user_id: userId, ...dto });

@@ -4,53 +4,42 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { Observable, map } from 'rxjs';
+import { Request, Response } from 'express';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
-export class TransformResponseInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    return next.handle().pipe(
-      map((data) => {
-        const response = context.switchToHttp().getResponse();
-        const statusCode = response?.statusCode ?? 200;
+export class TransformResponseInterceptor<T> implements NestInterceptor<
+  T,
+  unknown
+> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const ctx = context.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
+    const statusCode = response.statusCode;
+    const method = request.method;
 
-        if (
-          data &&
-          typeof data === 'object' &&
-          'success' in data &&
-          'statusCode' in data &&
-          'message' in data
-        ) {
+    return next.handle().pipe(
+      map((data: unknown) => {
+        if (data && typeof data === 'object' && 'success' in data) {
           return data;
         }
 
         return {
           success: true,
           statusCode,
-          message: this.getMessage(context, statusCode),
+          message:
+            method === 'POST'
+              ? 'Tạo dữ liệu thành công'
+              : method === 'PUT' || method === 'PATCH'
+                ? 'Cập nhật dữ liệu thành công'
+                : method === 'DELETE'
+                  ? 'Xóa dữ liệu thành công'
+                  : 'Lấy dữ liệu thành công',
           data: data ?? null,
         };
       }),
     );
-  }
-
-  private getMessage(context: ExecutionContext, statusCode: number): string {
-    const req = context.switchToHttp().getRequest();
-    const method = req?.method?.toUpperCase();
-
-    if (statusCode >= 200 && statusCode < 300) {
-      if (method === 'POST') {
-        return 'Tạo dữ liệu thành công';
-      }
-      if (method === 'PUT' || method === 'PATCH') {
-        return 'Cập nhật dữ liệu thành công';
-      }
-      if (method === 'DELETE') {
-        return 'Xóa dữ liệu thành công';
-      }
-      return 'Lấy dữ liệu thành công';
-    }
-
-    return 'Yêu cầu không thành công';
   }
 }

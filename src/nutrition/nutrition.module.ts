@@ -1,12 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NutritionController } from './nutrition.controller';
-import { NutritionService } from './nutrition.service';
+import { UsersModule } from '../users/users.module';
+import { DailyNutrition } from './entities/daily-nutrition.entity';
 import { Meal } from './entities/meal.entity';
 import { MealItem } from './entities/meal-item.entity';
+import { NutritionController } from './nutrition.controller';
+import { NutritionService } from './nutrition.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Meal, MealItem])],
+  imports: [
+    TypeOrmModule.forFeature([DailyNutrition, Meal, MealItem]),
+    UsersModule,
+  ],
   controllers: [NutritionController],
   providers: [NutritionService],
 })

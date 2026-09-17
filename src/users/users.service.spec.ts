@@ -15,7 +15,11 @@ import {
 describe('UsersService', () => {
   let service: UsersService;
 
-  const mockUserRepo = { findOne: jest.fn(), update: jest.fn(), delete: jest.fn() };
+  const mockUserRepo = {
+    findOne: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+  };
   const mockProfileRepo = { findOne: jest.fn(), save: jest.fn() };
   const mockAllergyRepo = { delete: jest.fn(), save: jest.fn() };
   const mockSettingRepo = {
