@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { AuthResponseDto } from './dto/auth-response.dto';
+import { GoogleLoginDto } from './dto/google-login.dto';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RefreshTokenPayload } from './strategies/refresh-token.strategy';
@@ -54,4 +55,14 @@ export class AuthController {
     return this.authService.refresh(request.user);
   }
 
+  @Post('google/login')
+  @ApiOperation({ summary: 'Đăng nhập bằng Google ID Token' })
+  @ApiResponse({
+    status: 201,
+    description: 'Thành công',
+    type: AuthResponseDto,
+  })
+  googleLogin(@Body() body: GoogleLoginDto) {
+    return this.authService.verifyGoogleLogin(body.token);
+  }
 }

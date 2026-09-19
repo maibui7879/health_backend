@@ -23,7 +23,7 @@ describe('AuthController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should not expose firebase login endpoint', () => {
-    expect((controller as any).firebaseLogin).toBeUndefined();
+  it('should expose google login endpoint', () => {
+    expect(typeof (controller as any).googleLogin).toBe('function');
   });
 });

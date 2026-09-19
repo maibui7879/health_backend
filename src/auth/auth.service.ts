@@ -6,6 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { OAuth2Client } from 'google-auth-library';
 import { Repository } from 'typeorm';
 import { AuthProvider, User } from '../users/entities/user.entity';
 import { UserProfile } from '../users/entities/user-profile.entity';
@@ -15,6 +16,10 @@ import { RefreshTokenPayload } from './strategies/refresh-token.strategy';
 
 @Injectable()
 export class AuthService {
+  private readonly googleClient = new OAuth2Client(
+    process.env.GOOGLE_WEB_CLIENT_ID,
+  );
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -72,6 +77,43 @@ export class AuthService {
     }
 
     return this.generateToken(user);
+  }
+
+  async verifyGoogleLogin(idToken: string) {
+    try {
+      const ticket = await this.googleClient.verifyIdToken({
+        idToken,
+        audience: process.env.GOOGLE_WEB_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+      if (!payload || !payload.email) {
+        throw new UnauthorizedException('Token không hợp lệ hoặc không có email');
+      }
+
+      const { email, name, picture } = payload;
+      let user = await this.userRepository.findOne({ where: { email } });
+
+      if (!user) {
+        const profile = new UserProfile();
+        profile.full_name = name || 'Google User';
+        profile.avatar_url = picture || '';
+
+        user = this.userRepository.create({
+          email,
+          auth_provider: AuthProvider.GOOGLE,
+          profile,
+        });
+        await this.userRepository.save(user);
+      }
+
+      return this.generateToken(user);
+    } catch (error) {
+      console.error('LỖI XÁC THỰC GOOGLE:', error);
+      throw new UnauthorizedException(
+        'Google ID Token không hợp lệ hoặc đã hết hạn.',
+      );
+    }
   }
 
   private generateToken(user: User) {

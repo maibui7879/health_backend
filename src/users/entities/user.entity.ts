@@ -13,6 +13,7 @@ import type { UserSetting } from './user-setting.entity';
 
 export enum AuthProvider {
   LOCAL = 'LOCAL',
+  GOOGLE = 'GOOGLE',
 }
 
 @Entity('users')
