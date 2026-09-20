@@ -36,7 +36,10 @@ export class UsersService {
       throw new NotFoundException('Không tìm thấy người dùng');
     }
 
-    return user;
+    // Không bao giờ trả password_hash ra API
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password_hash, ...safeUser } = user;
+    return safeUser;
   }
 
   async updateProfile(userId: string, dto: UpdateProfileDto) {
