@@ -107,4 +107,112 @@ export class AiService {
       );
     }
   }
+
+  async suggestMenu(args: {
+    userAllergies?: string[];
+    dietType?: string;
+    kcalTarget: number;
+    mealType?: string;
+    goalType?: string;
+    age?: number;
+    gender?: string;
+    weightKg?: number;
+    consumedKcal?: number;
+    remainingKcal?: number;
+    macroProteinG?: number;
+    macroCarbsG?: number;
+    macroFatG?: number;
+  }): Promise<Record<string, unknown>> {
+    const {
+      userAllergies = [],
+      dietType = 'STANDARD',
+      kcalTarget,
+      mealType,
+      goalType = 'MAINTAIN',
+      age,
+      gender,
+      weightKg,
+      consumedKcal = 0,
+      remainingKcal,
+      macroProteinG,
+      macroCarbsG,
+      macroFatG,
+    } = args;
+    try {
+      const allergyContext =
+        userAllergies.length > 0
+          ? `TUYỆT ĐỐI KHÔNG dùng các thành phần: ${userAllergies.join(', ')}.`
+          : 'Người dùng không có dị ứng.';
+      const scope = mealType
+        ? `Gợi ý 2-3 món cho bữa ${mealType}`
+        : 'Gợi ý thực đơn cả ngày gồm 3 bữa chính (sáng, trưa, tối)';
+
+      const goalGuide: Record<string, string> = {
+        LOSE_WEIGHT:
+          'giảm cân: thâm hụt calo, ưu tiên đạm nạc, rau xanh, hạn chế dầu mỡ và đường',
+        GAIN_MUSCLE:
+          'tăng cơ: giàu đạm (thịt, cá, trứng, đậu), đủ tinh bột tốt, đặc biệt quanh buổi tập',
+        MAINTAIN: 'giữ dáng: cân bằng đạm – tinh bột – chất béo',
+      };
+      const who = [
+        age ? `${age} tuổi` : '',
+        gender ? `giới tính ${gender}` : '',
+        weightKg ? `nặng ${weightKg}kg` : '',
+        `mục tiêu ${goalGuide[goalType] ?? goalGuide.MAINTAIN}`,
+      ]
+        .filter(Boolean)
+        .join(', ');
+      const budget =
+        remainingKcal !== undefined
+          ? `Hôm nay đã nạp ${consumedKcal} kcal, còn lại khoảng ${remainingKcal} kcal trong ngân sách.`
+          : '';
+      const macroLine =
+        macroProteinG && macroCarbsG && macroFatG
+          ? `Mục tiêu macro/ngày: đạm ${macroProteinG}g, tinh bột ${macroCarbsG}g, béo ${macroFatG}g.`
+          : '';
+
+      const prompt = `
+				Bạn là chuyên gia dinh dưỡng Việt Nam.
+				Người dùng: ${who}.
+				${allergyContext}
+				Chế độ ăn: ${dietType}.
+				${budget}
+				${macroLine}
+				${scope} với tổng khoảng ${kcalTarget} kcal, ưu tiên món Việt dễ nấu.
+				Mỗi món ghi rõ lý do ngắn gọn gắn với mục tiêu và macro của người dùng.
+
+				BẮT BUỘC trả về JSON chính xác như sau, không kèm văn bản nào khác:
+				{
+				  "meal_type": "${mealType ?? 'LUNCH'}",
+				  "total_kcal": 0,
+				  "items": [
+				    {
+				      "food_name_vi": "Tên món",
+				      "food_name_en": "English name",
+				      "estimated_kcal": 0,
+				      "reason": "Lý do ngắn gọn"
+				    }
+				  ]
+				}
+			`;
+
+      const completion = await this.groq.chat.completions.create({
+        messages: [{ role: 'user', content: prompt }],
+        model: 'qwen/qwen3.6-27b',
+        temperature: 0.3,
+        response_format: { type: 'json_object' },
+      });
+
+      const responseContent = completion.choices[0]?.message?.content;
+      if (!responseContent) throw new Error('Kết quả trả về rỗng');
+
+      const parsed = JSON.parse(responseContent) as Record<string, unknown>;
+      return parsed;
+    } catch (error) {
+      this.logger.error('Lỗi khi gợi ý thực đơn:', error);
+      throw new InternalServerErrorException(
+        'Không thể gợi ý thực đơn lúc này.',
+      );
+    }
+  }
 }
