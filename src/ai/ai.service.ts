@@ -289,6 +289,8 @@ export class AiService {
 				${macroLine}
 				Hãy lập kế hoạch ${durationDays} ngày gồm bữa ăn (sáng/trưa/tối + kcal) và buổi tập mỗi ngày,
 				ước tính số tuần để đạt mục tiêu. Viết ngắn gọn, món Việt dễ thực hiện.
+				Phần workout phải chi tiết: nhóm cơ trọng tâm, cường độ, khởi động, tối đa 4 bài tập
+				(mỗi bài ghi số hiệp, số reps/thời gian, giây nghỉ), thả lỏng, kcal tiêu hao ước tính.
 
 				BẮT BUỘC trả về JSON chính xác như sau, không kèm văn bản nào khác:
 				{
@@ -301,7 +303,18 @@ export class AiService {
 				      "meals": [
 				        { "meal_type": "BREAKFAST", "suggestion": "Tên món", "kcal": 0 }
 				      ],
-				      "workout": { "activity": "Tên bài tập", "duration_minutes": 0, "note": "Ghi chú" },
+				      "workout": {
+				        "focus": "Nhóm cơ / trọng tâm buổi tập",
+				        "intensity": "Nhẹ/Vừa/Cao",
+				        "duration_minutes": 0,
+				        "estimated_kcal_burn": 0,
+				        "warmup": "Khởi động",
+				        "exercises": [
+				          { "name": "Tên bài", "sets": 0, "reps": "12 reps", "rest_seconds": 60 }
+				        ],
+				        "cooldown": "Thả lỏng",
+				        "note": "Ghi chú"
+				      },
 				      "tip": "Mẹo ngắn"
 				    }
 				  ]

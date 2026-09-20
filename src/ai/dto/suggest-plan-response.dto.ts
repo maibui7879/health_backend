@@ -11,14 +11,43 @@ export class PlanMealDto {
   kcal!: number;
 }
 
-export class PlanWorkoutDto {
-  @ApiProperty({ example: 'Đi bộ nhanh' })
-  activity!: string;
+export class PlanExerciseDto {
+  @ApiProperty({ example: 'Squat với tạ đơn' })
+  name!: string;
 
-  @ApiProperty({ example: 30 })
+  @ApiProperty({ example: 3 })
+  sets!: number;
+
+  @ApiProperty({ example: '12 reps' })
+  reps!: string;
+
+  @ApiPropertyOptional({ example: 60 })
+  rest_seconds?: number;
+}
+
+export class PlanWorkoutDto {
+  @ApiProperty({ example: 'Tập thân dưới' })
+  focus!: string;
+
+  @ApiProperty({ example: 'Vừa' })
+  intensity!: string;
+
+  @ApiProperty({ example: 45 })
   duration_minutes!: number;
 
-  @ApiPropertyOptional({ example: 'Giữ nhịp tim vừa phải, uống đủ nước' })
+  @ApiPropertyOptional({ example: 220 })
+  estimated_kcal_burn?: number;
+
+  @ApiProperty({ example: 'Xoay khớp + đi bộ nhanh 5 phút' })
+  warmup!: string;
+
+  @ApiProperty({ type: [PlanExerciseDto] })
+  exercises!: PlanExerciseDto[];
+
+  @ApiProperty({ example: 'Giãn cơ đùi, bắp chân 5 phút' })
+  cooldown!: string;
+
+  @ApiPropertyOptional({ example: 'Uống nước giữa các hiệp' })
   note?: string;
 }
 
