@@ -92,6 +92,7 @@ export class AiService {
         ],
         model: 'qwen/qwen3.8-27b',
         temperature: 0.1,
+        max_tokens: 800,
         response_format: { type: 'json_object' },
       });
 
@@ -200,6 +201,7 @@ export class AiService {
         messages: [{ role: 'user', content: prompt }],
         model: 'qwen/qwen3.8-27b',
         temperature: 0.3,
+        max_tokens: 800,
         response_format: { type: 'json_object' },
       });
 
