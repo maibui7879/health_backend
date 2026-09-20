@@ -1,5 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDateString, IsEnum, IsNumber, IsOptional, Min } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 import { MealType } from '../../nutrition/entities/meal.entity';
 
 export class SuggestMenuRequestDto {
@@ -29,4 +36,12 @@ export class SuggestMenuRequestDto {
   @IsNumber()
   @Min(0)
   kcal_target?: number;
+
+  @ApiPropertyOptional({
+    example: 'Không ăn cay, ưu tiên món luộc/hấp',
+    description: 'Yêu cầu cụ thể thêm cho AI khi gợi ý thực đơn.',
+  })
+  @IsOptional()
+  @IsString()
+  note?: string;
 }

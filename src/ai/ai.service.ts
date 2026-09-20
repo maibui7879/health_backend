@@ -123,6 +123,7 @@ export class AiService {
     macroProteinG?: number;
     macroCarbsG?: number;
     macroFatG?: number;
+    note?: string;
   }): Promise<Record<string, unknown>> {
     const {
       userAllergies = [],
@@ -138,6 +139,7 @@ export class AiService {
       macroProteinG,
       macroCarbsG,
       macroFatG,
+      note,
     } = args;
     try {
       const allergyContext =
@@ -171,6 +173,9 @@ export class AiService {
         macroProteinG && macroCarbsG && macroFatG
           ? `Mục tiêu macro/ngày: đạm ${macroProteinG}g, tinh bột ${macroCarbsG}g, béo ${macroFatG}g.`
           : '';
+      const noteLine = note?.trim()
+        ? `Yêu cầu cụ thể của người dùng: "${note.trim()}".`
+        : '';
 
       const prompt = `
 				Bạn là chuyên gia dinh dưỡng Việt Nam.
@@ -179,6 +184,7 @@ export class AiService {
 				Chế độ ăn: ${dietType}.
 				${budget}
 				${macroLine}
+				${noteLine}
 				${scope} với tổng khoảng ${kcalTarget} kcal, ưu tiên món Việt dễ nấu.
 				Mỗi món ghi rõ lý do ngắn gọn gắn với mục tiêu và macro của người dùng.
 
@@ -211,9 +217,114 @@ export class AiService {
       const parsed = JSON.parse(responseContent) as Record<string, unknown>;
       return parsed;
     } catch (error) {
-      this.logger.error('Lỗi khi gợi ý thực đơn:', error);
+      this.logger.error('Lỗi khi gợi ý món ăn:', error);
       throw new InternalServerErrorException(
         'Không thể gợi ý thực đơn lúc này.',
+      );
+    }
+  }
+
+  async suggestPlan(args: {
+    userAllergies?: string[];
+    dietType?: string;
+    goalType?: string;
+    age?: number;
+    gender?: string;
+    heightCm?: number;
+    weightKg?: number;
+    activityLevel?: string;
+    dailyKcalTarget?: number;
+    macroProteinG?: number;
+    macroCarbsG?: number;
+    macroFatG?: number;
+    durationDays?: number;
+  }): Promise<Record<string, unknown>> {
+    const {
+      userAllergies = [],
+      dietType = 'STANDARD',
+      goalType = 'MAINTAIN',
+      age,
+      gender,
+      heightCm,
+      weightKg,
+      activityLevel,
+      dailyKcalTarget = 1800,
+      macroProteinG,
+      macroCarbsG,
+      macroFatG,
+      durationDays = 7,
+    } = args;
+    try {
+      const allergyContext =
+        userAllergies.length > 0
+          ? `TUYỆT ĐỐI KHÔNG dùng các thành phần: ${userAllergies.join(', ')}.`
+          : 'Người dùng không có dị ứng.';
+      const goalGuide: Record<string, string> = {
+        LOSE_WEIGHT:
+          'giảm cân: thâm hụt ~500 kcal/ngày, ưu tiên đạm nạc và rau xanh',
+        GAIN_MUSCLE:
+          'tăng cơ: thặng dư nhẹ, giàu đạm, tập sức mạnh 3-4 buổi/tuần',
+        MAINTAIN: 'giữ dáng: cân bằng dinh dưỡng và vận động đều',
+      };
+      const who = [
+        age ? `${age} tuổi` : '',
+        gender ?? '',
+        heightCm ? `cao ${heightCm}cm` : '',
+        weightKg ? `nặng ${weightKg}kg` : '',
+        activityLevel ? `vận động ${activityLevel}` : '',
+        `mục tiêu ${goalGuide[goalType] ?? goalGuide.MAINTAIN}`,
+      ]
+        .filter(Boolean)
+        .join(', ');
+      const macroLine =
+        macroProteinG && macroCarbsG && macroFatG
+          ? `Macro/ngày: đạm ${macroProteinG}g, tinh bột ${macroCarbsG}g, béo ${macroFatG}g.`
+          : '';
+
+      const prompt = `
+				Bạn là huấn luyện viên dinh dưỡng và thể hình.
+				Người dùng: ${who}.
+				${allergyContext}
+				Chế độ ăn: ${dietType}. Mục tiêu năng lượng: ${dailyKcalTarget} kcal/ngày.
+				${macroLine}
+				Hãy lập kế hoạch ${durationDays} ngày gồm bữa ăn (sáng/trưa/tối + kcal) và buổi tập mỗi ngày,
+				ước tính số tuần để đạt mục tiêu. Viết ngắn gọn, món Việt dễ thực hiện.
+
+				BẮT BUỘC trả về JSON chính xác như sau, không kèm văn bản nào khác:
+				{
+				  "duration_days": ${durationDays},
+				  "goal_summary": "Tóm tắt 1 câu",
+				  "estimated_weeks": 0,
+				  "days": [
+				    {
+				      "day": 1,
+				      "meals": [
+				        { "meal_type": "BREAKFAST", "suggestion": "Tên món", "kcal": 0 }
+				      ],
+				      "workout": { "activity": "Tên bài tập", "duration_minutes": 0, "note": "Ghi chú" },
+				      "tip": "Mẹo ngắn"
+				    }
+				  ]
+				}
+			`;
+
+      const completion = await this.groq.chat.completions.create({
+        messages: [{ role: 'user', content: prompt }],
+        model: 'qwen/qwen3.8-27b',
+        temperature: 0.3,
+        max_tokens: 2000,
+        response_format: { type: 'json_object' },
+      });
+
+      const responseContent = completion.choices[0]?.message?.content;
+      if (!responseContent) throw new Error('Kết quả trả về rỗng');
+
+      const parsed = JSON.parse(responseContent) as Record<string, unknown>;
+      return parsed;
+    } catch (error) {
+      this.logger.error('Lỗi khi gợi ý kế hoạch:', error);
+      throw new InternalServerErrorException(
+        'Không thể gợi ý kế hoạch lúc này.',
       );
     }
   }

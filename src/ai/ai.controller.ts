@@ -25,6 +25,8 @@ import { AnalyzeFoodRequestDto } from './dto/analyze-food-request.dto';
 import { AnalyzeFoodResponseDto } from './dto/analyze-food-response.dto';
 import { SuggestMenuRequestDto } from './dto/suggest-menu-request.dto';
 import { SuggestMenuResponseDto } from './dto/suggest-menu-response.dto';
+import { SuggestPlanRequestDto } from './dto/suggest-plan-request.dto';
+import { SuggestPlanResponseDto } from './dto/suggest-plan-response.dto';
 import { AiService } from './ai.service';
 
 @ApiTags('AI')
@@ -159,12 +161,76 @@ export class AiController {
       macroProteinG: macroProtein,
       macroCarbsG: macroCarbs,
       macroFatG: macroFat,
+      note: dto.note,
     });
 
     return {
       success: true,
       message: 'Gợi ý thực đơn thành công',
       data: menu,
+    };
+  }
+
+  @Post('suggest-plan')
+  @UseGuards(AuthGuard('jwt-access'))
+  @ApiOperation({ summary: 'Gợi ý kế hoạch ăn uống + luyện tập theo ngày' })
+  @ApiBody({ type: SuggestPlanRequestDto })
+  @ApiResponse({
+    status: 201,
+    description: 'Thành công',
+    type: SuggestPlanResponseDto,
+  })
+  async suggestPlan(
+    @CurrentUser('sub') userId: string,
+    @Body() dto: SuggestPlanRequestDto,
+  ) {
+    const user = await this.usersService.getMe(userId);
+    const profile = (user.profile ?? {}) as Record<string, any>;
+    const userAllergies =
+      user.allergies?.map((allergy) => allergy.allergen_name) ?? [];
+
+    let macroProtein: number | undefined;
+    let macroCarbs: number | undefined;
+    let macroFat: number | undefined;
+    try {
+      const targets = (await this.nutritionService.getMacroTargets(
+        userId,
+      )) as Record<string, any>;
+      macroProtein = Number(targets.target_protein_g) || undefined;
+      macroCarbs = Number(targets.target_carbs_g) || undefined;
+      macroFat = Number(targets.target_fat_g) || undefined;
+    } catch {
+      // hồ sơ chưa đủ để tính macro
+    }
+
+    let age: number | undefined;
+    if (profile.date_of_birth) {
+      const dob = new Date(profile.date_of_birth);
+      if (!Number.isNaN(dob.getTime())) {
+        age = new Date().getFullYear() - dob.getFullYear();
+      }
+    }
+
+    const plan = await this.aiService.suggestPlan({
+      userAllergies,
+      dietType: profile.diet_type ?? 'STANDARD',
+      goalType: profile.goal_type ?? 'MAINTAIN',
+      age,
+      gender: profile.gender,
+      heightCm: Number(profile.height_cm) || undefined,
+      weightKg: Number(profile.current_weight_kg) || undefined,
+      activityLevel: profile.activity_level,
+      dailyKcalTarget: Number(profile.daily_kcal_target ?? 1800) || 1800,
+      macroProteinG: macroProtein,
+      macroCarbsG: macroCarbs,
+      macroFatG: macroFat,
+      durationDays: dto.duration_days ?? 7,
+    });
+
+    return {
+      success: true,
+      message: 'Gợi ý kế hoạch thành công',
+      data: plan,
     };
   }
 }
