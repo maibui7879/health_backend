@@ -90,7 +90,7 @@ export class AiService {
             ],
           },
         ],
-        model: 'qwen/qwen3.6-27b',
+        model: 'qwen/qwen3.8-27b',
         temperature: 0.1,
         response_format: { type: 'json_object' },
       });
@@ -198,7 +198,7 @@ export class AiService {
 
       const completion = await this.groq.chat.completions.create({
         messages: [{ role: 'user', content: prompt }],
-        model: 'qwen/qwen3.6-27b',
+        model: 'qwen/qwen3.8-27b',
         temperature: 0.3,
         response_format: { type: 'json_object' },
       });
