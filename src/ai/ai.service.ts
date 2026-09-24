@@ -1,4 +1,6 @@
 import {
+  HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -254,17 +256,22 @@ export class AiService {
       macroFatG,
       durationDays = 7,
     } = args;
+    // Groq tier on_demand giới hạn OTPM 1000 cho qwen/qwen3.8-27b,
+    // nên chia kế hoạch dài thành nhiều call nhỏ ≤3 ngày/call, mỗi call ≤900 tokens.
+    const totalDays = Math.min(Math.max(Math.round(durationDays) || 7, 1), 7);
+    const CHUNK_DAYS = 3;
+    const MAX_TOKENS_PER_CALL = 900;
+    const model =
+      this.configService.get<string>('GROQ_MODEL') ?? 'qwen/qwen3.8-27b';
     try {
       const allergyContext =
         userAllergies.length > 0
-          ? `TUYỆT ĐỐI KHÔNG dùng các thành phần: ${userAllergies.join(', ')}.`
-          : 'Người dùng không có dị ứng.';
+          ? `TUYỆT ĐỐI KHÔNG dùng: ${userAllergies.join(', ')}.`
+          : 'Không dị ứng.';
       const goalGuide: Record<string, string> = {
-        LOSE_WEIGHT:
-          'giảm cân: thâm hụt ~500 kcal/ngày, ưu tiên đạm nạc và rau xanh',
-        GAIN_MUSCLE:
-          'tăng cơ: thặng dư nhẹ, giàu đạm, tập sức mạnh 3-4 buổi/tuần',
-        MAINTAIN: 'giữ dáng: cân bằng dinh dưỡng và vận động đều',
+        LOSE_WEIGHT: 'giảm cân: thâm hụt ~500 kcal/ngày, đạm nạc + rau xanh',
+        GAIN_MUSCLE: 'tăng cơ: dư nhẹ, giàu đạm, tập sức mạnh 3-4 buổi/tuần',
+        MAINTAIN: 'giữ dáng: cân bằng dinh dưỡng + vận động đều',
       };
       const who = [
         age ? `${age} tuổi` : '',
@@ -278,64 +285,67 @@ export class AiService {
         .join(', ');
       const macroLine =
         macroProteinG && macroCarbsG && macroFatG
-          ? `Macro/ngày: đạm ${macroProteinG}g, tinh bột ${macroCarbsG}g, béo ${macroFatG}g.`
+          ? `Macro/ngày: đạm ${macroProteinG}g, bột ${macroCarbsG}g, béo ${macroFatG}g.`
           : '';
 
-      const prompt = `
-				Bạn là huấn luyện viên dinh dưỡng và thể hình.
-				Người dùng: ${who}.
-				${allergyContext}
-				Chế độ ăn: ${dietType}. Mục tiêu năng lượng: ${dailyKcalTarget} kcal/ngày.
-				${macroLine}
-				Hãy lập kế hoạch ${durationDays} ngày gồm bữa ăn (sáng/trưa/tối + kcal) và buổi tập mỗi ngày,
-				ước tính số tuần để đạt mục tiêu. Viết ngắn gọn, món Việt dễ thực hiện.
-				Phần workout phải chi tiết: nhóm cơ trọng tâm, cường độ, khởi động, tối đa 4 bài tập
-				(mỗi bài ghi số hiệp, số reps/thời gian, giây nghỉ), thả lỏng, kcal tiêu hao ước tính.
+      const allDays: unknown[] = [];
+      let goalSummary = '';
+      let estimatedWeeks = 0;
 
-				BẮT BUỘC trả về JSON chính xác như sau, không kèm văn bản nào khác:
-				{
-				  "duration_days": ${durationDays},
-				  "goal_summary": "Tóm tắt 1 câu",
-				  "estimated_weeks": 0,
-				  "days": [
-				    {
-				      "day": 1,
-				      "meals": [
-				        { "meal_type": "BREAKFAST", "suggestion": "Tên món", "kcal": 0 }
-				      ],
-				      "workout": {
-				        "focus": "Nhóm cơ / trọng tâm buổi tập",
-				        "intensity": "Nhẹ/Vừa/Cao",
-				        "duration_minutes": 0,
-				        "estimated_kcal_burn": 0,
-				        "warmup": "Khởi động",
-				        "exercises": [
-				          { "name": "Tên bài", "sets": 0, "reps": "12 reps", "rest_seconds": 60 }
-				        ],
-				        "cooldown": "Thả lỏng",
-				        "note": "Ghi chú"
-				      },
-				      "tip": "Mẹo ngắn"
-				    }
-				  ]
-				}
+      for (let offset = 0; offset < totalDays; offset += CHUNK_DAYS) {
+        const chunkSize = Math.min(CHUNK_DAYS, totalDays - offset);
+        const startDay = offset + 1;
+        const prompt = `
+Bạn là HLV dinh dưỡng. Người dùng: ${who}.
+${allergyContext} Chế độ: ${dietType}. Kcal: ${dailyKcalTarget}/ngày. ${macroLine}
+Lập kế hoạch cho ngày ${startDay}–${startDay + chunkSize - 1} (tổng ${chunkSize} ngày). Mỗi ngày chỉ 3 bữa (sáng/trưa/tối) + 1 buổi tập. CỰC NGẮN GỌN, tên món Việt ≤6 từ, tip ≤10 từ.
+BẮT BUỘC chỉ trả JSON, không văn bản khác:
+{"goal_summary":"1 câu","estimated_weeks":0,"days":[{"day":${startDay},"meals":[{"meal_type":"BREAKFAST","suggestion":"Tên món","kcal":0}],"workout":{"activity":"Tên bài","duration_minutes":0,"note":"≤8 từ"},"tip":"≤10 từ"}]}
 			`;
 
-      const completion = await this.groq.chat.completions.create({
-        messages: [{ role: 'user', content: prompt }],
-        model: 'qwen/qwen3.8-27b',
-        temperature: 0.3,
-        max_tokens: 2000,
-        response_format: { type: 'json_object' },
-      });
+        const completion = await this.groq.chat.completions.create({
+          messages: [{ role: 'user', content: prompt }],
+          model,
+          temperature: 0.3,
+          max_tokens: MAX_TOKENS_PER_CALL,
+          response_format: { type: 'json_object' },
+        });
 
-      const responseContent = completion.choices[0]?.message?.content;
-      if (!responseContent) throw new Error('Kết quả trả về rỗng');
+        const responseContent = completion.choices[0]?.message?.content;
+        if (!responseContent) throw new Error('Kết quả trả về rỗng');
 
-      const parsed = JSON.parse(responseContent) as Record<string, unknown>;
-      return parsed;
+        const parsed = JSON.parse(responseContent) as Record<string, unknown>;
+        if (!goalSummary && typeof parsed.goal_summary === 'string') {
+          goalSummary = parsed.goal_summary;
+        }
+        if (!estimatedWeeks && typeof parsed.estimated_weeks === 'number') {
+          estimatedWeeks = parsed.estimated_weeks;
+        }
+        if (Array.isArray(parsed.days)) {
+          allDays.push(...parsed.days);
+        }
+      }
+
+      return {
+        duration_days: totalDays,
+        goal_summary: goalSummary || 'Kế hoạch ăn uống + luyện tập.',
+        estimated_weeks: estimatedWeeks || 0,
+        days: allDays.slice(0, totalDays),
+      };
     } catch (error) {
       this.logger.error('Lỗi khi gợi ý kế hoạch:', error);
+      const status =
+        (error as { status?: number })?.status ??
+        (error as { statusCode?: number })?.statusCode;
+      const code =
+        (error as { code?: string })?.code ??
+        (error as { error?: { code?: string } })?.error?.code;
+      if (status === 429 || code === 'rate_limit_exceeded') {
+        throw new HttpException(
+          'AI đang quá tải (Groq giới hạn 1000 tokens/phút). Vui lòng thử lại sau ít phút hoặc giảm số ngày (ví dụ duration_days=3).',
+          HttpStatus.TOO_MANY_REQUESTS,
+        );
+      }
       throw new InternalServerErrorException(
         'Không thể gợi ý kế hoạch lúc này.',
       );
