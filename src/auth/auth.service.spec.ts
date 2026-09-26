@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { AuthProvider, User } from '../users/entities/user.entity';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { localizationMockProvider } from '../i18n/localization.mock';
 
 jest.mock('@nestjs/jwt', () => ({
   JwtService: class JwtService {},
@@ -29,6 +30,7 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
+        localizationMockProvider,
         {
           provide: getRepositoryToken(User),
           useValue: mockUserRepository,

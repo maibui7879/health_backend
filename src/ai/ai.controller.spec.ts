@@ -3,6 +3,7 @@ import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
 import { UsersService } from '../users/users.service';
 import { NutritionService } from '../nutrition/nutrition.service';
+import { localizationMockProvider } from '../i18n/localization.mock';
 
 describe('AiController', () => {
   let controller: AiController;
@@ -15,6 +16,7 @@ describe('AiController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AiController],
       providers: [
+        localizationMockProvider,
         {
           provide: AiService,
           useValue: aiServiceMock,

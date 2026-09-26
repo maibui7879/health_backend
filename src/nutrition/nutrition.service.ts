@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
+import { LocalizationService } from '../i18n/localization.service';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { SearchHistoryDto } from './dto/search-history.dto';
 import { DailyNutrition } from './entities/daily-nutrition.entity';
@@ -20,6 +21,7 @@ export class NutritionService {
     @InjectRepository(Meal)
     private mealRepo: Repository<Meal>,
     private usersService: UsersService,
+    private readonly i18n: LocalizationService,
   ) {}
 
   async createMeal(userId: string, dto: CreateMealDto) {
@@ -124,11 +126,11 @@ export class NutritionService {
     });
 
     if (!meal) {
-      throw new NotFoundException('Không tìm thấy bữa ăn');
+      throw new NotFoundException(this.i18n.t('nutrition.mealNotFound'));
     }
 
     if (meal.daily_nutrition.user_id !== userId) {
-      throw new ForbiddenException('Bạn không có quyền xóa bữa ăn này');
+      throw new ForbiddenException(this.i18n.t('nutrition.mealForbidden'));
     }
 
     meal.daily_nutrition.total_kcal -= meal.meal_kcal;
@@ -140,7 +142,7 @@ export class NutritionService {
     await this.dailyRepo.save(meal.daily_nutrition);
     await this.mealRepo.remove(meal);
 
-    return { message: 'Đã xóa bữa ăn và cập nhật lại Calories' };
+    return { message: this.i18n.t('nutrition.mealDeleted') };
   }
 
   async searchHistory(userId: string, query: SearchHistoryDto) {
@@ -210,7 +212,7 @@ export class NutritionService {
     const profile = user.profile;
 
     if (!profile) {
-      throw new NotFoundException('Chưa cập nhật Profile');
+      throw new NotFoundException(this.i18n.t('nutrition.profileRequired'));
     }
 
     const tdee = profile.daily_kcal_target || 2000;

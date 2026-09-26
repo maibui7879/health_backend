@@ -7,13 +7,18 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Groq from 'groq-sdk';
+import { LocalizationService } from '../i18n/localization.service';
+import { aiLanguageLine } from './ai-chat.system';
 
 @Injectable()
 export class AiService {
   private readonly logger = new Logger(AiService.name);
   private groq: Groq;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private readonly i18n: LocalizationService,
+  ) {
     this.groq = new Groq({
       apiKey: this.configService.get<string>('GROQ_API_KEY'),
     });
@@ -27,6 +32,7 @@ export class AiService {
     weight_g?: number,
     additional_info?: string,
   ): Promise<Record<string, unknown>> {
+    const langLine = aiLanguageLine(this.i18n.lang());
     try {
       const base64Image = imageBuffer.toString('base64');
       const dataUrl = `data:${mimeType};base64,${base64Image}`;
@@ -80,6 +86,7 @@ export class AiService {
 				    }
 				  ]
 				}
+				${langLine}
 			`;
 
       const completion = await this.groq.chat.completions.create({
@@ -105,9 +112,7 @@ export class AiService {
       return parsed;
     } catch (error) {
       this.logger.error('Lỗi khi gọi Groq AI:', error);
-      throw new InternalServerErrorException(
-        'Không thể phân tích hình ảnh lúc này.',
-      );
+      throw new InternalServerErrorException(this.i18n.t('ai.analyzeFailed'));
     }
   }
 
@@ -143,6 +148,7 @@ export class AiService {
       macroFatG,
       note,
     } = args;
+    const langLine = aiLanguageLine(this.i18n.lang());
     try {
       const allergyContext =
         userAllergies.length > 0
@@ -203,6 +209,7 @@ export class AiService {
 				    }
 				  ]
 				}
+				${langLine}
 			`;
 
       const completion = await this.groq.chat.completions.create({
@@ -220,9 +227,7 @@ export class AiService {
       return parsed;
     } catch (error) {
       this.logger.error('Lỗi khi gợi ý món ăn:', error);
-      throw new InternalServerErrorException(
-        'Không thể gợi ý thực đơn lúc này.',
-      );
+      throw new InternalServerErrorException(this.i18n.t('ai.menuFailed'));
     }
   }
 
@@ -256,6 +261,7 @@ export class AiService {
       macroFatG,
       durationDays = 7,
     } = args;
+    const langLine = aiLanguageLine(this.i18n.lang());
     // Groq tier on_demand giới hạn OTPM 1000 cho qwen/qwen3.8-27b,
     // nên chia kế hoạch dài thành nhiều call nhỏ ≤3 ngày/call, mỗi call ≤900 tokens.
     const totalDays = Math.min(Math.max(Math.round(durationDays) || 7, 1), 7);
@@ -301,6 +307,7 @@ ${allergyContext} Chế độ: ${dietType}. Kcal: ${dailyKcalTarget}/ngày. ${ma
 Lập kế hoạch cho ngày ${startDay}–${startDay + chunkSize - 1} (tổng ${chunkSize} ngày). Mỗi ngày chỉ 3 bữa (sáng/trưa/tối) + 1 buổi tập. CỰC NGẮN GỌN, tên món Việt ≤6 từ, tip ≤10 từ.
 BẮT BUỘC chỉ trả JSON, không văn bản khác:
 {"goal_summary":"1 câu","estimated_weeks":0,"days":[{"day":${startDay},"meals":[{"meal_type":"BREAKFAST","suggestion":"Tên món","kcal":0}],"workout":{"activity":"Tên bài","duration_minutes":0,"note":"≤8 từ"},"tip":"≤10 từ"}]}
+${langLine}
 			`;
 
         const completion = await this.groq.chat.completions.create({
@@ -342,13 +349,11 @@ BẮT BUỘC chỉ trả JSON, không văn bản khác:
         (error as { error?: { code?: string } })?.error?.code;
       if (status === 429 || code === 'rate_limit_exceeded') {
         throw new HttpException(
-          'AI đang quá tải (Groq giới hạn 1000 tokens/phút). Vui lòng thử lại sau ít phút hoặc giảm số ngày (ví dụ duration_days=3).',
+          this.i18n.t('ai.planOverloaded'),
           HttpStatus.TOO_MANY_REQUESTS,
         );
       }
-      throw new InternalServerErrorException(
-        'Không thể gợi ý kế hoạch lúc này.',
-      );
+      throw new InternalServerErrorException(this.i18n.t('ai.planFailed'));
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { LocalizationService } from '../../i18n/localization.service';
 
 export interface AccessTokenPayload {
   sub: string;
@@ -13,7 +14,7 @@ export class AccessTokenStrategy extends PassportStrategy(
   Strategy,
   'jwt-access',
 ) {
-  constructor() {
+  constructor(private readonly i18n: LocalizationService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -26,7 +27,7 @@ export class AccessTokenStrategy extends PassportStrategy(
 
   validate(payload: AccessTokenPayload) {
     if (payload.token_type !== 'access') {
-      throw new UnauthorizedException('Access token không hợp lệ.');
+      throw new UnauthorizedException(this.i18n.t('auth.invalidAccessToken'));
     }
 
     return payload;

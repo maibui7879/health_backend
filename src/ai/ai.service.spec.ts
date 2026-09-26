@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { AiService } from './ai.service';
+import { localizationMockProvider } from '../i18n/localization.mock';
 
 describe('AiService', () => {
   let service: AiService;
@@ -9,6 +10,7 @@ describe('AiService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AiService,
+        localizationMockProvider,
         {
           provide: ConfigService,
           useValue: {

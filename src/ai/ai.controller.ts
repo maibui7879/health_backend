@@ -19,6 +19,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { LocalizationService, t } from '../i18n/localization.service';
 import { UsersService } from '../users/users.service';
 import { NutritionService } from '../nutrition/nutrition.service';
 import { AnalyzeFoodRequestDto } from './dto/analyze-food-request.dto';
@@ -37,6 +38,7 @@ export class AiController {
     private readonly aiService: AiService,
     private readonly usersService: UsersService,
     private readonly nutritionService: NutritionService,
+    private readonly i18n: LocalizationService,
   ) {}
 
   @Post('analyze-food')
@@ -58,7 +60,7 @@ export class AiController {
         callback: FileFilterCallback,
       ) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/i)) {
-          return callback(new Error('Chỉ chấp nhận ảnh (jpg, png, webp)'));
+          return callback(new Error(t('ai.imageTypeOnly')));
         }
         callback(null, true);
       },
@@ -70,7 +72,7 @@ export class AiController {
     @Body() body: AnalyzeFoodRequestDto,
   ) {
     if (!file) {
-      throw new BadRequestException('Vui lòng đính kèm một hình ảnh món ăn.');
+      throw new BadRequestException(this.i18n.t('ai.imageRequired'));
     }
 
     const user = await this.usersService.getMe(userId);
@@ -89,7 +91,7 @@ export class AiController {
 
     return {
       success: true,
-      message: 'Nhận diện thành công',
+      message: this.i18n.t('ai.analyzeOk'),
       data: aiResult,
     };
   }
@@ -110,7 +112,7 @@ export class AiController {
     const user = await this.usersService.getMe(userId);
     const userAllergies =
       user.allergies?.map((allergy) => allergy.allergen_name) ?? [];
-    const profile = user.profile ?? {} as Record<string, any>;
+    const profile = user.profile ?? ({} as Record<string, any>);
     const dietType = profile.diet_type ?? 'STANDARD';
     const dailyTarget = Number(profile.daily_kcal_target ?? 1800) || 1800;
 
@@ -166,7 +168,7 @@ export class AiController {
 
     return {
       success: true,
-      message: 'Gợi ý thực đơn thành công',
+      message: this.i18n.t('ai.menuOk'),
       data: menu,
     };
   }
@@ -229,7 +231,7 @@ export class AiController {
 
     return {
       success: true,
-      message: 'Gợi ý kế hoạch thành công',
+      message: this.i18n.t('ai.planOk'),
       data: plan,
     };
   }

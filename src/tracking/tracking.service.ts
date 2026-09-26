@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { CreateDailyLogDto } from './dto/create-daily-log.dto';
 import { UpdateDailyLogDto } from './dto/update-daily-log.dto';
 import { DailyLog } from './entities/daily-log.entity';
+import { LocalizationService } from '../i18n/localization.service';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
@@ -16,6 +17,7 @@ export class TrackingService {
     @InjectRepository(DailyLog)
     private readonly dailyLogRepo: Repository<DailyLog>,
     private readonly usersService: UsersService,
+    private readonly i18n: LocalizationService,
   ) {}
 
   async createDailyLog(userId: string, dto: CreateDailyLogDto) {
@@ -65,7 +67,7 @@ export class TrackingService {
 
   async getDailyLog(userId: string, date: string) {
     if (!date) {
-      throw new BadRequestException('Thiếu tham số date');
+      throw new BadRequestException(this.i18n.t('tracking.dateRequired'));
     }
 
     const log = await this.dailyLogRepo.findOne({
@@ -93,7 +95,7 @@ export class TrackingService {
     });
 
     if (!log) {
-      throw new NotFoundException('Không tìm thấy nhật ký ngày');
+      throw new NotFoundException(this.i18n.t('tracking.logNotFound'));
     }
 
     Object.assign(log, dto);
@@ -114,12 +116,12 @@ export class TrackingService {
     });
 
     if (!log) {
-      throw new NotFoundException('Không tìm thấy nhật ký ngày');
+      throw new NotFoundException(this.i18n.t('tracking.logNotFound'));
     }
 
     await this.dailyLogRepo.remove(log);
 
-    return { message: 'Đã xóa nhật ký ngày thành công' };
+    return { message: this.i18n.t('tracking.logDeleted') };
   }
 
   private getPreviousDate(date: string): string {

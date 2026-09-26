@@ -20,6 +20,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { LocalizationService } from '../i18n/localization.service';
 import { CreateDailyLogDto } from './dto/create-daily-log.dto';
 import { UpdateDailyLogDto } from './dto/update-daily-log.dto';
 import { TrackingService } from './tracking.service';
@@ -29,7 +30,10 @@ import { TrackingService } from './tracking.service';
 @UseGuards(AuthGuard('jwt-access'))
 @Controller('tracking')
 export class TrackingController {
-  constructor(private readonly trackingService: TrackingService) {}
+  constructor(
+    private readonly trackingService: TrackingService,
+    private readonly i18n: LocalizationService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Tạo hoặc cập nhật nhật ký theo ngày' })
@@ -82,7 +86,7 @@ export class TrackingController {
   })
   getDailyLog(@CurrentUser('sub') userId: string, @Query('date') date: string) {
     if (!date) {
-      throw new BadRequestException('Thiếu tham số date');
+      throw new BadRequestException(this.i18n.t('tracking.dateRequired'));
     }
 
     return this.trackingService.getDailyLog(userId, date);
@@ -114,7 +118,10 @@ export class TrackingController {
       },
     },
   })
-  deleteDailyLog(@CurrentUser('sub') userId: string, @Param('id') logId: string) {
+  deleteDailyLog(
+    @CurrentUser('sub') userId: string,
+    @Param('id') logId: string,
+  ) {
     return this.trackingService.deleteDailyLog(userId, logId);
   }
 }

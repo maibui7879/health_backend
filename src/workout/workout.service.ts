@@ -6,6 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DailyNutrition } from '../nutrition/entities/daily-nutrition.entity';
+import { LocalizationService } from '../i18n/localization.service';
 import { CreateWorkoutDto } from './dto/create-workout.dto';
 import { Workout } from './entities/workout.entity';
 
@@ -16,6 +17,7 @@ export class WorkoutService {
     private readonly workoutRepo: Repository<Workout>,
     @InjectRepository(DailyNutrition)
     private readonly dailyRepo: Repository<DailyNutrition>,
+    private readonly i18n: LocalizationService,
   ) {}
 
   async createWorkout(userId: string, dto: CreateWorkoutDto) {
@@ -62,7 +64,7 @@ export class WorkoutService {
     });
 
     if (!workout) {
-      throw new NotFoundException('Không tìm thấy bài tập');
+      throw new NotFoundException(this.i18n.t('workout.notFound'));
     }
 
     const daily = await this.dailyRepo.findOne({
@@ -79,6 +81,6 @@ export class WorkoutService {
 
     await this.workoutRepo.remove(workout);
 
-    return { message: 'Đã xóa bài tập và cập nhật lại Calo đốt cháy' };
+    return { message: this.i18n.t('workout.deleted') };
   }
 }

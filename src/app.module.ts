@@ -10,6 +10,7 @@ import { NutritionModule } from './nutrition/nutrition.module';
 import { AiModule } from './ai/ai.module';
 import { WorkoutModule } from './workout/workout.module';
 import { RemindersModule } from './reminders/reminders.module';
+import { I18nModule } from './i18n/i18n.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { RemindersModule } from './reminders/reminders.module';
     }),
 
     // 3. Khai báo các Module nghiệp vụ
+    I18nModule,
     AuthModule,
     UsersModule,
     TrackingModule,

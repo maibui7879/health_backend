@@ -13,6 +13,7 @@ import {
 } from './ai-chat.system';
 import { AiConversation } from './entities/ai-conversation.entity';
 import { AiMessage } from './entities/ai-message.entity';
+import { localizationMockProvider } from '../i18n/localization.mock';
 
 describe('AiChatService', () => {
   let service: AiChatService;
@@ -29,6 +30,7 @@ describe('AiChatService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AiChatService,
+        localizationMockProvider,
         {
           provide: ConfigService,
           useValue: { get: jest.fn().mockReturnValue('test-key') },

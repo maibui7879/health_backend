@@ -31,6 +31,9 @@ export class UserSetting {
   @Column({ type: 'jsonb', nullable: true })
   meal_times!: any;
 
+  @Column({ type: 'varchar', length: 5, nullable: true, default: 'vi' })
+  locale!: string | null;
+
   @UpdateDateColumn()
   updated_at!: Date;
 }

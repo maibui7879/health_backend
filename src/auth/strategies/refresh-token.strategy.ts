@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { LocalizationService } from '../../i18n/localization.service';
 
 export interface RefreshTokenPayload {
   sub: string;
@@ -13,7 +14,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
   Strategy,
   'jwt-refresh',
 ) {
-  constructor() {
+  constructor(private readonly i18n: LocalizationService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (
@@ -30,7 +31,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
 
   validate(payload: RefreshTokenPayload) {
     if (payload.token_type !== 'refresh') {
-      throw new UnauthorizedException('Refresh token không hợp lệ.');
+      throw new UnauthorizedException(this.i18n.t('auth.invalidRefreshToken'));
     }
 
     return payload;

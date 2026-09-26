@@ -11,6 +11,7 @@ import {
   GoalType,
   UpdateProfileDto,
 } from './dto/update-profile.dto';
+import { localizationMockProvider } from '../i18n/localization.mock';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -32,6 +33,7 @@ describe('UsersService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
+        localizationMockProvider,
         { provide: getRepositoryToken(User), useValue: mockUserRepo },
         { provide: getRepositoryToken(UserProfile), useValue: mockProfileRepo },
         { provide: getRepositoryToken(UserAllergy), useValue: mockAllergyRepo },

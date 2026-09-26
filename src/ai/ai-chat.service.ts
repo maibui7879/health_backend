@@ -18,16 +18,17 @@ import { Workout } from '../workout/entities/workout.entity';
 import {
   buildSuggestedQuestions,
   buildSystemPrompt,
+  buildChatTools,
   CHAT_HISTORY_LIMIT,
   CHAT_MAX_TOKENS,
   CHAT_MODEL_FALLBACK,
-  CHAT_TOOLS,
   type PreInjectedContext,
   truncateForPrompt,
 } from './ai-chat.system';
 import type { ChatRequestDto } from './dto/chat-request.dto';
 import { AiConversation } from './entities/ai-conversation.entity';
 import { AiMessage } from './entities/ai-message.entity';
+import { LocalizationService } from '../i18n/localization.service';
 
 type ChatMessageParam = Groq.Chat.ChatCompletionMessageParam;
 type ChatToolCall = Groq.Chat.ChatCompletionMessageToolCall;
@@ -71,6 +72,7 @@ export class AiChatService {
     private workoutRepo: Repository<Workout>,
     private usersService: UsersService,
     private nutritionService: NutritionService,
+    private readonly i18n: LocalizationService,
   ) {
     this.groq = new Groq({
       apiKey: this.configService.get<string>('GROQ_API_KEY'),
@@ -84,7 +86,8 @@ export class AiChatService {
   async chat(userId: string, dto: ChatRequestDto) {
     const conv = await this.ensureConversation(userId, dto.conversation_id);
     if (!dto.conversation_id) {
-      conv.title = dto.message.trim().slice(0, 40) || 'Hội thoại mới';
+      conv.title =
+        dto.message.trim().slice(0, 40) || this.i18n.t('ai.newConversation');
       await this.convRepo.save(conv);
     }
 
@@ -115,10 +118,11 @@ export class AiChatService {
       await this.touchConversation(conv.id);
 
       const goalType = await this.getGoalType(userId);
+      const lang = this.i18n.lang();
       return {
         conversation_id: conv.id,
         reply,
-        suggested_questions: buildSuggestedQuestions(reply, goalType),
+        suggested_questions: buildSuggestedQuestions(reply, goalType, lang),
         tokens_used: tokensUsed,
       };
     } catch (e) {
@@ -127,8 +131,7 @@ export class AiChatService {
         throw new HttpException(
           {
             success: false,
-            message:
-              'AI đang quá tải (Groq giới hạn 1000 tokens/phút). Vui lòng thử lại sau ít phút.',
+            message: this.i18n.t('ai.overloaded'),
             data: { conversation_id: conv.id, retryable: true },
           },
           HttpStatus.TOO_MANY_REQUESTS,
@@ -144,7 +147,7 @@ export class AiChatService {
     const history = await this.loadHistory(conv.id, CHAT_HISTORY_LIMIT);
     const lastUser = [...history].reverse().find((m) => m.role === 'user');
     if (!lastUser) {
-      throw new NotFoundException('Hội thoại chưa có tin nhắn nào để thử lại.');
+      throw new NotFoundException(this.i18n.t('ai.nothingToRetry'));
     }
     try {
       const { reply, tokensUsed, trace } = await this.generateReply(
@@ -163,16 +166,21 @@ export class AiChatService {
       );
       await this.touchConversation(conv.id);
       const goalType = await this.getGoalType(userId);
+      const retryLang = this.i18n.lang();
       return {
         conversation_id: conv.id,
         reply,
-        suggested_questions: buildSuggestedQuestions(reply, goalType),
+        suggested_questions: buildSuggestedQuestions(
+          reply,
+          goalType,
+          retryLang,
+        ),
         tokens_used: tokensUsed,
       };
     } catch (e) {
       if (this.isRateLimit(e)) {
         throw new HttpException(
-          'AI đang quá tải. Vui lòng thử lại sau ít phút.',
+          this.i18n.t('ai.overloadedRetry'),
           HttpStatus.TOO_MANY_REQUESTS,
         );
       }
@@ -211,7 +219,7 @@ export class AiChatService {
   async deleteConversation(userId: string, conversationId: string) {
     const conv = await this.getOwnedConversation(userId, conversationId);
     await this.convRepo.remove(conv);
-    return { message: 'Đã xóa hội thoại' };
+    return { message: this.i18n.t('ai.conversationDeleted') };
   }
 
   // ---------- internals ----------
@@ -228,9 +236,10 @@ export class AiChatService {
     const conv = await this.convRepo.findOne({
       where: { id: conversationId },
     });
-    if (!conv) throw new NotFoundException('Không tìm thấy hội thoại');
+    if (!conv)
+      throw new NotFoundException(this.i18n.t('ai.conversationNotFound'));
     if (conv.user_id !== userId) {
-      throw new ForbiddenException('Bạn không có quyền truy cập hội thoại này');
+      throw new ForbiddenException(this.i18n.t('ai.conversationForbidden'));
     }
     return conv;
   }
@@ -295,6 +304,8 @@ export class AiChatService {
   // nhét thẳng vào system prompt thay vì tool-calling tốn 2x token.
   private async buildContext(userId: string): Promise<PreInjectedContext> {
     const today = new Date().toISOString().split('T')[0];
+    const lang = this.i18n.lang();
+    const en = lang === 'en';
     try {
       const user = await this.usersService.getMe(userId);
       const profile = (user.profile ?? {}) as unknown as Record<
@@ -304,7 +315,7 @@ export class AiChatService {
       const allergies =
         user.allergies?.map((a) => a.allergen_name).filter(Boolean) ?? [];
 
-      const displayName = this.pv(profile, 'full_name') || 'bạn';
+      const displayName = this.pv(profile, 'full_name') || (en ? 'you' : 'bạn');
       const age = this.calcAge(profile.date_of_birth);
       const gender = this.pv(profile, 'gender');
       const height = this.pv(profile, 'height_cm');
@@ -312,18 +323,22 @@ export class AiChatService {
       const activity = this.pv(profile, 'activity_level');
       const profileLine = [
         displayName,
-        age ? `${age} tuổi` : '',
-        gender ? `giới tính ${gender}` : '',
-        height ? `cao ${height}cm` : '',
-        weight ? `nặng ${weight}kg` : '',
-        activity ? `vận động ${activity}` : '',
+        age ? (en ? `${age} years old` : `${age} tuổi`) : '',
+        gender ? (en ? `gender ${gender}` : `giới tính ${gender}`) : '',
+        height ? (en ? `height ${height}cm` : `cao ${height}cm`) : '',
+        weight ? (en ? `weight ${weight}kg` : `nặng ${weight}kg`) : '',
+        activity ? (en ? `activity ${activity}` : `vận động ${activity}`) : '',
       ]
         .filter(Boolean)
         .join(', ');
       const allergyLine =
         allergies.length > 0
-          ? `Dị ứng TUYỆT ĐỐI tránh: ${allergies.join(', ')}.`
-          : 'Không có dị ứng ghi nhận.';
+          ? en
+            ? `STRICTLY avoid allergens: ${allergies.join(', ')}.`
+            : `Dị ứng TUYỆT ĐỐI tránh: ${allergies.join(', ')}.`
+          : en
+            ? 'No recorded allergies.'
+            : 'Không có dị ứng ghi nhận.';
       const diet = this.pv(profile, 'diet_type') || 'STANDARD';
 
       const dashboard = await this.nutritionService
@@ -332,10 +347,11 @@ export class AiChatService {
       const consumed = this.num(dashboard?.total_kcal, 0);
       const target = this.num(profile.daily_kcal_target, 1800);
       const remaining = Math.max(0, target - consumed);
-      const kcalLine =
-        `Ngân sách ${today}: mục tiêu ${target} kcal, ` +
-        `đã nạp ${consumed} kcal, còn lại ${remaining} kcal. ` +
-        `Chế độ ăn: ${diet}.`;
+      const kcalLine = en
+        ? `Budget ${today}: target ${target} kcal, consumed ${consumed} kcal, remaining ${remaining} kcal. Diet: ${diet}.`
+        : `Ngân sách ${today}: mục tiêu ${target} kcal, ` +
+          `đã nạp ${consumed} kcal, còn lại ${remaining} kcal. ` +
+          `Chế độ ăn: ${diet}.`;
 
       let macroLine = '';
       try {
@@ -346,7 +362,9 @@ export class AiChatService {
         const c = this.num(t.target_carbs_g, 0);
         const f = this.num(t.target_fat_g, 0);
         if (p && c && f) {
-          macroLine = `Macro/ngày: đạm ${p}g, bột ${c}g, béo ${f}g.`;
+          macroLine = en
+            ? `Daily macros: protein ${p}g, carbs ${c}g, fat ${f}g.`
+            : `Macro/ngày: đạm ${p}g, bột ${c}g, béo ${f}g.`;
         }
       } catch {
         macroLine = '';
@@ -364,7 +382,7 @@ export class AiChatService {
       };
     } catch {
       return {
-        displayName: 'bạn',
+        displayName: en ? 'you' : 'bạn',
         profileLine: '',
         allergyLine: '',
         kcalLine: '',
@@ -419,8 +437,9 @@ export class AiChatService {
     tokensUsed: number | null;
     trace: ToolTraceStep[];
   }> {
+    const lang = this.i18n.lang();
     const ctx = await this.buildContext(userId);
-    const systemPrompt = buildSystemPrompt(ctx);
+    const systemPrompt = buildSystemPrompt(ctx, lang);
     const history = await this.loadHistory(conversationId, CHAT_HISTORY_LIMIT);
 
     const messages: ChatMessageParam[] = [
@@ -458,25 +477,25 @@ export class AiChatService {
           model: this.model,
           temperature: 0.4,
           max_tokens: CHAT_MAX_TOKENS,
-          tools: CHAT_TOOLS,
+          tools: buildChatTools(lang),
           tool_choice: 'auto',
         });
       } catch (e) {
         if (this.isRateLimit(e)) throw e;
         this.logger.error('Lỗi Groq chat:', e);
-        throw new InternalServerErrorException(
-          'Không thể trả lời lúc này, vui lòng thử lại.',
-        );
+        throw new InternalServerErrorException(this.i18n.t('ai.replyFailed'));
       }
 
       const choice = completion.choices[0]?.message;
-      if (!choice) throw new InternalServerErrorException('AI trả về rỗng.');
+      if (!choice)
+        throw new InternalServerErrorException(this.i18n.t('ai.emptyReply'));
       tokensUsed = completion.usage?.total_tokens ?? tokensUsed;
 
       const toolCalls = choice.tool_calls;
       if (!toolCalls?.length) {
         const reply = (choice.content ?? '').trim();
-        if (!reply) throw new InternalServerErrorException('AI trả về rỗng.');
+        if (!reply)
+          throw new InternalServerErrorException(this.i18n.t('ai.emptyReply'));
         return { reply, tokensUsed, trace };
       }
 
@@ -513,7 +532,8 @@ export class AiChatService {
       max_tokens: CHAT_MAX_TOKENS,
     });
     const reply = (final.choices[0]?.message?.content ?? '').trim();
-    if (!reply) throw new InternalServerErrorException('AI trả về rỗng.');
+    if (!reply)
+      throw new InternalServerErrorException(this.i18n.t('ai.emptyReply'));
     tokensUsed = final.usage?.total_tokens ?? tokensUsed;
     return { reply, tokensUsed, trace };
   }

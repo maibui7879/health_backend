@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { DailyLog } from './entities/daily-log.entity';
 import { TrackingService } from './tracking.service';
 import { UsersService } from '../users/users.service';
+import { localizationMockProvider } from '../i18n/localization.mock';
 
 describe('TrackingService', () => {
   let service: TrackingService;
@@ -23,6 +24,7 @@ describe('TrackingService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         TrackingService,
+        localizationMockProvider,
         {
           provide: getRepositoryToken(DailyLog),
           useValue: mockDailyLogRepo,

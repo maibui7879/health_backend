@@ -5,9 +5,14 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/response/http-exception.filter';
 import { LoggingInterceptor } from './common/logging/logging.interceptor';
 import { TransformResponseInterceptor } from './common/response/response.interceptor';
+import { localeMiddleware } from './i18n/locale.middleware';
+import { LocalizationService } from './i18n/localization.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
+  // Locale sớm nhất có thể: ValidationPipe cũng thấy locale từ header.
+  app.use(localeMiddleware);
+  const i18n = app.get(LocalizationService);
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -15,10 +20,10 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(
-    new TransformResponseInterceptor(),
+    new TransformResponseInterceptor(i18n),
     new LoggingInterceptor(),
   );
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter(i18n));
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('BeroHealth API')

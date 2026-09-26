@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsNumber, IsOptional } from 'class-validator';
+import { IsBoolean, IsIn, IsNumber, IsOptional } from 'class-validator';
 
 export class UpdateSettingDto {
   @ApiPropertyOptional({ example: true })
@@ -22,4 +22,12 @@ export class UpdateSettingDto {
   })
   @IsOptional()
   meal_times?: Record<string, string>;
+
+  @ApiPropertyOptional({
+    example: 'en',
+    description: 'Ngôn ngữ hiển thị: vi | en',
+  })
+  @IsOptional()
+  @IsIn(['vi', 'en'])
+  locale?: string;
 }

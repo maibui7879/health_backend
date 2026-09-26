@@ -10,6 +10,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { Repository } from 'typeorm';
 import { AuthProvider, User } from '../users/entities/user.entity';
 import { UserProfile } from '../users/entities/user-profile.entity';
+import { LocalizationService } from '../i18n/localization.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { RefreshTokenPayload } from './strategies/refresh-token.strategy';
@@ -24,6 +25,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    private readonly i18n: LocalizationService,
   ) {}
 
   async register(registerDto: RegisterDto) {
@@ -33,7 +35,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new ConflictException('Email này đã được sử dụng.');
+      throw new ConflictException(this.i18n.t('auth.emailInUse'));
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -56,12 +58,12 @@ export class AuthService {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (!user || user.auth_provider !== AuthProvider.LOCAL) {
-      throw new UnauthorizedException('Email hoặc mật khẩu không đúng.');
+      throw new UnauthorizedException(this.i18n.t('auth.invalidCredentials'));
     }
 
     const isPasswordMatch = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordMatch) {
-      throw new UnauthorizedException('Email hoặc mật khẩu không đúng.');
+      throw new UnauthorizedException(this.i18n.t('auth.invalidCredentials'));
     }
 
     return this.generateToken(user);
@@ -73,7 +75,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Refresh token không hợp lệ.');
+      throw new UnauthorizedException(this.i18n.t('auth.invalidRefreshToken'));
     }
 
     return this.generateToken(user);
@@ -88,7 +90,7 @@ export class AuthService {
 
       const payload = ticket.getPayload();
       if (!payload || !payload.email) {
-        throw new UnauthorizedException('Token không hợp lệ hoặc không có email');
+        throw new UnauthorizedException(this.i18n.t('auth.invalidGoogleToken'));
       }
 
       const { email, name, picture } = payload;
@@ -110,9 +112,7 @@ export class AuthService {
       return this.generateToken(user);
     } catch (error) {
       console.error('LỖI XÁC THỰC GOOGLE:', error);
-      throw new UnauthorizedException(
-        'Google ID Token không hợp lệ hoặc đã hết hạn.',
-      );
+      throw new UnauthorizedException(this.i18n.t('auth.googleTokenExpired'));
     }
   }
 

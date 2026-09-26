@@ -21,7 +21,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { AiChatService, SSE_EVENT_ERROR_429 } from './ai-chat.service';
+import { LocalizationService } from '../i18n/localization.service';
+import { AiChatService } from './ai-chat.service';
 import { ChatRequestDto } from './dto/chat-request.dto';
 import { ChatResponseDto } from './dto/chat-response.dto';
 import { ChatRetryDto } from './dto/chat-retry.dto';
@@ -31,7 +32,10 @@ import { ChatRetryDto } from './dto/chat-retry.dto';
 @UseGuards(AuthGuard('jwt-access'))
 @Controller('ai')
 export class AiChatController {
-  constructor(private readonly chatService: AiChatService) {}
+  constructor(
+    private readonly chatService: AiChatService,
+    private readonly i18n: LocalizationService,
+  ) {}
 
   @Post('chat')
   @HttpCode(HttpStatus.OK)
@@ -52,7 +56,8 @@ export class AiChatController {
 
   // POST SSE (không dùng GET để tránh lộ message trên URL và lỗi encode
   // tiếng Việt/emoji). Mobile dùng react-native-sse hoặc fetch+ReadableStream.
-  // Event: {token} nhiều lần -> [DONE] | [ERROR_429]
+  // Event: meta {conversation_id, suggested_questions} -> {token} nhiều lần
+  // -> [DONE] | {error_429: true, conversation_id} | {error}
   @Post('chat/stream')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Chat streaming qua SSE (POST)' })
@@ -95,11 +100,17 @@ export class AiChatController {
         (e as { status?: number })?.status ??
         (e as { getStatus?: () => number })?.getStatus?.();
       if (status === HttpStatus.TOO_MANY_REQUESTS) {
-        send(SSE_EVENT_ERROR_429);
+        // Kèm conversation_id để client retry mà không cần gõ lại.
+        send(
+          JSON.stringify({
+            error_429: true,
+            conversation_id: extractConversationId(e) ?? undefined,
+          }),
+        );
       } else {
         send(
           JSON.stringify({
-            error: (e as Error)?.message ?? 'Không thể trả lời lúc này.',
+            error: (e as Error)?.message ?? this.i18n.t('ai.replyFailed'),
           }),
         );
       }
@@ -136,5 +147,20 @@ export class AiChatController {
   @ApiOperation({ summary: 'Xóa hội thoại' })
   remove(@CurrentUser('sub') userId: string, @Param('id') id: string) {
     return this.chatService.deleteConversation(userId, id);
+  }
+}
+
+// Lấy conversation_id từ HttpException 429 của chat() để client retry.
+function extractConversationId(e: unknown): string | null {
+  try {
+    const resp = (
+      e as { getResponse?: () => unknown }
+    )?.getResponse?.() as
+      | { data?: { conversation_id?: unknown } }
+      | undefined;
+    const id = resp?.data?.conversation_id;
+    return typeof id === 'string' ? id : null;
+  } catch {
+    return null;
   }
 }

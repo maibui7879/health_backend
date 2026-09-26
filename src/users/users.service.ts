@@ -11,6 +11,7 @@ import {
   UpdateProfileDto,
 } from './dto/update-profile.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
+import { LocalizationService } from '../i18n/localization.service';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +21,7 @@ export class UsersService {
     @InjectRepository(UserAllergy) private allergyRepo: Repository<UserAllergy>,
     @InjectRepository(UserSetting)
     private settingRepo: Repository<UserSetting>,
+    private readonly i18n: LocalizationService,
   ) {}
 
   async getMe(userId: string) {
@@ -33,7 +35,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Không tìm thấy người dùng');
+      throw new NotFoundException(this.i18n.t('users.notFound'));
     }
 
     // Không bao giờ trả password_hash ra API
@@ -48,7 +50,7 @@ export class UsersService {
     });
 
     if (!profile) {
-      throw new NotFoundException('Không tìm thấy profile');
+      throw new NotFoundException(this.i18n.t('users.profileNotFound'));
     }
 
     Object.assign(profile, dto);
@@ -104,7 +106,7 @@ export class UsersService {
       await this.allergyRepo.save(newAllergies);
     }
 
-    return { message: 'Cập nhật dị ứng thành công' };
+    return { message: this.i18n.t('users.allergiesUpdated') };
   }
 
   async updateSettings(userId: string, dto: UpdateSettingDto) {
@@ -123,11 +125,11 @@ export class UsersService {
 
   async updateDeviceToken(userId: string, deviceToken: string) {
     await this.userRepo.update(userId, { device_token: deviceToken });
-    return { message: 'Cập nhật Device Token thành công' };
+    return { message: this.i18n.t('users.deviceTokenUpdated') };
   }
 
   async deleteAccount(userId: string) {
     await this.userRepo.delete(userId);
-    return { message: 'Tài khoản và toàn bộ dữ liệu đã được xóa vĩnh viễn' };
+    return { message: this.i18n.t('users.accountDeleted') };
   }
 }

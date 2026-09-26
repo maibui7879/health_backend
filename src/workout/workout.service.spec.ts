@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { DailyNutrition } from '../nutrition/entities/daily-nutrition.entity';
 import { WorkoutService } from './workout.service';
 import { Workout, ActivityType } from './entities/workout.entity';
+import { localizationMockProvider } from '../i18n/localization.mock';
 
 describe('WorkoutService', () => {
   let service: WorkoutService;
@@ -27,6 +28,7 @@ describe('WorkoutService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         WorkoutService,
+        localizationMockProvider,
         {
           provide: getRepositoryToken(Workout),
           useValue: mockWorkoutRepo,

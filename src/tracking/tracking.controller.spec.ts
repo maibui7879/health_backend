@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TrackingController } from './tracking.controller';
 import { TrackingService } from './tracking.service';
+import { localizationMockProvider } from '../i18n/localization.mock';
 
 describe('TrackingController', () => {
   let controller: TrackingController;
@@ -10,6 +11,7 @@ describe('TrackingController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TrackingController],
       providers: [
+        localizationMockProvider,
         {
           provide: TrackingService,
           useValue: {
@@ -40,7 +42,7 @@ describe('TrackingController', () => {
       is_streak_day: false,
     };
 
-    await controller.createDailyLog('user-1', dto as any);
+    await controller.createDailyLog('user-1', dto);
 
     expect(service.createDailyLog).toHaveBeenCalledWith('user-1', dto);
   });

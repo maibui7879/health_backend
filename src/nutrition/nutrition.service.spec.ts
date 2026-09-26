@@ -6,6 +6,7 @@ import { DailyNutrition } from './entities/daily-nutrition.entity';
 import { Meal } from './entities/meal.entity';
 import { MealType } from './entities/meal.entity';
 import { UsersService } from '../users/users.service';
+import { localizationMockProvider } from '../i18n/localization.mock';
 
 describe('NutritionService', () => {
   let service: NutritionService;
@@ -19,6 +20,7 @@ describe('NutritionService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         NutritionService,
+        localizationMockProvider,
         {
           provide: getRepositoryToken(DailyNutrition),
           useValue: {},
