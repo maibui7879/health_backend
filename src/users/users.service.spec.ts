@@ -148,4 +148,41 @@ describe('UsersService', () => {
       expect(result).toHaveProperty('message');
     });
   });
+
+  describe('getSettings', () => {
+    it('should return saved settings if present', async () => {
+      const saved = { user_id: 'user-id', locale: 'en' };
+      mockSettingRepo.findOne.mockResolvedValue(saved);
+
+      await expect(service.getSettings('user-id')).resolves.toBe(saved);
+    });
+
+    it('should return vi defaults if never saved', async () => {
+      mockSettingRepo.findOne.mockResolvedValue(null);
+
+      const result = (await service.getSettings('user-id')) as Record<
+        string,
+        unknown
+      >;
+      expect(result.locale).toBe('vi');
+      expect(result.user_id).toBe('user-id');
+    });
+  });
+
+  describe('updateLocale', () => {
+    it('should save locale on existing settings', async () => {
+      const existing = { user_id: 'user-id', locale: 'vi' };
+      mockSettingRepo.findOne.mockResolvedValue(existing);
+      mockSettingRepo.save.mockImplementation(
+        (s: Record<string, unknown>) => Promise.resolve(s),
+      );
+
+      const result = (await service.updateLocale('user-id', 'en')) as Record<
+        string,
+        unknown
+      >;
+      expect(result.locale).toBe('en');
+      expect(mockSettingRepo.save).toHaveBeenCalled();
+    });
+  });
 });

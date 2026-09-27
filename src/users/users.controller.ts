@@ -9,6 +9,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UpdateAllergiesDto } from './dto/update-allergies.dto';
 import { UpdateDeviceTokenDto } from './dto/update-device-token.dto';
+import { UpdateLocaleDto } from './dto/update-locale.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { UsersService } from './users.service';
@@ -61,6 +62,24 @@ export class UsersController {
     @Body() dto: UpdateSettingDto,
   ) {
     return this.usersService.updateSettings(userId, dto);
+  }
+
+  @Get('settings')
+  @ApiOperation({ summary: 'Lấy cài đặt hiện tại (kèm locale vi|en)' })
+  @ApiResponse({ status: 200, description: 'Trả về cài đặt của user.' })
+  getSettings(@CurrentUser('sub') userId: string) {
+    return this.usersService.getSettings(userId);
+  }
+
+  @Put('settings/locale')
+  @ApiOperation({ summary: 'Đổi ngôn ngữ hiển thị (vi|en)' })
+  @ApiResponse({ status: 200, description: 'Đổi ngôn ngữ thành công.' })
+  @ApiResponse({ status: 400, description: 'Locale không hợp lệ.' })
+  updateLocale(
+    @CurrentUser('sub') userId: string,
+    @Body() dto: UpdateLocaleDto,
+  ) {
+    return this.usersService.updateLocale(userId, dto.locale);
   }
 
   @Put('device-token')

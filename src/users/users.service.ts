@@ -123,6 +123,29 @@ export class UsersService {
     return this.settingRepo.save(setting);
   }
 
+  async getSettings(userId: string) {
+    const setting = await this.settingRepo.findOne({
+      where: { user_id: userId },
+    });
+
+    // Chưa từng lưu settings → trả defaults khớp entity, không 404
+    // để mobile luôn có locale dùng ngay.
+    return (
+      setting ?? {
+        user_id: userId,
+        remind_water: true,
+        water_interval_mins: 120,
+        remind_meals: true,
+        meal_times: null,
+        locale: 'vi',
+      }
+    );
+  }
+
+  async updateLocale(userId: string, locale: string) {
+    return this.updateSettings(userId, { locale });
+  }
+
   async updateDeviceToken(userId: string, deviceToken: string) {
     await this.userRepo.update(userId, { device_token: deviceToken });
     return { message: this.i18n.t('users.deviceTokenUpdated') };
