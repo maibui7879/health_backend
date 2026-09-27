@@ -1,12 +1,31 @@
-import { Body, Controller, Delete, Get, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Put,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+  BadRequestException,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { mkdirSync } from 'fs';
+import type { FileFilterCallback } from 'multer';
+import { diskStorage } from 'multer';
+import { extname, join } from 'path';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { t } from '../i18n/localization.service';
 import { UpdateAllergiesDto } from './dto/update-allergies.dto';
 import { UpdateDeviceTokenDto } from './dto/update-device-token.dto';
 import { UpdateLocaleDto } from './dto/update-locale.dto';
@@ -80,6 +99,62 @@ export class UsersController {
     @Body() dto: UpdateLocaleDto,
   ) {
     return this.usersService.updateLocale(userId, dto.locale);
+  }
+
+  @Post('avatar')
+  @ApiOperation({ summary: 'Upload ảnh đại diện (jpg/png/webp, tối đa 2MB)' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: { file: { type: 'string', format: 'binary' } },
+      required: ['file'],
+    },
+  })
+  @ApiResponse({ status: 201, description: 'Upload avatar thành công.' })
+  @ApiResponse({ status: 400, description: 'File không hợp lệ.' })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: (_req, _file, cb) => {
+          const dir = join(
+            process.env.UPLOAD_DIR ?? join(process.cwd(), 'uploads'),
+            'avatars',
+          );
+          mkdirSync(dir, { recursive: true });
+          cb(null, dir);
+        },
+        filename: (req, file, cb) => {
+          const user = req.user as unknown;
+          let sub = 'unknown';
+          if (typeof user === 'object' && user !== null && 'sub' in user) {
+            const raw: unknown = user.sub;
+            if (typeof raw === 'string' && raw) sub = raw;
+          }
+          cb(null, `${sub}-${Date.now()}${extname(file.originalname)}`);
+        },
+      }),
+      limits: { fileSize: 2 * 1024 * 1024 },
+      fileFilter: (
+        _request: Express.Request,
+        file: Express.Multer.File,
+        callback: FileFilterCallback,
+      ) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/i)) {
+          return callback(new Error(t('users.avatarTypeOnly')));
+        }
+        callback(null, true);
+      },
+    }),
+  )
+  async uploadAvatar(
+    @CurrentUser('sub') userId: string,
+    @UploadedFile() file: Express.Multer.File | undefined,
+  ) {
+    if (!file) {
+      throw new BadRequestException(t('users.avatarRequired'));
+    }
+    return this.usersService.updateAvatar(userId, file.filename);
   }
 
   @Put('device-token')

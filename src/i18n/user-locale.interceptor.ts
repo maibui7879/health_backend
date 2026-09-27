@@ -17,7 +17,8 @@ type AuthedRequest = {
   localeOverridden?: boolean;
 };
 
-// Sau guard: nếu user đã lưu locale trong settings thì ưu tiên hơn header.
+// Sau guard: user đã login thì locale = settings.locale, null (chưa từng
+// chọn) thì ép 'vi'. Chỉ khi DB lỗi mới rơi về header.
 @Injectable()
 export class UserLocaleInterceptor implements NestInterceptor {
   constructor(
@@ -39,12 +40,11 @@ export class UserLocaleInterceptor implements NestInterceptor {
           select: { locale: true },
         });
         const saved = setting?.locale;
-        if (isAppLocale(saved)) {
-          // Ghim vào request: response interceptor + exception filter đọc ở
-          // subscription-time (ngoài ALS) vẫn thấy locale đúng.
-          req.locale = saved;
-          return localeStorage.run(saved, () => next.handle());
-        }
+        const lang: AppLocale = isAppLocale(saved) ? saved : 'vi';
+        // Ghim vào request: response interceptor + exception filter đọc ở
+        // subscription-time (ngoài ALS) vẫn thấy locale đúng.
+        req.locale = lang;
+        return localeStorage.run(lang, () => next.handle());
       } catch {
         // DB lỗi thì giữ locale từ header, không chặn request.
       }

@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { unlink } from 'fs/promises';
+import { join } from 'path';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { UserProfile } from './entities/user-profile.entity';
@@ -53,6 +55,11 @@ export class UsersService {
       throw new NotFoundException(this.i18n.t('users.profileNotFound'));
     }
 
+    // Bỏ key undefined (class-transformer tạo đủ props) để partial update
+    // không ghi đè các field khác thành null.
+    for (const key of Object.keys(dto) as (keyof UpdateProfileDto)[]) {
+      if (dto[key] === undefined) delete dto[key];
+    }
     Object.assign(profile, dto);
 
     if (
@@ -92,6 +99,29 @@ export class UsersService {
     return this.profileRepo.save(profile);
   }
 
+  async updateAvatar(userId: string, filename: string) {
+    const profile = await this.profileRepo.findOne({
+      where: { user_id: userId },
+    });
+
+    if (!profile) {
+      throw new NotFoundException(this.i18n.t('users.profileNotFound'));
+    }
+
+    // Xóa file avatar local cũ (nếu có) để khỏi rác disk.
+    const oldUrl = profile.avatar_url ?? '';
+    if (oldUrl.startsWith('/uploads/')) {
+      const uploadDir =
+        process.env.UPLOAD_DIR ?? join(process.cwd(), 'uploads');
+      await unlink(join(uploadDir, oldUrl.replace('/uploads/', ''))).catch(
+        () => undefined,
+      );
+    }
+
+    profile.avatar_url = `/uploads/avatars/${filename}`;
+    return this.profileRepo.save(profile);
+  }
+
   async updateAllergies(userId: string, allergies: string[]) {
     await this.allergyRepo.delete({ user_id: userId });
 
@@ -117,6 +147,9 @@ export class UsersService {
     if (!setting) {
       setting = this.settingRepo.create({ user_id: userId, ...dto });
     } else {
+      for (const key of Object.keys(dto) as (keyof UpdateSettingDto)[]) {
+        if (dto[key] === undefined) delete dto[key];
+      }
       Object.assign(setting, dto);
     }
 

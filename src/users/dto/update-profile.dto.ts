@@ -30,6 +30,11 @@ export enum DietType {
 }
 
 export class UpdateProfileDto {
+  @ApiPropertyOptional({ example: 'Nguyen Van A' })
+  @IsOptional()
+  @IsString()
+  full_name?: string;
+
   @ApiPropertyOptional({ example: '1999-01-01' })
   @IsOptional()
   @IsDateString()
@@ -64,4 +69,13 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsEnum(DietType)
   diet_type?: string;
+
+  @ApiPropertyOptional({
+    example: '/uploads/avatars/<user-id>-1234567890.jpg',
+    description:
+      'URL ảnh đại diện (ưu tiên dùng POST /users/avatar để upload file).',
+  })
+  @IsOptional()
+  @IsString()
+  avatar_url?: string;
 }

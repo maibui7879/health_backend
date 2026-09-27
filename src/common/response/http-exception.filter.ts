@@ -9,7 +9,10 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { parseLocaleHeader, type AppLocale } from '../../i18n/locale';
-import { LocalizationService } from '../../i18n/localization.service';
+import {
+  LocalizationService,
+  translate,
+} from '../../i18n/localization.service';
 
 type HttpErrorPayload = {
   message?: string | string[];
@@ -35,6 +38,27 @@ export class HttpExceptionFilter implements ExceptionFilter {
       );
 
     if (!(exception instanceof HttpException)) {
+      // Multer fileFilter (upload avatar/ảnh món ăn) ném Error thường khi
+      // sai định dạng → dịch sang 400 thay vì 500.
+      const multerMsg = exception instanceof Error ? exception.message : null;
+      if (
+        multerMsg &&
+        (multerMsg === translate('vi', 'users.avatarTypeOnly') ||
+          multerMsg === translate('en', 'users.avatarTypeOnly') ||
+          multerMsg === translate('vi', 'ai.imageTypeOnly') ||
+          multerMsg === translate('en', 'ai.imageTypeOnly'))
+      ) {
+        if (!response.headersSent) {
+          response.status(HttpStatus.BAD_REQUEST).json({
+            success: false,
+            statusCode: HttpStatus.BAD_REQUEST,
+            message: multerMsg,
+            path: request.url,
+            timestamp: new Date().toISOString(),
+          });
+        }
+        return;
+      }
       // Lỗi ngoài HttpException (lỗi lập trình, DB...): log stack + envelope 500.
       this.logger.error(
         `${request.method} ${request.url} 500 - Unexpected error`,

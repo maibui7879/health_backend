@@ -13,6 +13,8 @@ export const en: Record<TranslationKey, string> = {
   'users.profileNotFound': 'Profile not found',
   'users.allergiesUpdated': 'Allergies updated successfully',
   'users.deviceTokenUpdated': 'Device token updated successfully',
+  'users.avatarRequired': 'Please attach an avatar photo.',
+  'users.avatarTypeOnly': 'Only images are accepted (jpg, png, webp)',
   'users.accountDeleted': 'Account and all data have been permanently deleted',
 
   'tracking.dateRequired': 'Missing date parameter',

@@ -169,12 +169,39 @@ describe('UsersService', () => {
     });
   });
 
+  describe('updateAvatar', () => {
+    it('should throw NotFoundException if profile not found', async () => {
+      mockProfileRepo.findOne.mockResolvedValue(null);
+      await expect(service.updateAvatar('user-id', 'f.jpg')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('should save avatar url without touching disk for external urls', async () => {
+      const existing = {
+        user_id: 'user-id',
+        avatar_url: 'https://cdn.example.com/a.jpg',
+      };
+      mockProfileRepo.findOne.mockResolvedValue(existing);
+      mockProfileRepo.save.mockImplementation((p: Record<string, unknown>) =>
+        Promise.resolve(p),
+      );
+
+      const result = (await service.updateAvatar(
+        'user-id',
+        'user-id-123.jpg',
+      )) as Record<string, unknown>;
+      expect(result.avatar_url).toBe('/uploads/avatars/user-id-123.jpg');
+      expect(mockProfileRepo.save).toHaveBeenCalled();
+    });
+  });
+
   describe('updateLocale', () => {
     it('should save locale on existing settings', async () => {
       const existing = { user_id: 'user-id', locale: 'vi' };
       mockSettingRepo.findOne.mockResolvedValue(existing);
-      mockSettingRepo.save.mockImplementation(
-        (s: Record<string, unknown>) => Promise.resolve(s),
+      mockSettingRepo.save.mockImplementation((s: Record<string, unknown>) =>
+        Promise.resolve(s),
       );
 
       const result = (await service.updateLocale('user-id', 'en')) as Record<

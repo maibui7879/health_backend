@@ -11,6 +11,8 @@ export const vi = {
   'users.profileNotFound': 'Không tìm thấy profile',
   'users.allergiesUpdated': 'Cập nhật dị ứng thành công',
   'users.deviceTokenUpdated': 'Cập nhật Device Token thành công',
+  'users.avatarRequired': 'Vui lòng đính kèm ảnh đại diện.',
+  'users.avatarTypeOnly': 'Chỉ chấp nhận ảnh (jpg, png, webp)',
   'users.accountDeleted': 'Tài khoản và toàn bộ dữ liệu đã được xóa vĩnh viễn',
 
   'tracking.dateRequired': 'Thiếu tham số date',
