@@ -75,6 +75,18 @@ describe('AuthService', () => {
         where: { email: registerDto.email },
       });
       expect(bcrypt.hash).toHaveBeenCalledWith(registerDto.password, 10);
+      const expectedCreateArg: {
+        email: string;
+        profile: { full_name: string };
+        setting: unknown;
+      } = {
+        email: registerDto.email,
+        profile: { full_name: 'Test User' },
+        setting: expect.anything(),
+      };
+      expect(mockUserRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining(expectedCreateArg),
+      );
       expect(mockUserRepository.save).toHaveBeenCalled();
       expect(result).toHaveProperty('access_token');
       expect(result).toHaveProperty('refresh_token');

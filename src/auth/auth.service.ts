@@ -10,6 +10,7 @@ import { OAuth2Client } from 'google-auth-library';
 import { Repository } from 'typeorm';
 import { AuthProvider, User } from '../users/entities/user.entity';
 import { UserProfile } from '../users/entities/user-profile.entity';
+import { UserSetting } from '../users/entities/user-setting.entity';
 import { LocalizationService } from '../i18n/localization.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
@@ -41,12 +42,15 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, 10);
     const profile = new UserProfile();
     profile.full_name = full_name;
+    // Khởi tạo setting với defaults của entity (DB columns có default).
+    const setting = new UserSetting();
 
     const newUser = this.userRepository.create({
       email,
       password_hash: hashedPassword,
       auth_provider: AuthProvider.LOCAL,
       profile,
+      setting,
     });
 
     await this.userRepository.save(newUser);
@@ -100,11 +104,13 @@ export class AuthService {
         const profile = new UserProfile();
         profile.full_name = name || 'Google User';
         profile.avatar_url = picture || '';
+        const setting = new UserSetting();
 
         user = this.userRepository.create({
           email,
           auth_provider: AuthProvider.GOOGLE,
           profile,
+          setting,
         });
         await this.userRepository.save(user);
       }
