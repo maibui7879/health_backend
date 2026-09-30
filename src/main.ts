@@ -10,8 +10,13 @@ import { LoggingInterceptor } from './common/logging/logging.interceptor';
 import { TransformResponseInterceptor } from './common/response/response.interceptor';
 import { localeMiddleware } from './i18n/locale.middleware';
 import { LocalizationService } from './i18n/localization.service';
+import { runMigrations } from './database/migrator';
 
 async function bootstrap() {
+  // Tự migrate schema trước khi nhận request (fix lỗi thiếu cột/bảng
+  // trên DB của bản deploy mà chưa chạy migration tay).
+  await runMigrations();
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
   });
