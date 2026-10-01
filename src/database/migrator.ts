@@ -20,7 +20,9 @@ function sslConfig(url: string): { rejectUnauthorized: boolean } | undefined {
 /**
  * Tự chạy các file *.sql trong database/migrations theo thứ tự tên,
  * bỏ qua file đã applied (bảng schema_migrations).
- * Gọi 1 lần lúc boot để deploy nào cũng đủ schema (VD: cột locale).
+ * Sau đó luôn chạy repair.sql (idempotent) để tự vá schema nếu DB bị
+ * sửa từ bên ngoài (VD: cột locale bị xóa dù migration đã applied).
+ * Gọi 1 lần lúc boot để deploy nào cũng đủ schema.
  */
 export async function runMigrations(): Promise<void> {
   const databaseUrl = process.env.DATABASE_URL;
@@ -69,6 +71,10 @@ export async function runMigrations(): Promise<void> {
       ]);
       logger.log(`Applied migration ${file}.`);
     }
+
+    logger.log('Verifying critical schema (repair.sql)...');
+    await client.query(readFileSync(join(__dirname, 'repair.sql'), 'utf8'));
+    logger.log('Critical schema verified.');
   } finally {
     await client.end();
   }

@@ -356,4 +356,65 @@ ${langLine}
       throw new InternalServerErrorException(this.i18n.t('ai.planFailed'));
     }
   }
+
+  async reviewDay(args: {
+    userName: string;
+    allergies: string[];
+    dietType: string;
+    goalType: string;
+    adherence: unknown;
+    lang: 'vi' | 'en';
+  }): Promise<Record<string, unknown>> {
+    const { userName, allergies, dietType, goalType, adherence, lang } = args;
+    const model =
+      this.configService.get<string>('GROQ_MODEL') ?? 'qwen/qwen3.8-27b';
+    const en = lang === 'en';
+    try {
+      const data = JSON.stringify(adherence).slice(0, 4000);
+      const prompt = en
+        ? `You are a nutrition + fitness coach. User: ${userName}, goal ${goalType}, diet ${dietType}, allergies: ${allergies.length > 0 ? allergies.join(', ') : 'none'}.
+Compare the PLAN vs ACTUAL data below (scores 0-100, verdict ON_TRACK/SLIGHTLY_OFF/OFF_TRACK/NO_DATA):
+${data}
+Task: encouraging but honest review. Overall comment 2-3 sentences referencing the numbers. One short comment per meal actually eaten. One workout comment. 2-3 concrete actions for tomorrow. "warning" only if allergy danger or severe imbalance, else null.
+If severe (allergy risk, chest pain, fainting, vomiting blood): the FIRST sentence of overall_comment MUST be exactly: "[MEDICAL WARNING] Please see a doctor immediately, call emergency if severe." Never prescribe drugs/dosages.
+Return ONLY JSON, no other text:
+{"overall_comment":"...","meal_comments":[{"meal_type":"LUNCH","comment":"..."}],"workout_comment":"...","suggestions":["..."],"warning":null}`
+        : `Bạn là HLV dinh dưỡng + fitness. Người dùng: ${userName}, mục tiêu ${goalType}, chế độ ${dietType}, dị ứng: ${allergies.length > 0 ? allergies.join(', ') : 'không có'}.
+So sánh PLAN vs THỰC TẾ dưới đây (điểm 0-100, verdict ON_TRACK/SLIGHTLY_OFF/OFF_TRACK/NO_DATA):
+${data}
+Nhiệm vụ: nhận xét khích lệ nhưng trung thực. Overall 2-3 câu, nhắc số liệu cụ thể. Mỗi bữa đã ăn 1 câu ngắn. Nhận xét buổi tập 1 câu. 2-3 hành động cụ thể cho ngày mai. "warning" chỉ khi nguy cơ dị ứng hoặc lệch nghiêm trọng, không thì null.
+Nếu nặng (nguy cơ dị ứng, đau ngực, khó thở, ngất, nôn ra máu): câu đầu tiên của overall_comment BẮT BUỘC là chuỗi chính xác: "[CẢNH BÁO Y TẾ] Vui lòng đi khám bác sĩ ngay, gọi cấp cứu nếu nặng." Tuyệt đối không kê thuốc/liều lượng.
+Chỉ trả JSON, không văn bản khác:
+{"overall_comment":"...","meal_comments":[{"meal_type":"LUNCH","comment":"..."}],"workout_comment":"...","suggestions":["..."],"warning":null}`;
+
+      const completion = await this.groq.chat.completions.create({
+        messages: [{ role: 'user', content: prompt }],
+        model,
+        temperature: 0.4,
+        max_tokens: 700,
+        response_format: { type: 'json_object' },
+      });
+
+      const responseContent = completion.choices[0]?.message?.content;
+      if (!responseContent) throw new Error('Kết quả trả về rỗng');
+
+      const parsed = JSON.parse(responseContent) as Record<string, unknown>;
+      return parsed;
+    } catch (error) {
+      this.logger.error('Lỗi khi nhận xét ngày:', error);
+      const status =
+        (error as { status?: number })?.status ??
+        (error as { statusCode?: number })?.statusCode;
+      const code =
+        (error as { code?: string })?.code ??
+        (error as { error?: { code?: string } })?.error?.code;
+      if (status === 429 || code === 'rate_limit_exceeded') {
+        throw new HttpException(
+          this.i18n.t('ai.planOverloaded'),
+          HttpStatus.TOO_MANY_REQUESTS,
+        );
+      }
+      throw new InternalServerErrorException(this.i18n.t('ai.reviewFailed'));
+    }
+  }
 }

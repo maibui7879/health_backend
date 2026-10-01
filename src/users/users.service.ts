@@ -14,6 +14,7 @@ import {
 } from './dto/update-profile.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { LocalizationService } from '../i18n/localization.service';
+import { bmiCategory, calcBmi } from './bmi';
 
 @Injectable()
 export class UsersService {
@@ -43,7 +44,19 @@ export class UsersService {
     // Không bao giờ trả password_hash ra API
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password_hash, ...safeUser } = user;
-    return safeUser;
+    // BMI tính lúc đọc (không lưu DB): chỉ gắn khi đủ số liệu để
+    // không đổi shape response của user chưa nhập chiều cao/cân nặng.
+    const bmi = calcBmi(
+      user.profile?.height_cm,
+      user.profile?.current_weight_kg,
+    );
+    if (bmi === null || !user.profile) {
+      return safeUser;
+    }
+    return {
+      ...safeUser,
+      profile: { ...user.profile, bmi, bmi_category: bmiCategory(bmi) },
+    };
   }
 
   async updateProfile(userId: string, dto: UpdateProfileDto) {

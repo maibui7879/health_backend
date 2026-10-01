@@ -3,6 +3,7 @@ import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
 import { UsersService } from '../users/users.service';
 import { NutritionService } from '../nutrition/nutrition.service';
+import { NutritionPlansService } from '../nutrition/plans.service';
 import { localizationMockProvider } from '../i18n/localization.mock';
 
 describe('AiController', () => {
@@ -32,6 +33,12 @@ describe('AiController', () => {
           useValue: {
             getDailyDashboard: jest.fn(),
             getMacroTargets: jest.fn(),
+          },
+        },
+        {
+          provide: NutritionPlansService,
+          useValue: {
+            adherence: jest.fn(),
           },
         },
       ],

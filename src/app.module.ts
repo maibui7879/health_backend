@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 
 // Import các Module đã tạo
 import { AuthModule } from './auth/auth.module';
@@ -8,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { TrackingModule } from './tracking/tracking.module';
 import { NutritionModule } from './nutrition/nutrition.module';
 import { AiModule } from './ai/ai.module';
+import { CommunityModule } from './community/community.module';
 import { WorkoutModule } from './workout/workout.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { I18nModule } from './i18n/i18n.module';
@@ -35,6 +37,7 @@ import { I18nModule } from './i18n/i18n.module';
     }),
 
     // 3. Khai báo các Module nghiệp vụ
+    ScheduleModule.forRoot(),
     I18nModule,
     AuthModule,
     UsersModule,
@@ -43,6 +46,7 @@ import { I18nModule } from './i18n/i18n.module';
     AiModule,
     WorkoutModule,
     RemindersModule,
+    CommunityModule,
   ],
 })
 export class AppModule {}

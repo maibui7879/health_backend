@@ -97,6 +97,7 @@ export class NutritionService {
         date,
         total_kcal: 0,
         diary,
+        warnings: [],
       };
     }
 
@@ -116,7 +117,40 @@ export class NutritionService {
     return {
       ...daily,
       diary,
+      warnings: await this.dailyWarnings(userId, daily.total_kcal, daily.meals),
     };
+  }
+
+  // Mã cảnh báo cho FE tự dịch hiển thị: vượt/ngưỡng ngân sách, bữa không an toàn.
+  private async dailyWarnings(
+    userId: string,
+    totalKcal: number,
+    meals: { is_safe?: boolean }[],
+  ): Promise<string[]> {
+    const warnings: string[] = [];
+    if (meals.some((m) => m.is_safe === false)) {
+      warnings.push('UNSAFE_MEAL');
+    }
+    if (totalKcal <= 0) {
+      return warnings;
+    }
+    try {
+      const me = await this.usersService.getMe(userId);
+      const profile = (me.profile ?? {}) as unknown as Record<string, unknown>;
+      const target = Number(profile.daily_kcal_target);
+      if (!Number.isFinite(target) || target <= 0) {
+        return warnings;
+      }
+      const ratio = totalKcal / target;
+      if (ratio >= 1.2) {
+        warnings.push('OVER_BUDGET');
+      } else if (ratio <= 0.5) {
+        warnings.push('UNDER_BUDGET');
+      }
+    } catch {
+      // Không lấy được target thì chỉ giữ cảnh báo bữa ăn.
+    }
+    return warnings;
   }
 
   async deleteMeal(userId: string, mealId: string) {

@@ -70,6 +70,25 @@ describe('UsersService', () => {
       mockUserRepo.findOne.mockResolvedValue(null);
       await expect(service.getMe('user-id')).rejects.toThrow(NotFoundException);
     });
+
+    it('should attach bmi when height and weight present', async () => {
+      mockUserRepo.findOne.mockResolvedValue({
+        id: 'user-id',
+        email: 'test@example.com',
+        profile: { height_cm: 170, current_weight_kg: 70 },
+      });
+      const result = await service.getMe('user-id');
+      const profile = (result as { profile: Record<string, unknown> }).profile;
+      expect(profile.bmi).toBe(24.2);
+      expect(profile.bmi_category).toBe('NORMAL');
+    });
+
+    it('should not attach bmi when metrics missing', async () => {
+      const mockUser = { id: 'user-id', email: 'test@example.com' };
+      mockUserRepo.findOne.mockResolvedValue(mockUser);
+      const result = await service.getMe('user-id');
+      expect(result).toEqual(mockUser);
+    });
   });
 
   describe('updateProfile', () => {

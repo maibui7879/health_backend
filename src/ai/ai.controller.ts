@@ -20,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { LocalizationService, t } from '../i18n/localization.service';
+import { NutritionPlansService } from '../nutrition/plans.service';
 import { UsersService } from '../users/users.service';
 import { NutritionService } from '../nutrition/nutrition.service';
 import { AnalyzeFoodRequestDto } from './dto/analyze-food-request.dto';
@@ -28,6 +29,7 @@ import { SuggestMenuRequestDto } from './dto/suggest-menu-request.dto';
 import { SuggestMenuResponseDto } from './dto/suggest-menu-response.dto';
 import { SuggestPlanRequestDto } from './dto/suggest-plan-request.dto';
 import { SuggestPlanResponseDto } from './dto/suggest-plan-response.dto';
+import { ReviewDayDto } from './dto/review-day.dto';
 import { AiService } from './ai.service';
 
 @ApiTags('AI')
@@ -38,6 +40,7 @@ export class AiController {
     private readonly aiService: AiService,
     private readonly usersService: UsersService,
     private readonly nutritionService: NutritionService,
+    private readonly plansService: NutritionPlansService,
     private readonly i18n: LocalizationService,
   ) {}
 
@@ -233,6 +236,43 @@ export class AiController {
       success: true,
       message: this.i18n.t('ai.planOk'),
       data: plan,
+    };
+  }
+
+  @Post('review-day')
+  @UseGuards(AuthGuard('jwt-access'))
+  @ApiOperation({ summary: 'AI nhận xét ngày ăn/tập thực tế so với plan' })
+  @ApiBody({ type: ReviewDayDto })
+  @ApiResponse({ status: 201, description: 'Thành công' })
+  async reviewDay(
+    @CurrentUser('sub') userId: string,
+    @Body() dto: ReviewDayDto,
+  ) {
+    const adherence = await this.plansService.adherence(
+      userId,
+      dto.date,
+      dto.plan_id,
+    );
+    const user = await this.usersService.getMe(userId);
+    const profile = (user.profile ?? {}) as unknown as Record<string, unknown>;
+    const userAllergies =
+      user.allergies?.map((allergy) => allergy.allergen_name) ?? [];
+    const lang = this.i18n.lang();
+
+    const review = await this.aiService.reviewDay({
+      userName:
+        (profile.full_name as string | undefined) ?? user.email ?? 'bạn',
+      allergies: userAllergies,
+      dietType: (profile.diet_type as string | undefined) ?? 'STANDARD',
+      goalType: (profile.goal_type as string | undefined) ?? 'MAINTAIN',
+      adherence,
+      lang: lang === 'en' ? 'en' : 'vi',
+    });
+
+    return {
+      success: true,
+      message: this.i18n.t('ai.reviewOk'),
+      data: { adherence, review },
     };
   }
 }

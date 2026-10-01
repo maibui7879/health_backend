@@ -104,3 +104,117 @@ describe('NutritionService', () => {
     ]);
   });
 });
+
+describe('NutritionService.getDailyDashboard warnings', () => {
+  const mockDailyRepo = {
+    findOne: jest.fn(),
+  };
+  const mockUsersService = {
+    getMe: jest.fn(),
+  };
+
+  async function makeService() {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        NutritionService,
+        localizationMockProvider,
+        {
+          provide: getRepositoryToken(DailyNutrition),
+          useValue: mockDailyRepo,
+        },
+        { provide: getRepositoryToken(Meal), useValue: {} },
+        { provide: UsersService, useValue: mockUsersService },
+      ],
+    }).compile();
+    return module.get<NutritionService>(NutritionService);
+  }
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUsersService.getMe.mockResolvedValue({
+      profile: { daily_kcal_target: 2000 },
+    });
+  });
+
+  function dailyWith(
+    meals: {
+      meal_type: string;
+      meal_kcal: number;
+      is_safe: boolean;
+      logged_at: string;
+    }[],
+    total: number,
+  ) {
+    return {
+      date: '2026-10-06',
+      total_kcal: total,
+      meals,
+    };
+  }
+
+  it('cảnh báo OVER_BUDGET khi vượt 120% target', async () => {
+    mockDailyRepo.findOne.mockResolvedValue(
+      dailyWith(
+        [
+          {
+            meal_type: 'LUNCH',
+            meal_kcal: 2500,
+            is_safe: true,
+            logged_at: '2026-10-06T12:00:00Z',
+          },
+        ],
+        2500,
+      ),
+    );
+    const svc = await makeService();
+    const res = await svc.getDailyDashboard('u1', '2026-10-06');
+    expect((res as { warnings: string[] }).warnings).toContain('OVER_BUDGET');
+  });
+
+  it('cảnh báo UNDER_BUDGET và UNSAFE_MEAL cùng lúc', async () => {
+    mockDailyRepo.findOne.mockResolvedValue(
+      dailyWith(
+        [
+          {
+            meal_type: 'SNACK',
+            meal_kcal: 800,
+            is_safe: false,
+            logged_at: '2026-10-06T12:00:00Z',
+          },
+        ],
+        800,
+      ),
+    );
+    const svc = await makeService();
+    const res = await svc.getDailyDashboard('u1', '2026-10-06');
+    const warnings = (res as { warnings: string[] }).warnings;
+    expect(warnings).toContain('UNDER_BUDGET');
+    expect(warnings).toContain('UNSAFE_MEAL');
+  });
+
+  it('không cảnh báo khi trong ngưỡng và an toàn', async () => {
+    mockDailyRepo.findOne.mockResolvedValue(
+      dailyWith(
+        [
+          {
+            meal_type: 'LUNCH',
+            meal_kcal: 1900,
+            is_safe: true,
+            logged_at: '2026-10-06T12:00:00Z',
+          },
+        ],
+        1900,
+      ),
+    );
+    const svc = await makeService();
+    const res = await svc.getDailyDashboard('u1', '2026-10-06');
+    expect((res as { warnings: string[] }).warnings).toEqual([]);
+  });
+
+  it('ngày trống trả warnings rỗng', async () => {
+    mockDailyRepo.findOne.mockResolvedValue(null);
+    const svc = await makeService();
+    const res = await svc.getDailyDashboard('u1', '2026-10-06');
+    expect((res as { warnings: string[] }).warnings).toEqual([]);
+  });
+});

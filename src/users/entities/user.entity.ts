@@ -31,7 +31,7 @@ export class User {
   auth_provider!: AuthProvider;
 
   @Column({ type: 'varchar', nullable: true })
-  device_token!: string;
+  device_token!: string | null;
 
   @Column({ default: 'ACTIVE' })
   status!: string;
