@@ -33,6 +33,11 @@ export class Food {
   @Column({ type: 'varchar', length: 30, nullable: true })
   source!: string | null;
 
+  // Tên vi+en viết thường bỏ dấu (VD 'Phở bò' -> 'pho bo'), trigger duy trì.
+  // Xem migration 011 + src/nutrition/search-norm.ts (quy tắc phải khớp).
+  @Column({ type: 'text', nullable: true })
+  search_norm!: string | null;
+
   @CreateDateColumn()
   created_at!: Date;
 

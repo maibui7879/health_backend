@@ -6,7 +6,7 @@
 
 - [x] **Đổi mật khẩu khi đã đăng nhập**: `POST /auth/change-password` (xác thực mật khẩu cũ + mật khẩu mới ≥ 6 ký tự)
 - [x] **Quên mật khẩu**: `POST /auth/forgot-password` (gửi OTP/mail) + `POST /auth/reset-password` (xác thực OTP + đặt pass mới)
-  - Chốt: OTP qua email (dùng `MAIL_*` + nodemailer). ⚠️ **Gmail trong `.env` báo `535 BadCredentials`** — cần thay App Password mới thì mail mới tới tay user được (flow vẫn chạy, OTP vẫn lưu DB)
+  - Chốt: OTP qua email (dùng `MAIL_*` + nodemailer). ✅ App Password mới đã thay (01/10/2026, SMTP verify OK)
 
 ## Phase 2 — Nhắc nhở push ✅ XONG (01/10/2026)
 
@@ -47,9 +47,28 @@ Hạ tầng `device_token` đã có.
 - [ ] Điều khoản sử dụng + chính sách bảo mật: endpoint trả nội dung versioned (`GET /legal/:type`)
 - [ ] Ghi nhận user đồng ý điều khoản (`POST /legal/accept`) + chặn dùng app nếu chưa đồng ý (tùy policy)
 
+## Phase 7 — Cá nhân hóa ngầm, 0 token (không gọi AI) 🆕
+
+Nguyên tắc: explicit (dị ứng, mục tiêu, bệnh) = ràng buộc cứng, không bao giờ bị ghi đè; implicit (hành vi) = ưu tiên mềm. Rule engine là mặc định; Groq chỉ gọi khi user bấm nút "Nhờ AI gợi ý" (prompt kèm taste tính sẵn). Không thêm vendor/key mới — toàn SQL + cron sẵn có.
+
+- [x] **7A — Tìm kiếm mờ tiếng Việt** (02/10/2026): extension `pg_trgm`, cột `foods.search_norm` + trigger duy trì + index GIN (migration 011) — `GET /foods/search` chuẩn hóa query cùng quy tắc SQL/TS (map 67 ký tự, verify khớp 3 nơi), khớp chuỗi con trước + `similarity` vét sau, escape `%_`, test `search-norm.spec`
+- [ ] **7B — Hồ sơ gu ngầm**: bảng `user_taste_profiles` (`liked/disliked_tags`, decay 90 ngày, cron đêm tính lại 1 lần) + hooks ở log bữa ăn / log tập / like / adherence xấu (migration 012); user mới <2 tuần → weight taste = 0 (chỉ dùng explicit)
+- [ ] **7C — Gợi ý món bằng rule**: `GET /nutrition/suggest` — `score = macro_fit(goal) + taste − recently_eaten_penalty + adherence_boost`, trả kèm tag `source` để FE hiện "vì bạn hay ăn..."; nối luôn mục tồn Phase 3 "tự điều chỉnh plan" bằng adherence thực tế
+- [ ] **7D — Gợi ý workout bằng rule**: bảng map `activity → nhóm cơ`, xoay nhóm cơ (hôm qua tay → nay chân/cardio) + tăng tải 5% khi giữ streak + ngày nghỉ sau 5 ngày liên tiếp; `GET /workout/suggest`
+- [ ] **7E — Khai thác chat không-AI**: dictionary-NER dùng chính bảng `foods` (~600 tên) + enum `ActivityType` quét tin nhắn chat → đếm nhắc đến → nạp vào taste (không LLM)
+- [ ] **7F — Feed community ngầm**: `POST /community/views` batch (impression thật) + bảng `community_post_views` / `community_author_scores` + ranking `0.35*recency + 0.25*popularity + 0.30*affinity + 0.10*content_match − skip/report_penalty` + exploration 10% chống filter bubble (migration 013); riêng tư tuyệt đối, không API hide/mute công khai
+
+## Phase 8 — Vector/RAG (để dành, làm sau khi Phase 7 thiếu) 🆕
+
+Đã kiểm chứng khả thi (02/10/2026): Groq có Embeddings API (`nomic-embed-text-v1_5`, 768 chiều, chung `GROQ_API_KEY`), Supabase bật được `pgvector` + HNSW. Chưa làm vì rule (Phase 7) đủ dùng.
+
+- [ ] Migration pgvector + cột `foods.embedding` + backfill batch nền (có backoff, tránh 429) + `GET /foods/semantic-search` (filter cứng trước, vector rank sau)
+- [ ] Gu vector user (trung bình trọng số embedding món đã log/like trừ dislike) → gợi ý "món mới hợp gu"
+- [ ] Summarizer chat hàng tuần (Groq) → đối chiếu gu vector (phát hiện gu mới/gu đổi) + RAG vào suggest-menu/plan
+
 ## TODO để sau (không chặn release)
 
-- [ ] Thay `MAIL_PASS` bằng App Password Gmail mới — SMTP hiện báo `535 BadCredentials`, mail OTP chưa tới tay user (flow code vẫn đúng)
+- [x] Thay `MAIL_PASS` bằng App Password Gmail mới (01/10/2026): SMTP verify OK — mail OTP (`forgot-password`/đăng ký) đã gửi được
 
 ## Đã xong (không làm lại)
 

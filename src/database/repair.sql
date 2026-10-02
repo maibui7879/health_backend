@@ -116,6 +116,23 @@ CREATE INDEX IF NOT EXISTS idx_foods_name_vi ON foods (food_name_vi);
 CREATE INDEX IF NOT EXISTS idx_foods_name_en ON foods (food_name_en);
 ALTER TABLE foods ADD COLUMN IF NOT EXISTS source VARCHAR(30) NULL;
 
+-- Tìm kiếm mờ tiếng Việt (Phase 7A): search_norm + trigger + index trigram.
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+ALTER TABLE foods ADD COLUMN IF NOT EXISTS search_norm TEXT NULL;
+CREATE OR REPLACE FUNCTION foods_search_norm() RETURNS trigger AS $$
+BEGIN
+  NEW.search_norm := regexp_replace(
+    translate(lower(coalesce(NEW.food_name_vi,'') || ' ' || coalesce(NEW.food_name_en,'')), 'áàạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ', 'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd'), '\s+', ' ', 'g');
+  RETURN NEW;
+END; $$ LANGUAGE plpgsql;
+DROP TRIGGER IF EXISTS trg_foods_search_norm ON foods;
+CREATE TRIGGER trg_foods_search_norm
+  BEFORE INSERT OR UPDATE OF food_name_vi, food_name_en ON foods
+  FOR EACH ROW EXECUTE FUNCTION foods_search_norm();
+UPDATE foods SET food_name_vi = food_name_vi WHERE search_norm IS NULL;
+CREATE INDEX IF NOT EXISTS idx_foods_search_norm
+  ON foods USING gin (search_norm gin_trgm_ops);
+
 CREATE TABLE IF NOT EXISTS favorite_foods (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,

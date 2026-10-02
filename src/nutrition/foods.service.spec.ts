@@ -33,23 +33,60 @@ describe('FoodsService', () => {
     expect(service).toBeDefined();
   });
 
-  it('search giới hạn tối đa 50 và tìm theo tên', async () => {
-    const qb = {
+  it('search chuẩn hóa bỏ dấu, ILIKE trước + similarity vét sau', async () => {
+    const likeQb = {
       where: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
       take: jest.fn().mockReturnThis(),
-      getMany: jest.fn().mockResolvedValue([{ food_name_vi: 'Phở bò' }]),
+      getMany: jest.fn().mockResolvedValue([{ id: 'f1' }]),
     };
-    mockFoodRepo.createQueryBuilder.mockReturnValue(qb);
+    const fuzzyQb = {
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
+      getMany: jest.fn().mockResolvedValue([{ id: 'f2' }]),
+    };
+    mockFoodRepo.createQueryBuilder
+      .mockReturnValueOnce(likeQb)
+      .mockReturnValueOnce(fuzzyQb);
 
-    const res = await service.search({ q: 'phở', limit: 99 });
+    const res = await service.search({ q: 'Phở Bò', limit: 99 });
 
-    expect(qb.take).toHaveBeenCalledWith(50);
-    expect(qb.where).toHaveBeenCalledWith(
-      '(food.food_name_vi ILIKE :q OR food.food_name_en ILIKE :q)',
-      { q: '%phở%' },
-    );
-    expect(res).toHaveLength(1);
+    // 'Phở Bò' -> 'pho bo' (bỏ dấu, thường, gộp khoảng trắng)
+    expect(likeQb.where).toHaveBeenCalledWith('food.search_norm ILIKE :like', {
+      like: '%pho bo%',
+    });
+    expect(likeQb.take).toHaveBeenCalledWith(50);
+    expect(fuzzyQb.where).toHaveBeenCalledWith('food.search_norm % :norm', {
+      norm: 'pho bo',
+    });
+    expect(fuzzyQb.take).toHaveBeenCalledWith(49);
+    expect(res).toEqual([{ id: 'f1' }, { id: 'f2' }]);
+  });
+
+  it('search đủ limit ở vòng ILIKE thì không vét similarity', async () => {
+    const likeQb = {
+      where: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
+      getMany: jest.fn().mockResolvedValue([{ id: 'f1' }, { id: 'f2' }]),
+    };
+    mockFoodRepo.createQueryBuilder.mockReturnValue(likeQb);
+
+    const res = await service.search({ q: 'cơm', limit: 2 });
+
+    expect(res).toHaveLength(2);
+    expect(mockFoodRepo.createQueryBuilder).toHaveBeenCalledTimes(1);
+  });
+
+  it('search không q trả toàn catalog A-Z', async () => {
+    mockFoodRepo.find = jest.fn().mockResolvedValue([]);
+    await service.search({});
+    expect(mockFoodRepo.find).toHaveBeenCalledWith({
+      order: { food_name_vi: 'ASC' },
+      take: 20,
+    });
   });
 
   it('getById 404 khi không có', async () => {
