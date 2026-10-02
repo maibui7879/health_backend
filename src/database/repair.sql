@@ -204,3 +204,14 @@ CREATE TABLE IF NOT EXISTS community_reports (
 );
 CREATE INDEX IF NOT EXISTS idx_community_reports_post
   ON community_reports (post_id);
+
+-- Hồ sơ gu ngầm (Phase 7B): tín hiệu chung cho gợi ý + feed.
+CREATE TABLE IF NOT EXISTS user_taste_profiles (
+  user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  liked_tags JSONB NOT NULL DEFAULT '{}',
+  disliked_tags JSONB NOT NULL DEFAULT '{}',
+  workout_prefs JSONB NOT NULL DEFAULT '{}',
+  interactions INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

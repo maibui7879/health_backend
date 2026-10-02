@@ -9,6 +9,7 @@ import { DailyNutrition } from './entities/daily-nutrition.entity';
 import { Meal } from './entities/meal.entity';
 import { NutritionPlan, PlanStatus } from './entities/nutrition-plan.entity';
 import { NutritionPlansService } from './plans.service';
+import { insightsMockProvider } from '../insights/insights.mock';
 
 describe('NutritionPlansService', () => {
   let service: NutritionPlansService;
@@ -44,6 +45,7 @@ describe('NutritionPlansService', () => {
           useValue: mockDailyRepo,
         },
         { provide: UsersService, useValue: mockUsersService },
+        insightsMockProvider,
       ],
     }).compile();
 

@@ -6,6 +6,7 @@ import { FavoriteFood } from './entities/favorite-food.entity';
 import { Food } from './entities/food.entity';
 import { FavoritesService } from './favorites.service';
 import { FoodsService } from './foods.service';
+import { insightsMockProvider } from '../insights/insights.mock';
 
 describe('FoodsService', () => {
   let service: FoodsService;
@@ -113,6 +114,7 @@ describe('FavoritesService', () => {
         localizationMockProvider,
         { provide: getRepositoryToken(FavoriteFood), useValue: mockFavRepo },
         { provide: getRepositoryToken(Food), useValue: mockFoodRepo },
+        insightsMockProvider,
       ],
     }).compile();
     service = module.get<FavoritesService>(FavoritesService);

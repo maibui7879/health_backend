@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
 import { LocalizationService } from '../i18n/localization.service';
+import { InsightsService } from '../insights/insights.service';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { SearchHistoryDto } from './dto/search-history.dto';
 import { DailyNutrition } from './entities/daily-nutrition.entity';
@@ -22,6 +23,7 @@ export class NutritionService {
     private mealRepo: Repository<Meal>,
     private usersService: UsersService,
     private readonly i18n: LocalizationService,
+    private readonly insights: InsightsService,
   ) {}
 
   async createMeal(userId: string, dto: CreateMealDto) {
@@ -69,6 +71,12 @@ export class NutritionService {
 
     daily.total_kcal += mealKcal;
     await this.dailyRepo.save(daily);
+
+    // Hook taste 7B (fire-and-forget, không chặn response).
+    void this.insights.recordMeal(
+      userId,
+      dto.items.flatMap((i) => [i.food_name_vi, i.food_name_en ?? '']),
+    );
 
     return meal;
   }

@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DailyNutrition } from '../nutrition/entities/daily-nutrition.entity';
 import { LocalizationService } from '../i18n/localization.service';
+import { InsightsService } from '../insights/insights.service';
 import { CreateWorkoutDto } from './dto/create-workout.dto';
 import { Workout } from './entities/workout.entity';
 
@@ -18,6 +19,7 @@ export class WorkoutService {
     @InjectRepository(DailyNutrition)
     private readonly dailyRepo: Repository<DailyNutrition>,
     private readonly i18n: LocalizationService,
+    private readonly insights: InsightsService,
   ) {}
 
   async createWorkout(userId: string, dto: CreateWorkoutDto) {
@@ -47,6 +49,9 @@ export class WorkoutService {
 
     daily.total_burned_kcal += dto.burned_kcal;
     await this.dailyRepo.save(daily);
+
+    // Hook taste 7B (fire-and-forget).
+    void this.insights.recordWorkout(userId, dto.activity_type);
 
     return workout;
   }

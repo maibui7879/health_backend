@@ -4,6 +4,7 @@ import { DailyNutrition } from '../nutrition/entities/daily-nutrition.entity';
 import { WorkoutService } from './workout.service';
 import { Workout, ActivityType } from './entities/workout.entity';
 import { localizationMockProvider } from '../i18n/localization.mock';
+import { insightsMockProvider } from '../insights/insights.mock';
 
 describe('WorkoutService', () => {
   let service: WorkoutService;
@@ -37,6 +38,7 @@ describe('WorkoutService', () => {
           provide: getRepositoryToken(DailyNutrition),
           useValue: mockDailyRepo,
         },
+        insightsMockProvider,
       ],
     }).compile();
 

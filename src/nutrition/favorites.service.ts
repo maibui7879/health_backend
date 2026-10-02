@@ -8,6 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LocalizationService } from '../i18n/localization.service';
+import { InsightsService } from '../insights/insights.service';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
 import { FavoriteFood } from './entities/favorite-food.entity';
 import { Food } from './entities/food.entity';
@@ -20,6 +21,7 @@ export class FavoritesService {
     @InjectRepository(Food)
     private readonly foodRepo: Repository<Food>,
     private readonly i18n: LocalizationService,
+    private readonly insights: InsightsService,
   ) {}
 
   async list(userId: string) {
@@ -75,6 +77,11 @@ export class FavoritesService {
       note: dto.note?.trim() || null,
     });
     const saved = await this.favoriteRepo.save(fav);
+    // Hook taste 7B (fire-and-forget).
+    void this.insights.recordFavorite(userId, [
+      saved.food_name_vi,
+      saved.food_name_en ?? '',
+    ]);
     return { message: this.i18n.t('favorites.created'), favorite: saved };
   }
 

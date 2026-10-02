@@ -7,6 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LocalizationService } from '../i18n/localization.service';
+import { InsightsService } from '../insights/insights.service';
 import { DailyLog } from '../tracking/entities/daily-log.entity';
 import { UsersService } from '../users/users.service';
 import { Workout } from '../workout/entities/workout.entity';
@@ -78,6 +79,7 @@ export class NutritionPlansService {
     private readonly dailyRepo: Repository<DailyNutrition>,
     private readonly usersService: UsersService,
     private readonly i18n: LocalizationService,
+    private readonly insights: InsightsService,
   ) {}
 
   // User bấm "Theo plan này" → plan mới ACTIVE, plan ACTIVE cũ ARCHIVE (ABANDONED).
@@ -405,6 +407,14 @@ export class NutritionPlansService {
           : overall >= 50
             ? 'SLIGHTLY_OFF'
             : 'OFF_TRACK';
+
+    // Hook taste 7B: plan bị bỏ hẳn → phạt nhẹ món được gợi ý (fire-and-forget).
+    if (verdict === 'OFF_TRACK') {
+      void this.insights.recordPlanSkipped(
+        userId,
+        plannedMeals.map((m) => m?.suggestion).filter((s): s is string => !!s),
+      );
+    }
 
     return {
       date,

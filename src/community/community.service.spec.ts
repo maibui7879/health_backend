@@ -7,6 +7,7 @@ import {
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { localizationMockProvider } from '../i18n/localization.mock';
+import { insightsMockProvider } from '../insights/insights.mock';
 import { Meal } from '../nutrition/entities/meal.entity';
 import { NutritionPlan } from '../nutrition/entities/nutrition-plan.entity';
 import { UserProfile } from '../users/entities/user-profile.entity';
@@ -88,6 +89,7 @@ describe('CommunityService', () => {
         },
         { provide: getRepositoryToken(Workout), useValue: mockWorkoutRepo },
         { provide: getRepositoryToken(Meal), useValue: mockMealRepo },
+        insightsMockProvider,
       ],
     }).compile();
 

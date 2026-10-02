@@ -7,6 +7,7 @@ import { Meal } from './entities/meal.entity';
 import { MealType } from './entities/meal.entity';
 import { UsersService } from '../users/users.service';
 import { localizationMockProvider } from '../i18n/localization.mock';
+import { insightsMockProvider } from '../insights/insights.mock';
 
 describe('NutritionService', () => {
   let service: NutritionService;
@@ -33,6 +34,7 @@ describe('NutritionService', () => {
           provide: UsersService,
           useValue: { getMe: jest.fn() },
         },
+        insightsMockProvider,
       ],
     }).compile();
 
@@ -124,6 +126,7 @@ describe('NutritionService.getDailyDashboard warnings', () => {
         },
         { provide: getRepositoryToken(Meal), useValue: {} },
         { provide: UsersService, useValue: mockUsersService },
+        insightsMockProvider,
       ],
     }).compile();
     return module.get<NutritionService>(NutritionService);

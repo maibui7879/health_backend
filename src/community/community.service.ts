@@ -8,6 +8,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { LocalizationService } from '../i18n/localization.service';
+import { InsightsService } from '../insights/insights.service';
 import { Meal } from '../nutrition/entities/meal.entity';
 import { NutritionPlan } from '../nutrition/entities/nutrition-plan.entity';
 import { UserProfile } from '../users/entities/user-profile.entity';
@@ -55,6 +56,7 @@ export class CommunityService {
     @InjectRepository(Meal)
     private readonly mealRepo: Repository<Meal>,
     private readonly i18n: LocalizationService,
+    private readonly insights: InsightsService,
   ) {}
 
   // ---- Bài đăng ----
@@ -239,6 +241,8 @@ export class CommunityService {
         .set({ like_count: () => 'like_count + 1' })
         .where('id = :id', { id: post.id })
         .execute();
+      // Hook taste 7B (chỉ tính lần like mới, fire-and-forget).
+      void this.insights.recordCommunityLike(userId, post.content);
     }
     return {
       liked: true,
