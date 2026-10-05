@@ -2,6 +2,14 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { toSearchNorm } from '../nutrition/search-norm';
+import { Food } from '../nutrition/entities/food.entity';
+import {
+  ACTIVITY_NORMS,
+  foodNorms,
+  mineMentions,
+  type FoodNorm,
+} from './chat-dictionary';
 import { UserTasteProfile } from './entities/user-taste-profile.entity';
 import { tokenizeTaste } from './taste-tokenizer';
 
@@ -32,7 +40,12 @@ export type TasteProfile = {
   topLiked: RankedTag[];
   topDisliked: RankedTag[];
   topWorkouts: RankedWorkout[];
+  chat_summary: string | null;
 };
+
+function round2(n: number): number {
+  return Math.round(n * 100) / 100;
+}
 
 function addScore(
   bag: Record<string, number>,
@@ -65,7 +78,13 @@ export class InsightsService {
   constructor(
     @InjectRepository(UserTasteProfile)
     private readonly tasteRepo: Repository<UserTasteProfile>,
-  ) {}
+    @InjectRepository(Food)
+    private readonly foodRepo: Repository<Food>,
+  ) {
+    this.foodDict = null;
+  }
+
+  private foodDict: { at: number; items: FoodNorm[] } | null;
 
   // ---- Ghi tín hiệu (fire-and-forget từ caller: `void insights.recordX`) ----
 
@@ -127,6 +146,33 @@ export class InsightsService {
     });
   }
 
+  /** Chat nhắc đến món/tập (7E) → tín hiệu quan tâm nhẹ, không LLM. */
+  async recordChatMention(
+    userId: string,
+    content: string,
+    weight = 0.3,
+  ): Promise<void> {
+    await this.safe(async () => {
+      const norm = toSearchNorm(content ?? '');
+      if (!norm) return;
+      const { foodTags, activities } = mineMentions(
+        norm,
+        await this.getFoodDict(),
+        ACTIVITY_NORMS,
+      );
+      if (foodTags.length === 0 && activities.length === 0) return;
+      const profile = await this.getOrCreate(userId);
+      if (foodTags.length > 0) addScore(profile.liked_tags, foodTags, weight);
+      for (const a of activities) {
+        profile.workout_prefs[a] = round2(
+          (profile.workout_prefs[a] ?? 0) + weight,
+        );
+      }
+      profile.interactions += 1;
+      await this.tasteRepo.save(profile);
+    });
+  }
+
   // ---- Đọc (7C/7D/7F + prompt AI dùng) ----
 
   async getProfile(userId: string): Promise<TasteProfile> {
@@ -143,7 +189,61 @@ export class InsightsService {
       topLiked: topTags(liked, 20),
       topDisliked: topTags(disliked, 20),
       topWorkouts: topWorkouts(workouts, 10),
+      chat_summary: p?.chat_summary ?? null,
     };
+  }
+
+  /** Lưu tóm tắt sở thích từ chat (cron hàng tuần gọi, Phase 8). */
+  async saveChatSummary(userId: string, summary: string): Promise<void> {
+    await this.safe(async () => {
+      const profile = await this.getOrCreate(userId);
+      profile.chat_summary = summary.trim().slice(0, 1000);
+      profile.chat_summary_at = new Date();
+      await this.tasteRepo.save(profile);
+    });
+  }
+
+  // Khối context RAG cho prompt AI (suggest-menu/plan): gu + tóm tắt chat.
+  // Trả '' khi chưa đủ dữ liệu — caller chèn thẳng vào prompt.
+  async tasteContextBlock(userId: string): Promise<string> {
+    try {
+      const t = await this.getProfile(userId);
+      const parts: string[] = [];
+      if (t.weight > 0) {
+        if (t.topLiked.length > 0) {
+          parts.push(
+            `Hay ăn/quan tâm: ${t.topLiked
+              .slice(0, 8)
+              .map((x) => x.tag)
+              .join(', ')}`,
+          );
+        }
+        if (t.topDisliked.length > 0) {
+          parts.push(
+            `Hay bỏ qua: ${t.topDisliked
+              .slice(0, 5)
+              .map((x) => x.tag)
+              .join(', ')}`,
+          );
+        }
+        if (t.topWorkouts.length > 0) {
+          parts.push(
+            `Hay tập: ${t.topWorkouts
+              .slice(0, 3)
+              .map((x) => x.activity)
+              .join(', ')}`,
+          );
+        }
+      }
+      if (t.chat_summary) {
+        parts.push(`User tự chia sẻ qua chat: ${t.chat_summary}`);
+      }
+      if (parts.length === 0) return '';
+      return `Sở thích ngầm (ưu tiên mềm, TUYỆT ĐỐI không ghi đè dị ứng/chế độ ăn): ${parts.join(' | ')}.`;
+    } catch (error) {
+      this.logger.warn(`Dựng taste context thất bại: ${String(error)}`);
+      return '';
+    }
   }
 
   // ---- Cron đêm: decay + tỉa (gu cũ mờ dần, half-life 90 ngày) ----
@@ -227,5 +327,16 @@ export class InsightsService {
     } catch (error) {
       this.logger.warn(`Ghi taste thất bại (bỏ qua): ${String(error)}`);
     }
+  }
+
+  // Từ điển món ăn build từ catalog foods, cache 1h (tránh query mỗi tin nhắn).
+  private async getFoodDict(): Promise<FoodNorm[]> {
+    if (this.foodDict && Date.now() - this.foodDict.at < 3600000) {
+      return this.foodDict.items;
+    }
+    const foods = await this.foodRepo.find();
+    const items = foodNorms(foods);
+    this.foodDict = { at: Date.now(), items };
+    return items;
   }
 }

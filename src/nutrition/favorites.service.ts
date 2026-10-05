@@ -57,7 +57,7 @@ export class FavoritesService {
       }
       foodId = food.id;
       snapshot = {
-        food_name_vi: food.food_name_vi,
+        food_name_vi: food.display_name_vi || food.food_name_vi,
         food_name_en: food.food_name_en,
         kcal_100g: food.kcal_100g,
         protein_100g: food.protein_100g,

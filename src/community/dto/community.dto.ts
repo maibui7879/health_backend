@@ -1,6 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
   IsEnum,
   IsIn,
   IsInt,
@@ -107,4 +110,16 @@ export class ReportPostDto {
   @MinLength(1)
   @MaxLength(500)
   reason!: string;
+}
+
+export class RecordViewsDto {
+  @ApiProperty({
+    example: ['2f8d9ae5-5d2c-4d9a-a41b-ec0e1dca5f50'],
+    description: 'Batch bài đã hiển thị trên màn hình (tối đa 50).',
+  })
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(50)
+  @IsUUID('4', { each: true })
+  post_ids!: string[];
 }

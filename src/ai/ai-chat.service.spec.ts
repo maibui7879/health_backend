@@ -14,6 +14,7 @@ import {
 import { AiConversation } from './entities/ai-conversation.entity';
 import { AiMessage } from './entities/ai-message.entity';
 import { localizationMockProvider } from '../i18n/localization.mock';
+import { insightsMock, insightsMockProvider } from '../insights/insights.mock';
 
 describe('AiChatService', () => {
   let service: AiChatService;
@@ -52,6 +53,7 @@ describe('AiChatService', () => {
             create: msgCreate,
             save: msgSave,
             find: msgFind.mockResolvedValue([]),
+            query: jest.fn().mockResolvedValue([]),
           },
         },
         {
@@ -83,6 +85,7 @@ describe('AiChatService', () => {
             getMacroTargets: jest.fn().mockRejectedValue(new Error('no')),
           },
         },
+        insightsMockProvider,
       ],
     }).compile();
 
@@ -135,6 +138,57 @@ describe('AiChatService', () => {
     expect(result.suggested_questions).toHaveLength(3);
     expect(groqCreate).toHaveBeenCalledTimes(1);
     expect(msgSave).toHaveBeenCalledTimes(2); // user + assistant
+  });
+
+  it('tin user được khai thác taste ngầm (7E)', async () => {
+    await service.chat('u1', { message: 'Tối nay ăn phở bò nhé' });
+    expect(insightsMock.recordChatMention).toHaveBeenCalledWith(
+      'u1',
+      'Tối nay ăn phở bò nhé',
+    );
+  });
+
+  it('summarizeChats tóm tắt tuần và lưu chat_summary (Phase 8)', async () => {
+    const msgRepo = (
+      service as unknown as {
+        msgRepo: { query: jest.Mock; find: jest.Mock };
+      }
+    ).msgRepo;
+    msgRepo.query.mockResolvedValue([{ user_id: 'u9' }]);
+    msgRepo.find.mockResolvedValue([
+      { content: 'Tôi thích ăn ức gà luộc' },
+      { content: 'Sáng hay chạy bộ' },
+    ]);
+    groqCreate.mockResolvedValue({
+      choices: [{ message: { content: 'Thích ức gà, chạy bộ sáng.' } }],
+    });
+
+    const res = await service.summarizeChats();
+
+    expect(res).toEqual({ summarized: 1 });
+    expect(insightsMock.saveChatSummary).toHaveBeenCalledWith(
+      'u9',
+      'Thích ức gà, chạy bộ sáng.',
+    );
+  });
+
+  it('summarizeChats bỏ qua khi AI trả NONE', async () => {
+    const msgRepo = (
+      service as unknown as {
+        msgRepo: { query: jest.Mock; find: jest.Mock };
+      }
+    ).msgRepo;
+    msgRepo.query.mockResolvedValue([{ user_id: 'u9' }]);
+    msgRepo.find.mockResolvedValue([{ content: 'xin chào' }]);
+    groqCreate.mockResolvedValue({
+      choices: [{ message: { content: 'NONE' } }],
+    });
+
+    const callsBefore = insightsMock.saveChatSummary.mock.calls.length;
+    const res = await service.summarizeChats();
+
+    expect(res).toEqual({ summarized: 0 });
+    expect(insightsMock.saveChatSummary.mock.calls.length).toBe(callsBefore);
   });
 
   it('429 được ném thành 429 retryable', async () => {

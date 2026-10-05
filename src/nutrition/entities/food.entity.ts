@@ -33,10 +33,27 @@ export class Food {
   @Column({ type: 'varchar', length: 30, nullable: true })
   source!: string | null;
 
+  // Mã ổn định cho seed (VD 'VFCT-0296', 'EST-0001', 'LEGACY-<md5>').
+  // Seed upsert theo `code`, KHÔNG theo tên — đổi tên hiển thị không gãy seed.
+  // Xem migration 015. Cột NULL với dữ liệu cũ trước backfill.
+  @Column({ type: 'varchar', length: 60, nullable: true, unique: true })
+  code!: string | null;
+
+  // Tên hiển thị do admin hiệu chỉnh (VD 'thịt ba chỉ').
+  // `food_name_vi` giữ tên canonical của nguồn để seed match; search dùng cả 2.
+  // Xem migration 015.
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  display_name_vi!: string | null;
+
   // Tên vi+en viết thường bỏ dấu (VD 'Phở bò' -> 'pho bo'), trigger duy trì.
   // Xem migration 011 + src/nutrition/search-norm.ts (quy tắc phải khớp).
   @Column({ type: 'text', nullable: true })
   search_norm!: string | null;
+
+  // Vector embedding 768 chiều (nomic-embed-text-v1_5, Phase 8).
+  // select:false để find() thường không tải vector nặng; đọc qua raw SQL.
+  @Column({ type: 'text', nullable: true, select: false })
+  embedding!: string | null;
 
   @CreateDateColumn()
   created_at!: Date;

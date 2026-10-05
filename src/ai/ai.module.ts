@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { InsightsModule } from '../insights/insights.module';
 import { NutritionModule } from '../nutrition/nutrition.module';
 import { DailyLog } from '../tracking/entities/daily-log.entity';
 import { UsersModule } from '../users/users.module';
@@ -17,6 +18,7 @@ import { AiMessage } from './entities/ai-message.entity';
     ConfigModule,
     UsersModule,
     NutritionModule,
+    InsightsModule,
     TypeOrmModule.forFeature([AiConversation, AiMessage, DailyLog, Workout]),
   ],
   controllers: [AiController, AiChatController],

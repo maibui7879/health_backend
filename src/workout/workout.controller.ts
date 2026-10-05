@@ -19,6 +19,8 @@ import {
 } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateWorkoutDto } from './dto/create-workout.dto';
+import { SuggestWorkoutQueryDto } from './dto/suggest-workout-query.dto';
+import { SuggestWorkoutService } from './suggest-workout.service';
 import { WorkoutService } from './workout.service';
 
 @ApiTags('Workout')
@@ -26,10 +28,15 @@ import { WorkoutService } from './workout.service';
 @UseGuards(AuthGuard('jwt-access'))
 @Controller('workouts')
 export class WorkoutController {
-  constructor(private readonly workoutService: WorkoutService) {}
+  constructor(
+    private readonly workoutService: WorkoutService,
+    private readonly suggestWorkoutService: SuggestWorkoutService,
+  ) {}
 
   @Post()
-  @ApiOperation({ summary: 'Ghi nhận bài tập và cộng vào DailyNutrition total_burned_kcal' })
+  @ApiOperation({
+    summary: 'Ghi nhận bài tập và cộng vào DailyNutrition total_burned_kcal',
+  })
   @ApiBody({ type: CreateWorkoutDto })
   @ApiResponse({
     status: 201,
@@ -51,6 +58,18 @@ export class WorkoutController {
     @Body() dto: CreateWorkoutDto,
   ) {
     return this.workoutService.createWorkout(userId, dto);
+  }
+
+  @Get('suggest')
+  @ApiOperation({
+    summary:
+      'Gợi ý buổi tập bằng rule (0 token): xoay nhóm cơ + tăng tải + nghỉ',
+  })
+  suggest(
+    @CurrentUser('sub') userId: string,
+    @Query() query: SuggestWorkoutQueryDto,
+  ) {
+    return this.suggestWorkoutService.suggest(userId, query);
   }
 
   @Get()
@@ -83,7 +102,9 @@ export class WorkoutController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Xóa bài tập và trừ ngược burned_kcal khỏi DailyNutrition' })
+  @ApiOperation({
+    summary: 'Xóa bài tập và trừ ngược burned_kcal khỏi DailyNutrition',
+  })
   @ApiResponse({
     status: 200,
     description: 'Đã xóa bài tập và cập nhật lại Calo đốt cháy.',
@@ -94,7 +115,10 @@ export class WorkoutController {
     },
   })
   @ApiResponse({ status: 404, description: 'Không tìm thấy bài tập.' })
-  deleteWorkout(@CurrentUser('sub') userId: string, @Param('id') workoutId: string) {
+  deleteWorkout(
+    @CurrentUser('sub') userId: string,
+    @Param('id') workoutId: string,
+  ) {
     return this.workoutService.deleteWorkout(userId, workoutId);
   }
 }

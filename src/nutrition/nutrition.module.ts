@@ -10,6 +10,7 @@ import { NutritionPlan } from './entities/nutrition-plan.entity';
 import { DailyLog } from '../tracking/entities/daily-log.entity';
 import { Workout } from '../workout/entities/workout.entity';
 import { InsightsModule } from '../insights/insights.module';
+import { SuggestService } from './suggest.service';
 import { NutritionController } from './nutrition.controller';
 import { NutritionService } from './nutrition.service';
 import { NutritionPlansController } from './plans.controller';
@@ -45,6 +46,7 @@ import { FavoritesService } from './favorites.service';
     NutritionPlansService,
     FoodsService,
     FavoritesService,
+    SuggestService,
   ],
   exports: [NutritionService, NutritionPlansService],
 })

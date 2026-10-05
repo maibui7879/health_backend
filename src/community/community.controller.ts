@@ -24,6 +24,7 @@ import {
   CreatePostDto,
   FeedQueryDto,
   ReactDto,
+  RecordViewsDto,
   ReportPostDto,
   UpdateCommentDto,
   UpdatePostDto,
@@ -46,6 +47,15 @@ export class CommunityController {
   @ApiOperation({ summary: 'Bài đăng của tôi (gồm cả bài bị ẩn)' })
   mine(@CurrentUser('sub') userId: string, @Query() query: FeedQueryDto) {
     return this.communityService.mine(userId, query);
+  }
+
+  @Post('views')
+  @ApiOperation({
+    summary: 'Báo batch bài đã hiển thị (impression ngầm cho ranking)',
+  })
+  @ApiBody({ type: RecordViewsDto })
+  recordViews(@CurrentUser('sub') userId: string, @Body() dto: RecordViewsDto) {
+    return this.communityService.recordViews(userId, dto.post_ids);
   }
 
   @Get('posts/:id')

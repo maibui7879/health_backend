@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NutritionController } from './nutrition.controller';
 import { NutritionService } from './nutrition.service';
+import { SuggestService } from './suggest.service';
 
 describe('NutritionController', () => {
   let controller: NutritionController;
@@ -21,6 +22,7 @@ describe('NutritionController', () => {
             getNutritionSummary: jest.fn(),
           },
         },
+        { provide: SuggestService, useValue: { suggest: jest.fn() } },
       ],
     }).compile();
 

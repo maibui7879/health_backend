@@ -1,5 +1,6 @@
 // Chuẩn hóa tên món để tìm kiếm mờ — PHẢI khớp quy tắc SQL trong
-// migration 011 (translate map 67 ký tự + lower + gộp khoảng trắng).
+// migration 011 + 015 (translate map 67 ký tự + lower + gộp khoảng trắng).
+// SQL trigger từ 015 gồm food_name_vi + display_name_vi + food_name_en.
 // Đổi map ở đây thì sinh migration mới backfill lại search_norm.
 
 const VI_MAP: Array<[RegExp, string]> = [

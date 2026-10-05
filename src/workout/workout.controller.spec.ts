@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WorkoutController } from './workout.controller';
 import { WorkoutService } from './workout.service';
+import { SuggestWorkoutService } from './suggest-workout.service';
 
 describe('WorkoutController', () => {
   let controller: WorkoutController;
@@ -17,6 +18,7 @@ describe('WorkoutController', () => {
             deleteWorkout: jest.fn(),
           },
         },
+        { provide: SuggestWorkoutService, useValue: { suggest: jest.fn() } },
       ],
     }).compile();
 

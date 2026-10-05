@@ -20,14 +20,19 @@ import {
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { SearchHistoryDto } from './dto/search-history.dto';
+import { SuggestQueryDto } from './dto/suggest-query.dto';
 import { NutritionService } from './nutrition.service';
+import { SuggestService } from './suggest.service';
 
 @ApiTags('Nutrition')
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt-access'))
 @Controller('nutrition')
 export class NutritionController {
-  constructor(private readonly nutritionService: NutritionService) {}
+  constructor(
+    private readonly nutritionService: NutritionService,
+    private readonly suggestService: SuggestService,
+  ) {}
 
   @Post('meals')
   @ApiOperation({ summary: 'Lưu bữa ăn từ kết quả phân tích AI' })
@@ -60,6 +65,30 @@ export class NutritionController {
     @Body() createMealDto: CreateMealDto,
   ) {
     return this.nutritionService.createMeal(userId, createMealDto);
+  }
+
+  @Get('suggest')
+  @ApiOperation({
+    summary: 'Gợi ý món bằng rule (0 token): hợp goal + gu + chưa ăn gần đây',
+  })
+  @ApiResponse({
+    status: 200,
+    description:
+      'Danh sách món kèm điểm thành phần và mã lý do (taste_match/goal_fit/adherence_proven/variety).',
+  })
+  suggest(@CurrentUser('sub') userId: string, @Query() query: SuggestQueryDto) {
+    return this.suggestService.suggest(userId, query);
+  }
+
+  @Get('discover')
+  @ApiOperation({
+    summary: 'Món mới hợp gu bằng vector (loại món đã thích/ăn gần đây)',
+  })
+  discover(
+    @CurrentUser('sub') userId: string,
+    @Query() query: SuggestQueryDto,
+  ) {
+    return this.suggestService.discover(userId, query);
   }
 
   @Get('daily')
@@ -133,7 +162,14 @@ export class NutritionController {
   @ApiQuery({
     name: 'mealType',
     required: false,
-    enum: ['BREAKFAST', 'LUNCH', 'DINNER', 'SNACK', 'PRE_WORKOUT', 'POST_WORKOUT'],
+    enum: [
+      'BREAKFAST',
+      'LUNCH',
+      'DINNER',
+      'SNACK',
+      'PRE_WORKOUT',
+      'POST_WORKOUT',
+    ],
     example: 'LUNCH',
     description: 'Lọc theo bữa ăn',
   })
@@ -183,7 +219,10 @@ export class NutritionController {
       },
     },
   })
-  @ApiResponse({ status: 403, description: 'Bạn không có quyền xóa bữa ăn này.' })
+  @ApiResponse({
+    status: 403,
+    description: 'Bạn không có quyền xóa bữa ăn này.',
+  })
   @ApiResponse({ status: 404, description: 'Không tìm thấy bữa ăn.' })
   deleteMeal(@CurrentUser('sub') userId: string, @Param('id') mealId: string) {
     return this.nutritionService.deleteMeal(userId, mealId);

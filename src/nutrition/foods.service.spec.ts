@@ -2,6 +2,7 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { localizationMockProvider } from '../i18n/localization.mock';
+import { EmbeddingsService } from '../embeddings/embeddings.service';
 import { FavoriteFood } from './entities/favorite-food.entity';
 import { Food } from './entities/food.entity';
 import { FavoritesService } from './favorites.service';
@@ -11,9 +12,12 @@ import { insightsMockProvider } from '../insights/insights.mock';
 describe('FoodsService', () => {
   let service: FoodsService;
   const mockFoodRepo = {
+    find: jest.fn(),
     findOne: jest.fn(),
     createQueryBuilder: jest.fn(),
+    query: jest.fn(),
   };
+  const mockEmbeddings = { embed: jest.fn() };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,6 +25,7 @@ describe('FoodsService', () => {
         FoodsService,
         localizationMockProvider,
         { provide: getRepositoryToken(Food), useValue: mockFoodRepo },
+        { provide: EmbeddingsService, useValue: mockEmbeddings },
       ],
     }).compile();
     service = module.get<FoodsService>(FoodsService);
@@ -93,6 +98,48 @@ describe('FoodsService', () => {
   it('getById 404 khi không có', async () => {
     mockFoodRepo.findOne.mockResolvedValue(null);
     await expect(service.getById('nope')).rejects.toThrow(NotFoundException);
+  });
+
+  it('semanticSearch xếp theo cosine + lọc kcal', async () => {
+    mockEmbeddings.embed.mockResolvedValue([[0.1, 0.2, 0.3]]);
+    mockFoodRepo.query.mockResolvedValue([
+      { id: 'f1', food_name_vi: 'Phở bò', similarity: 0.9123 },
+    ]);
+
+    const res = await service.semanticSearch({
+      q: 'món nước thịt bò',
+      max_kcal: 150,
+    });
+
+    expect(mockEmbeddings.embed).toHaveBeenCalledWith(['món nước thịt bò']);
+    const [sql, params] = mockFoodRepo.query.mock.calls[0] as [
+      string,
+      unknown[],
+    ];
+    expect(sql).toContain('embedding <=> $1');
+    expect(sql).toContain('kcal_100g <=');
+    expect(params[0]).toBe('[0.1,0.2,0.3]');
+    expect(res).toEqual({
+      engine: 'vector',
+      matches: [{ id: 'f1', food_name_vi: 'Phở bò', similarity: 0.912 }],
+    });
+  });
+
+  it('semanticSearch rớt về từ khóa khi Groq lỗi', async () => {
+    mockEmbeddings.embed.mockRejectedValue(new Error('boom'));
+    const likeQb = {
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      take: jest.fn().mockReturnThis(),
+      getMany: jest.fn().mockResolvedValueOnce([]).mockResolvedValueOnce([]),
+    };
+    mockFoodRepo.createQueryBuilder.mockReturnValue(likeQb);
+
+    const res = await service.semanticSearch({ q: 'phở' });
+
+    expect(res.engine).toBe('keyword');
+    expect(mockFoodRepo.query).not.toHaveBeenCalled();
   });
 });
 

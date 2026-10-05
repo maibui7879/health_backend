@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
+import { InsightsService } from '../insights/insights.service';
 import { UsersService } from '../users/users.service';
 import { NutritionService } from '../nutrition/nutrition.service';
 import { NutritionPlansService } from '../nutrition/plans.service';
@@ -40,6 +41,10 @@ describe('AiController', () => {
           useValue: {
             adherence: jest.fn(),
           },
+        },
+        {
+          provide: InsightsService,
+          useValue: { tasteContextBlock: jest.fn(() => Promise.resolve('')) },
         },
       ],
     }).compile();

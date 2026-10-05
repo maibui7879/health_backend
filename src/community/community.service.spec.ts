@@ -7,13 +7,15 @@ import {
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { localizationMockProvider } from '../i18n/localization.mock';
-import { insightsMockProvider } from '../insights/insights.mock';
+import { insightsMock, insightsMockProvider } from '../insights/insights.mock';
 import { Meal } from '../nutrition/entities/meal.entity';
 import { NutritionPlan } from '../nutrition/entities/nutrition-plan.entity';
 import { UserProfile } from '../users/entities/user-profile.entity';
 import { Workout } from '../workout/entities/workout.entity';
 import { CommunityService } from './community.service';
 import { CommunityComment } from './entities/comment.entity';
+import { AuthorScore } from './entities/author-score.entity';
+import { PostView } from './entities/post-view.entity';
 import { LinkedType } from './entities/post.entity';
 import { Post } from './entities/post.entity';
 import { Reaction } from './entities/reaction.entity';
@@ -37,6 +39,7 @@ describe('CommunityService', () => {
 
   const mockPostRepo = {
     findAndCount: jest.fn(),
+    find: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
     save: jest.fn(),
@@ -63,6 +66,18 @@ describe('CommunityService', () => {
     save: jest.fn(),
   };
   const mockProfileRepo = { find: jest.fn(() => Promise.resolve([])) };
+  const mockViewRepo = {
+    find: jest.fn(() => Promise.resolve([])),
+    findOne: jest.fn(),
+    create: jest.fn((v: Record<string, unknown>) => v),
+    save: jest.fn((v: unknown) => Promise.resolve(v)),
+  };
+  const mockAuthorScoreRepo = {
+    find: jest.fn(() => Promise.resolve([])),
+    findOne: jest.fn(),
+    create: jest.fn((v: Record<string, unknown>) => v),
+    save: jest.fn((v: unknown) => Promise.resolve(v)),
+  };
   const mockPlanRepo = { findOne: jest.fn() };
   const mockWorkoutRepo = { findOne: jest.fn() };
   const mockMealRepo = { findOne: jest.fn() };
@@ -89,6 +104,11 @@ describe('CommunityService', () => {
         },
         { provide: getRepositoryToken(Workout), useValue: mockWorkoutRepo },
         { provide: getRepositoryToken(Meal), useValue: mockMealRepo },
+        { provide: getRepositoryToken(PostView), useValue: mockViewRepo },
+        {
+          provide: getRepositoryToken(AuthorScore),
+          useValue: mockAuthorScoreRepo,
+        },
         insightsMockProvider,
       ],
     }).compile();
@@ -271,6 +291,124 @@ describe('CommunityService', () => {
       expect(res.message).toBe('community.reportCreated');
       expect(mockPostRepo.save).toHaveBeenCalledWith(
         expect.objectContaining({ is_hidden: true }),
+      );
+    });
+  });
+
+  describe('ranking ngầm (7F)', () => {
+    const now = new Date().toISOString();
+    const old = new Date(Date.now() - 30 * 86400000).toISOString();
+    const feedPost = (over: Record<string, unknown> = {}) => ({
+      id: 'p1',
+      user_id: 'u1',
+      content: 'hello world',
+      image_url: null,
+      linked_type: null,
+      linked_id: null,
+      linked_snapshot: null,
+      is_hidden: false,
+      like_count: 0,
+      comment_count: 0,
+      report_count: 0,
+      created_at: now,
+      updated_at: now,
+      ...over,
+    });
+
+    beforeEach(() => {
+      insightsMock.getProfile.mockResolvedValue({
+        liked_tags: {},
+        disliked_tags: {},
+        workout_prefs: {},
+        interactions: 0,
+        weight: 0,
+        topLiked: [],
+        topDisliked: [],
+        topWorkouts: [],
+      });
+      mockReactionRepo.find.mockResolvedValue([]);
+      mockViewRepo.find.mockResolvedValue([]);
+      mockAuthorScoreRepo.find.mockResolvedValue([]);
+    });
+
+    it('affinity đẩy bài của author từng tương tác lên đầu', async () => {
+      mockPostRepo.find.mockResolvedValue([
+        feedPost({ id: 'pA', user_id: 'uA' }),
+        feedPost({ id: 'pB', user_id: 'uB' }),
+      ]);
+      mockAuthorScoreRepo.find.mockResolvedValue([
+        { author_id: 'uB', score: 5 },
+      ]);
+
+      const res = await service.feed('viewer', {});
+      expect(res.posts.map((p) => p.id)).toEqual(['pB', 'pA']);
+    });
+
+    it('lướt qua 3 lần không tương tác bị phạt skip', async () => {
+      mockPostRepo.find.mockResolvedValue([
+        feedPost({ id: 'p1', user_id: 'u1' }),
+        feedPost({ id: 'p2', user_id: 'u1' }),
+      ]);
+      mockViewRepo.find.mockResolvedValue([{ post_id: 'p1', impressions: 3 }]);
+
+      const res = await service.feed('viewer', {});
+      expect(res.posts.map((p) => p.id)).toEqual(['p2', 'p1']);
+    });
+
+    it('author từng bị report (score −2) bị mute ngầm khỏi feed', async () => {
+      mockPostRepo.find.mockResolvedValue([
+        feedPost({ id: 'p1', user_id: 'u9' }),
+        feedPost({ id: 'p2', user_id: 'u1' }),
+      ]);
+      mockAuthorScoreRepo.find.mockResolvedValue([
+        { author_id: 'u9', score: -2 },
+      ]);
+
+      const res = await service.feed('viewer', {});
+      expect(res.posts.map((p) => p.id)).toEqual(['p2']);
+      expect(res.total).toBe(1);
+    });
+
+    it('exploration: ô thứ 10 nhường cho bài chưa từng thấy', async () => {
+      const fresh = Array.from({ length: 10 }, (_, i) =>
+        feedPost({ id: `f${i}`, user_id: 'u1' }),
+      );
+      const oldPost = feedPost({ id: 'old', user_id: 'u2', created_at: old });
+      mockPostRepo.find.mockResolvedValue([...fresh, oldPost]);
+      mockViewRepo.find.mockResolvedValue(
+        fresh.map((f) => ({ post_id: f.id, impressions: 1 })),
+      );
+
+      const res = await service.feed('viewer', { limit: 11 });
+      const ids = res.posts.map((p) => p.id);
+      expect(ids).toHaveLength(11);
+      expect(ids[9]).toBe('old');
+    });
+
+    it('recordViews tạo mới / tăng impressions / bỏ qua bài ẩn', async () => {
+      mockPostRepo.findOne
+        .mockResolvedValueOnce(feedPost({ id: 'p1' }))
+        .mockResolvedValueOnce(feedPost({ id: 'p2' }))
+        .mockResolvedValueOnce(feedPost({ id: 'pX', is_hidden: true }));
+      mockViewRepo.findOne
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce({ post_id: 'p2', impressions: 2 });
+
+      const res = await service.recordViews('viewer', ['p1', 'p1', 'p2', 'pX']);
+      expect(res).toEqual({ recorded: 2 });
+      expect(mockViewRepo.save).toHaveBeenCalledWith(
+        expect.objectContaining({ post_id: 'p2', impressions: 3 }),
+      );
+    });
+
+    it('like mới cộng affinity author +1', async () => {
+      mockPostRepo.findOne.mockResolvedValue(post({ user_id: 'u1' }));
+      mockReactionRepo.findOne.mockResolvedValue(null);
+      mockAuthorScoreRepo.findOne.mockResolvedValue(null);
+
+      await service.like('u2', 'p1', {});
+      expect(mockAuthorScoreRepo.save).toHaveBeenCalledWith(
+        expect.objectContaining({ author_id: 'u1', score: 1 }),
       );
     });
   });

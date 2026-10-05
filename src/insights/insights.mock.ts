@@ -7,8 +7,11 @@ export const insightsMock = {
   recordWorkout: jest.fn(),
   recordCommunityLike: jest.fn(),
   recordPlanSkipped: jest.fn(),
+  recordChatMention: jest.fn(),
   getProfile: jest.fn(),
   decayTaste: jest.fn(),
+  saveChatSummary: jest.fn(),
+  tasteContextBlock: jest.fn(() => Promise.resolve('')),
 };
 
 export const insightsMockProvider = {

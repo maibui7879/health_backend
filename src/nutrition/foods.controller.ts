@@ -7,6 +7,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { SearchFoodsDto } from './dto/search-foods.dto';
+import { SemanticSearchDto } from './dto/semantic-search.dto';
 import { FoodsService } from './foods.service';
 
 @ApiTags('Nutrition')
@@ -20,6 +21,15 @@ export class FoodsController {
   @ApiOperation({ summary: 'Tra cứu thực phẩm (kcal/macro trên 100g)' })
   search(@Query() dto: SearchFoodsDto) {
     return this.foodsService.search(dto);
+  }
+
+  @Get('semantic-search')
+  @ApiOperation({
+    summary:
+      'Tìm món bằng câu hỏi tự nhiên (vector, rớt về từ khóa khi AI lỗi)',
+  })
+  semanticSearch(@Query() dto: SemanticSearchDto) {
+    return this.foodsService.semanticSearch(dto);
   }
 
   @Get(':id')

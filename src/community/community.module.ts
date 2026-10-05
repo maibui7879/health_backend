@@ -9,6 +9,8 @@ import { CommunityController } from './community.controller';
 import { CommunityService } from './community.service';
 import { CommunityComment } from './entities/comment.entity';
 import { Post } from './entities/post.entity';
+import { AuthorScore } from './entities/author-score.entity';
+import { PostView } from './entities/post-view.entity';
 import { Reaction } from './entities/reaction.entity';
 import { Report } from './entities/report.entity';
 
@@ -23,6 +25,8 @@ import { Report } from './entities/report.entity';
       NutritionPlan,
       Workout,
       Meal,
+      PostView,
+      AuthorScore,
     ]),
     InsightsModule,
   ],

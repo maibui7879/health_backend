@@ -115,6 +115,12 @@ CREATE TABLE IF NOT EXISTS foods (
 CREATE INDEX IF NOT EXISTS idx_foods_name_vi ON foods (food_name_vi);
 CREATE INDEX IF NOT EXISTS idx_foods_name_en ON foods (food_name_en);
 ALTER TABLE foods ADD COLUMN IF NOT EXISTS source VARCHAR(30) NULL;
+ALTER TABLE foods ADD COLUMN IF NOT EXISTS code VARCHAR(60) NULL;
+ALTER TABLE foods ADD COLUMN IF NOT EXISTS display_name_vi VARCHAR(255) NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_foods_code ON foods (code);
+
+-- Tìm kiếm mờ tiếng Việt (Phase 7A + fix 015): search_norm + trigger + index trigram.
+-- 015: gồm cả display_name_vi để rename hiển thị vẫn tìm được.
 
 -- Tìm kiếm mờ tiếng Việt (Phase 7A): search_norm + trigger + index trigram.
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
@@ -122,16 +128,26 @@ ALTER TABLE foods ADD COLUMN IF NOT EXISTS search_norm TEXT NULL;
 CREATE OR REPLACE FUNCTION foods_search_norm() RETURNS trigger AS $$
 BEGIN
   NEW.search_norm := regexp_replace(
-    translate(lower(coalesce(NEW.food_name_vi,'') || ' ' || coalesce(NEW.food_name_en,'')), 'áàạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ', 'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd'), '\s+', ' ', 'g');
+    translate(lower(coalesce(NEW.food_name_vi,'') || ' ' || coalesce(NEW.display_name_vi,'') || ' ' || coalesce(NEW.food_name_en,'')), 'áàạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ', 'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyyd'), '\s+', ' ', 'g');
   RETURN NEW;
 END; $$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS trg_foods_search_norm ON foods;
 CREATE TRIGGER trg_foods_search_norm
-  BEFORE INSERT OR UPDATE OF food_name_vi, food_name_en ON foods
+  BEFORE INSERT OR UPDATE OF food_name_vi, display_name_vi, food_name_en ON foods
   FOR EACH ROW EXECUTE FUNCTION foods_search_norm();
 UPDATE foods SET food_name_vi = food_name_vi WHERE search_norm IS NULL;
 CREATE INDEX IF NOT EXISTS idx_foods_search_norm
   ON foods USING gin (search_norm gin_trgm_ops);
+
+-- Vector/RAG (Phase 8): embeddings món ăn + tóm tắt chat.
+CREATE EXTENSION IF NOT EXISTS vector;
+ALTER TABLE foods ADD COLUMN IF NOT EXISTS embedding vector(768) NULL;
+CREATE INDEX IF NOT EXISTS idx_foods_embedding
+  ON foods USING hnsw (embedding vector_cosine_ops);
+ALTER TABLE user_taste_profiles
+  ADD COLUMN IF NOT EXISTS chat_summary TEXT NULL;
+ALTER TABLE user_taste_profiles
+  ADD COLUMN IF NOT EXISTS chat_summary_at TIMESTAMPTZ NULL;
 
 CREATE TABLE IF NOT EXISTS favorite_foods (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -214,4 +230,28 @@ CREATE TABLE IF NOT EXISTS user_taste_profiles (
   interactions INT NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Feed ngầm (Phase 7F): impression + điểm author.
+CREATE TABLE IF NOT EXISTS community_post_views (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  post_id UUID NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+  impressions INT NOT NULL DEFAULT 1,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  last_seen_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (user_id, post_id)
+);
+CREATE INDEX IF NOT EXISTS idx_community_post_views_user
+  ON community_post_views (user_id, last_seen_at DESC);
+
+CREATE TABLE IF NOT EXISTS community_author_scores (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  author_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  score FLOAT NOT NULL DEFAULT 0,
+  interactions INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (user_id, author_id)
 );

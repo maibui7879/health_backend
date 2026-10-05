@@ -29,6 +29,8 @@ import type { ChatRequestDto } from './dto/chat-request.dto';
 import { AiConversation } from './entities/ai-conversation.entity';
 import { AiMessage } from './entities/ai-message.entity';
 import { LocalizationService } from '../i18n/localization.service';
+import { InsightsService } from '../insights/insights.service';
+import { Cron } from '@nestjs/schedule';
 
 type ChatMessageParam = Groq.Chat.ChatCompletionMessageParam;
 type ChatToolCall = Groq.Chat.ChatCompletionMessageToolCall;
@@ -73,6 +75,7 @@ export class AiChatService {
     private usersService: UsersService,
     private nutritionService: NutritionService,
     private readonly i18n: LocalizationService,
+    private readonly insights: InsightsService,
   ) {
     this.groq = new Groq({
       apiKey: this.configService.get<string>('GROQ_API_KEY'),
@@ -271,11 +274,69 @@ export class AiChatService {
       tokens_used: tokensUsed,
       tool_call_id: toolCallId,
     });
+    // Hook taste 7E: tin user nhắc món/tập → tín hiệu ngầm (fire-and-forget,
+    // phủ cả chat thường, stream và retry vì chung saveMessage).
+    if (role === 'user') {
+      void this.insights.recordChatMention(userId, content);
+    }
     return this.msgRepo.save(msg);
   }
 
   private async touchConversation(id: string) {
     await this.convRepo.update(id, { updated_at: new Date() });
+  }
+
+  // Cron hàng tuần (Phase 8): tóm tắt sở thích từ chat 7 ngày qua → lưu
+  // chat_summary để RAG vào suggest-menu/plan. Token nhỏ (≤200/call),
+  // tối đa 50 user/lần, lỗi từng user không chặn cả đợt.
+  @Cron('0 4 * * 0')
+  async summarizeChats(): Promise<{ summarized: number }> {
+    let summarized = 0;
+    try {
+      const raw: unknown = await this.msgRepo.query(
+        `SELECT DISTINCT user_id FROM ai_messages
+         WHERE role = 'user' AND created_at > now() - interval '7 days'
+         LIMIT 50`,
+      );
+      const rows = raw as { user_id: string }[];
+      for (const row of rows) {
+        try {
+          const recent = await this.msgRepo.find({
+            where: { user_id: row.user_id, role: 'user' },
+            order: { created_at: 'DESC' },
+            take: 20,
+          });
+          if (recent.length === 0) continue;
+          const text = recent
+            .map((m) => m.content)
+            .join('\n')
+            .slice(0, 4000);
+          const completion = await this.groq.chat.completions.create({
+            messages: [
+              {
+                role: 'user',
+                content: `Dưới đây là tin nhắn của 1 user với app sức khỏe. Tóm tắt sở thích ăn uống và tập luyện của họ trong 2-3 dòng ngắn gọn (món hay nhắc, món tránh, môn tập). Chỉ ghi điều chắc chắn từ tin nhắn, không suy diễn. Nếu không thấy sở thích nào, trả lời đúng 1 từ: NONE.\n---\n${text}`,
+              },
+            ],
+            model: this.model,
+            temperature: 0.2,
+            max_tokens: 200,
+          });
+          const summary = completion.choices[0]?.message?.content?.trim();
+          if (summary && summary !== 'NONE') {
+            await this.insights.saveChatSummary(row.user_id, summary);
+            summarized += 1;
+          }
+        } catch (error) {
+          this.logger.warn(
+            `Tóm tắt chat user ${row.user_id} thất bại: ${String(error)}`,
+          );
+        }
+      }
+    } catch (error) {
+      this.logger.warn(`Cron summarizeChats thất bại: ${String(error)}`);
+    }
+    return { summarized };
   }
 
   private async getGoalType(userId: string): Promise<string> {

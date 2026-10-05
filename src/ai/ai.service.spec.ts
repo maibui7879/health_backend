@@ -78,4 +78,43 @@ describe('AiService', () => {
       }),
     ).rejects.toMatchObject({ status: 429 });
   });
+
+  it('suggestMenu chèn tasteContext RAG vào prompt (Phase 8)', async () => {
+    groqCreate.mockResolvedValue({
+      choices: [
+        {
+          message: {
+            content: JSON.stringify({
+              meal_type: 'LUNCH',
+              total_kcal: 600,
+              items: [],
+            }),
+          },
+        },
+      ],
+    });
+    await service.suggestMenu({
+      kcalTarget: 600,
+      tasteContext: 'Sở thích ngầm: Hay ăn/quan tâm: gà.',
+    });
+    const call = groqCreate.mock.calls[0] as
+      [{ messages: { content: string }[] }] | undefined;
+    const prompt = call?.[0]?.messages[0]?.content ?? '';
+    expect(prompt).toContain('Hay ăn/quan tâm: gà.');
+  });
+
+  it('suggestPlan chèn tasteContext vào từng chunk (Phase 8)', async () => {
+    groqCreate.mockResolvedValue({
+      choices: [{ message: { content: JSON.stringify({ days: [] }) } }],
+    });
+    await service.suggestPlan({
+      durationDays: 2,
+      tasteContext: 'Sở thích ngầm: Hay tập: RUNNING.',
+    });
+    expect(groqCreate).toHaveBeenCalledTimes(1);
+    const call = groqCreate.mock.calls[0] as
+      [{ messages: { content: string }[] }] | undefined;
+    const prompt = call?.[0]?.messages[0]?.content ?? '';
+    expect(prompt).toContain('Hay tập: RUNNING.');
+  });
 });

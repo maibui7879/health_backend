@@ -1,6 +1,8 @@
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
+import { Food } from '../nutrition/entities/food.entity';
 import { UserTasteProfile } from './entities/user-taste-profile.entity';
+import { ACTIVITY_NORMS, foodNorms, mineMentions } from './chat-dictionary';
 import { InsightsService } from './insights.service';
 import { tokenizeTaste } from './taste-tokenizer';
 
@@ -35,6 +37,14 @@ describe('InsightsService', () => {
     }),
     find: jest.fn(() => Promise.resolve([...store.values()])),
   };
+  const mockFoodRepo = {
+    find: jest.fn(() =>
+      Promise.resolve([
+        { food_name_vi: 'Phở bò', food_name_en: 'Beef pho' },
+        { food_name_vi: 'Cá hồi', food_name_en: 'Salmon' },
+      ]),
+    ),
+  };
 
   beforeEach(async () => {
     store.clear();
@@ -45,6 +55,7 @@ describe('InsightsService', () => {
           provide: getRepositoryToken(UserTasteProfile),
           useValue: mockTasteRepo,
         },
+        { provide: getRepositoryToken(Food), useValue: mockFoodRepo },
       ],
     }).compile();
     service = module.get<InsightsService>(InsightsService);
@@ -128,5 +139,108 @@ describe('InsightsService', () => {
   it('record nuốt lỗi DB, không throw', async () => {
     mockTasteRepo.findOne.mockRejectedValueOnce(new Error('db down'));
     await expect(service.recordMeal('u1', ['Phở'])).resolves.toBeUndefined();
+  });
+
+  it('recordChatMention bắt món + activity, bỏ qua tin không nhắc gì', async () => {
+    await service.recordChatMention(
+      'u1',
+      'Tối nay ăn phở bò rồi đi chạy bộ nhé',
+    );
+    const p = await service.getProfile('u1');
+    expect(p.liked_tags).toMatchObject({ phở: 0.3, bò: 0.3 });
+    expect(p.workout_prefs).toMatchObject({ RUNNING: 0.3 });
+
+    const saves = mockTasteRepo.save.mock.calls.length;
+    await service.recordChatMention('u1', 'xin chào bạn khỏe không');
+    expect(mockTasteRepo.save.mock.calls.length).toBe(saves);
+  });
+});
+
+describe('mineMentions', () => {
+  const dict = foodNorms([
+    { food_name_vi: 'Phở bò', food_name_en: 'Beef pho' },
+    { food_name_vi: 'Cá hồi', food_name_en: 'Salmon' },
+  ]);
+
+  it('khớp tên món đa từ + alias chạy bộ', () => {
+    const res = mineMentions(
+      'toi muon an pho bo roi di chay bo',
+      dict,
+      ACTIVITY_NORMS,
+    );
+    expect(res.foodTags).toEqual(expect.arrayContaining(['phở', 'bò']));
+    expect(res.activities).toEqual(['RUNNING']);
+  });
+
+  it('khớp biên từ: "cá" không dính "các", "bò" không dính "bột"', () => {
+    const res = mineMentions('cac mon voi bot chien', dict, ACTIVITY_NORMS);
+    expect(res.foodTags).toEqual([]);
+    expect(res.activities).toEqual([]);
+  });
+});
+
+describe('InsightsService chat summary (Phase 8)', () => {
+  let service: InsightsService;
+  const store = new Map<string, UserTasteProfile>();
+  const mockTasteRepo = {
+    findOne: jest.fn(({ where }: { where: { user_id: string } }) =>
+      Promise.resolve(store.get(where.user_id) ?? null),
+    ),
+    create: jest.fn((v: Partial<UserTasteProfile>) => ({ ...v })),
+    save: jest.fn((p: UserTasteProfile) => {
+      store.set(p.user_id, { ...p });
+      return Promise.resolve(p);
+    }),
+    find: jest.fn(() => Promise.resolve([...store.values()])),
+  };
+  const mockFoodRepo = { find: jest.fn(() => Promise.resolve([])) };
+
+  beforeEach(async () => {
+    store.clear();
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        InsightsService,
+        {
+          provide: getRepositoryToken(UserTasteProfile),
+          useValue: mockTasteRepo,
+        },
+        { provide: getRepositoryToken(Food), useValue: mockFoodRepo },
+      ],
+    }).compile();
+    service = module.get<InsightsService>(InsightsService);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('saveChatSummary lưu summary + timestamp', async () => {
+    await service.saveChatSummary('u1', 'Thích đồ luộc, tránh chiên.');
+    const p = await service.getProfile('u1');
+    expect(p.chat_summary).toBe('Thích đồ luộc, tránh chiên.');
+  });
+
+  it('tasteContextBlock gồm gu + chat summary', async () => {
+    const old = new Date(Date.now() - 20 * 86400000);
+    store.set('u1', {
+      user_id: 'u1',
+      liked_tags: { gà: 5 },
+      disliked_tags: {},
+      workout_prefs: { RUNNING: 3 },
+      interactions: 30,
+      chat_summary: 'Thích đồ luộc.',
+      chat_summary_at: old,
+      created_at: old,
+      updated_at: old,
+    });
+    const block = await service.tasteContextBlock('u1');
+    expect(block).toContain('gà');
+    expect(block).toContain('RUNNING');
+    expect(block).toContain('Thích đồ luộc.');
+    expect(block).toContain('không ghi đè');
+  });
+
+  it('tasteContextBlock rỗng khi chưa có dữ liệu', async () => {
+    await expect(service.tasteContextBlock('nobody')).resolves.toBe('');
   });
 });

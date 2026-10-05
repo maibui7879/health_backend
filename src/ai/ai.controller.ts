@@ -20,6 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { LocalizationService, t } from '../i18n/localization.service';
+import { InsightsService } from '../insights/insights.service';
 import { NutritionPlansService } from '../nutrition/plans.service';
 import { UsersService } from '../users/users.service';
 import { NutritionService } from '../nutrition/nutrition.service';
@@ -42,6 +43,7 @@ export class AiController {
     private readonly nutritionService: NutritionService,
     private readonly plansService: NutritionPlansService,
     private readonly i18n: LocalizationService,
+    private readonly insights: InsightsService,
   ) {}
 
   @Post('analyze-food')
@@ -167,6 +169,7 @@ export class AiController {
       macroCarbsG: macroCarbs,
       macroFatG: macroFat,
       note: dto.note,
+      tasteContext: await this.insights.tasteContextBlock(userId),
     });
 
     return {
@@ -230,6 +233,7 @@ export class AiController {
       macroCarbsG: macroCarbs,
       macroFatG: macroFat,
       durationDays: dto.duration_days ?? 7,
+      tasteContext: await this.insights.tasteContextBlock(userId),
     });
 
     return {

@@ -131,6 +131,7 @@ export class AiService {
     macroCarbsG?: number;
     macroFatG?: number;
     note?: string;
+    tasteContext?: string;
   }): Promise<Record<string, unknown>> {
     const {
       userAllergies = [],
@@ -147,6 +148,7 @@ export class AiService {
       macroCarbsG,
       macroFatG,
       note,
+      tasteContext = '',
     } = args;
     const langLine = aiLanguageLine(this.i18n.lang());
     try {
@@ -184,6 +186,7 @@ export class AiService {
       const noteLine = note?.trim()
         ? `Yêu cầu cụ thể của người dùng: "${note.trim()}".`
         : '';
+      const tasteLine = tasteContext.trim();
 
       const prompt = `
 				Bạn là chuyên gia dinh dưỡng Việt Nam.
@@ -193,6 +196,7 @@ export class AiService {
 				${budget}
 				${macroLine}
 				${noteLine}
+				${tasteLine}
 				${scope} với tổng khoảng ${kcalTarget} kcal, ưu tiên món Việt dễ nấu.
 				Mỗi món ghi rõ lý do ngắn gọn gắn với mục tiêu và macro của người dùng.
 
@@ -245,6 +249,7 @@ export class AiService {
     macroCarbsG?: number;
     macroFatG?: number;
     durationDays?: number;
+    tasteContext?: string;
   }): Promise<Record<string, unknown>> {
     const {
       userAllergies = [],
@@ -260,6 +265,7 @@ export class AiService {
       macroCarbsG,
       macroFatG,
       durationDays = 7,
+      tasteContext = '',
     } = args;
     const langLine = aiLanguageLine(this.i18n.lang());
     // Groq tier on_demand giới hạn OTPM 1000 cho qwen/qwen3.8-27b,
@@ -304,6 +310,7 @@ export class AiService {
         const prompt = `
 Bạn là HLV dinh dưỡng. Người dùng: ${who}.
 ${allergyContext} Chế độ: ${dietType}. Kcal: ${dailyKcalTarget}/ngày. ${macroLine}
+${tasteContext.trim()}
 Lập kế hoạch cho ngày ${startDay}–${startDay + chunkSize - 1} (tổng ${chunkSize} ngày). Mỗi ngày chỉ 3 bữa (sáng/trưa/tối) + 1 buổi tập. CỰC NGẮN GỌN, tên món Việt ≤6 từ, tip ≤10 từ.
 BẮT BUỘC chỉ trả JSON, không văn bản khác:
 {"goal_summary":"1 câu","estimated_weeks":0,"days":[{"day":${startDay},"meals":[{"meal_type":"BREAKFAST","suggestion":"Tên món","kcal":0}],"workout":{"activity":"Tên bài","duration_minutes":0,"note":"≤8 từ"},"tip":"≤10 từ"}]}

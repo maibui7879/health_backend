@@ -26,6 +26,14 @@ export class UserTasteProfile {
   @Column({ type: 'int', default: 0 })
   interactions!: number;
 
+  // Tóm tắt sở thích từ chat (AiChatService cron hàng tuần, Phase 8) —
+  // RAG vào prompt suggest-menu/plan.
+  @Column({ type: 'text', nullable: true })
+  chat_summary!: string | null;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  chat_summary_at!: Date | null;
+
   @CreateDateColumn()
   created_at!: Date;
 

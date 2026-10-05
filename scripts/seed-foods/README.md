@@ -30,5 +30,10 @@ python scripts/seed-foods/generate-010.py  # sinh migration 010
   vì chưa có tên Anh chuẩn).
 - Năng lượng theo công thức VFCT (4P+9F+4C, chưa tính cồn) — đồ uống có cồn
   hiển thị ~0 kcal đúng theo nguồn, không phải lỗi parse.
-- Muốn thêm món: sửa `cooked-dishes.json` rồi chạy lại `generate-010.py`
-  (migration dùng `ON CONFLICT DO NOTHING` nên an toàn chạy lại).
+- Muốn thêm món: sửa `cooked-dishes.json`/CSV rồi chạy
+  `python scripts/seed-foods/generate-food-delta.py --out 016-foods-delta.sql`
+  (migration mới, upsert theo `code`, `ON CONFLICT DO NOTHING` nên không đè
+  hiệu chỉnh tay). `010` đã frozen — không regenerate.
+- Rename hiển thị: giữ `food_name_vi` canonical, đặt tên đẹp vào
+  `display_name_vi` (migration 015, search gồm cả 2). Không rename trực tiếp
+  `food_name_vi` vì đó từng là key upsert cũ.

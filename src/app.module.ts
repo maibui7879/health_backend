@@ -10,6 +10,7 @@ import { TrackingModule } from './tracking/tracking.module';
 import { NutritionModule } from './nutrition/nutrition.module';
 import { AiModule } from './ai/ai.module';
 import { CommunityModule } from './community/community.module';
+import { EmbeddingsModule } from './embeddings/embeddings.module';
 import { WorkoutModule } from './workout/workout.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { I18nModule } from './i18n/i18n.module';
@@ -38,6 +39,7 @@ import { I18nModule } from './i18n/i18n.module';
 
     // 3. Khai báo các Module nghiệp vụ
     ScheduleModule.forRoot(),
+    EmbeddingsModule,
     I18nModule,
     AuthModule,
     UsersModule,
