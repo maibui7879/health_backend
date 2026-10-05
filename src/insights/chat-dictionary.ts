@@ -29,7 +29,9 @@ export function foodNorms(
   // khớp được món 'Phở bò'/'Beef pho' (norm gộp cả 2 tên thì không khớp).
   const out: FoodNorm[] = [];
   for (const f of foods) {
-    const tags = tokenizeTaste(`${f.food_name_vi ?? ''} ${f.food_name_en ?? ''}`);
+    const tags = tokenizeTaste(
+      `${f.food_name_vi ?? ''} ${f.food_name_en ?? ''}`,
+    );
     const vi = toSearchNorm(f.food_name_vi ?? '');
     const en = toSearchNorm(f.food_name_en ?? '');
     if (vi.length >= 2) out.push({ norm: vi, tags });

@@ -13,7 +13,10 @@ export class SearchHistoryDto {
   @IsDateString()
   endDate?: string;
 
-  @ApiPropertyOptional({ example: 'tôm hùm', description: 'Tìm theo tên món ăn' })
+  @ApiPropertyOptional({
+    example: 'tôm hùm',
+    description: 'Tìm theo tên món ăn',
+  })
   @IsOptional()
   @IsString()
   keyword?: string;

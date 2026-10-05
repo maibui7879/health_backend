@@ -153,11 +153,8 @@ export class AiChatController {
 // Lấy conversation_id từ HttpException 429 của chat() để client retry.
 function extractConversationId(e: unknown): string | null {
   try {
-    const resp = (
-      e as { getResponse?: () => unknown }
-    )?.getResponse?.() as
-      | { data?: { conversation_id?: unknown } }
-      | undefined;
+    const resp = (e as { getResponse?: () => unknown })?.getResponse?.() as
+      { data?: { conversation_id?: unknown } } | undefined;
     const id = resp?.data?.conversation_id;
     return typeof id === 'string' ? id : null;
   } catch {

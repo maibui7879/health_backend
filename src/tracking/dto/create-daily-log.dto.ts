@@ -6,7 +6,10 @@ export class CreateDailyLogDto {
   @IsDateString()
   log_date: string;
 
-  @ApiProperty({ example: 2200, description: 'Lượng nước đã uống trong ngày (ml)' })
+  @ApiProperty({
+    example: 2200,
+    description: 'Lượng nước đã uống trong ngày (ml)',
+  })
   @IsNumber()
   @Min(0)
   water_consumed_ml: number;
@@ -16,7 +19,10 @@ export class CreateDailyLogDto {
   @Min(0)
   total_kcal_in: number;
 
-  @ApiProperty({ example: 420, description: 'Tổng calo đã tiêu hao trong ngày' })
+  @ApiProperty({
+    example: 420,
+    description: 'Tổng calo đã tiêu hao trong ngày',
+  })
   @IsNumber()
   @Min(0)
   total_kcal_out: number;
@@ -26,5 +32,4 @@ export class CreateDailyLogDto {
   @IsNumber()
   @Min(0)
   weight_log?: number;
-
 }

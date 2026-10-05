@@ -36,11 +36,11 @@ Hạ tầng `device_token` đã có.
 - [x] Chia sẻ thực đơn/đồ tập (link từ nutrition/workout sang post): `linked_type` (`NUTRITION_PLAN`/`WORKOUT`/`MEAL`) + `linked_id` + `linked_snapshot` (chụp lúc đăng, không lộ private), verify quyền sở hữu, feed trả `author{full_name,avatar_url}` + `viewer_has_liked`
 - [x] Kiểm duyệt cơ bản (report/hide) nếu cần trước public: `POST /community/posts/:id/report` (chống self-report 400, chống trùng 409, bảng `community_reports`), đủ 3 report → `is_hidden=true` tự ẩn khỏi feed (chủ bài vẫn xem/sửa được, người ngoài 404)
 
-## Phase 5 — Tập luyện nâng cao
+## Phase 5 — Tập luyện nâng cao ✅ XONG (05/10/2026)
 
-- [ ] Media minh họa bài tập (video/hình): field `media_url` cho workout + endpoint upload (tái dùng pattern `/users/avatar`)
-- [ ] Ghi nhận xem hết video/hình của ngày → tích streak
-- [ ] Set mục tiêu streak + nhận thưởng (hiện chỉ có `is_streak_day` tự tính theo log chung, chưa có mục tiêu riêng cho workout)
+- [x] Media minh họa bài tập (migration 016): `media_url/media_type/media_viewed_at` trên `workouts` + `POST /workouts/:id/media` (upload jpg/png/webp/mp4/webm ≤50MB, tái dùng pattern `/users/avatar`, serve `/uploads/workouts/`) + `POST /workouts/:id/media-link` (YouTube) + `POST /workouts/:id/viewed` (idempotent) + tạo log kèm `media_url` ngoài; xóa log dọn file
+- [x] Catalog bài mẫu seed trước prod (migration 017 + 019): `exercise_templates` (code bền `RUN-EASY-01`..., 6 ActivityType × 3 độ khó = 18 mẫu, `demo_video_url` NULL bổ sung sau, `ON CONFLICT (code) DO NOTHING`) + `GET /workouts/templates[/:code]` + `template_id` lúc log (neo activity theo template); 019 tách duration khỏi tên (tên chỉ mô tả động tác, thêm `default_duration_minutes`, log override tự do)
+- [x] Streak riêng + mục tiêu + thưởng (migration 018): `GET /workouts/streak` (current/longest/today, ngày có media phải xem hết mới tính) + `POST/GET /workouts/goals[/current]` (7|14|30 ngày, 1 ACTIVE/user 409) + cron 1AM chốt COMPLETED (badge `STREAK_<N>`) / FAILED
 
 ## Phase 6 — Pháp lý (cần trước khi public store)
 

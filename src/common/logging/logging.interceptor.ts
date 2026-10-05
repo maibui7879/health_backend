@@ -13,7 +13,9 @@ const SENSITIVE_KEYS = ['password', 'token', 'refresh_token', 'authorization'];
 
 function sanitizeBody(body: unknown): unknown {
   if (!body || typeof body !== 'object' || Array.isArray(body)) return body;
-  const clone: Record<string, unknown> = { ...(body as Record<string, unknown>) };
+  const clone: Record<string, unknown> = {
+    ...(body as Record<string, unknown>),
+  };
   for (const key of Object.keys(clone)) {
     if (SENSITIVE_KEYS.some((s) => key.toLowerCase().includes(s))) {
       clone[key] = '[REDACTED]';
@@ -47,7 +49,8 @@ export class LoggingInterceptor implements NestInterceptor {
           );
         },
         error: (error: unknown) => {
-          const message = error instanceof Error ? error.message : String(error);
+          const message =
+            error instanceof Error ? error.message : String(error);
           this.logger.error(
             `${method} ${originalUrl} ${response.statusCode} ${Date.now() - startedAt}ms - ${message}`,
           );

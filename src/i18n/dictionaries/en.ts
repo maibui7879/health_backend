@@ -66,6 +66,13 @@ export const en: Record<TranslationKey, string> = {
 
   'workout.notFound': 'Workout not found',
   'workout.deleted': 'Workout deleted and burned calories updated',
+  'workout.mediaRequired': 'Please attach a media file.',
+  'workout.mediaTypeOnly':
+    'Only images/videos are accepted (jpg, png, webp, mp4, webm)',
+  'workout.mediaNotFound': 'This workout has no media yet',
+  'workout.templateNotFound': 'Exercise template not found',
+  'workout.goalExists': 'You already have an active streak goal',
+  'workout.goalNotFound': 'No active streak goal',
 
   'ai.imageRequired': 'Please attach a food photo.',
   'ai.imageTypeOnly': 'Only images are accepted (jpg, png, webp)',

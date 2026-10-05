@@ -139,8 +139,47 @@ UPDATE foods SET food_name_vi = food_name_vi WHERE search_norm IS NULL;
 CREATE INDEX IF NOT EXISTS idx_foods_search_norm
   ON foods USING gin (search_norm gin_trgm_ops);
 
--- Vector/RAG (Phase 8): embeddings món ăn + tóm tắt chat.
-CREATE EXTENSION IF NOT EXISTS vector;
+-- Workout media (Phase 5A): minh họa per-log + viewed cho streak.
+ALTER TABLE workouts ADD COLUMN IF NOT EXISTS media_url VARCHAR(500) NULL;
+ALTER TABLE workouts ADD COLUMN IF NOT EXISTS media_type VARCHAR(10) NULL;
+ALTER TABLE workouts ADD COLUMN IF NOT EXISTS media_viewed_at TIMESTAMPTZ NULL;
+
+-- Workout catalog mẫu (Phase 5B).
+CREATE TABLE IF NOT EXISTS exercise_templates (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  code VARCHAR(60) NOT NULL UNIQUE,
+  activity_type VARCHAR(20) NOT NULL,
+  name_vi VARCHAR(255) NOT NULL,
+  name_en VARCHAR(255) NULL,
+  muscle_groups TEXT[] NOT NULL DEFAULT '{}',
+  difficulty VARCHAR(10) NOT NULL DEFAULT 'EASY',
+  demo_video_url VARCHAR(500) NULL,
+  cover_emoji VARCHAR(10) NULL,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE
+);
+CREATE INDEX IF NOT EXISTS idx_exercise_templates_activity
+  ON exercise_templates (activity_type, is_active);
+ALTER TABLE workouts ADD COLUMN IF NOT EXISTS template_id UUID NULL;
+ALTER TABLE exercise_templates
+  ADD COLUMN IF NOT EXISTS default_duration_minutes INT NULL;
+
+-- Workout goals (Phase 5C): mục tiêu streak + badge.
+CREATE TABLE IF NOT EXISTS workout_goals (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  target_days INT NOT NULL CHECK (target_days IN (7, 14, 30)),
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE'
+    CHECK (status IN ('ACTIVE','COMPLETED','FAILED')),
+  badge VARCHAR(30) NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  completed_at TIMESTAMPTZ NULL
+);
+CREATE INDEX IF NOT EXISTS idx_workout_goals_user_status
+  ON workout_goals (user_id, status);
+
+-- Vector/RAG (Phase 8): embeddings món ăn + tóm tắt chat.CREATE EXTENSION IF NOT EXISTS vector;
 ALTER TABLE foods ADD COLUMN IF NOT EXISTS embedding vector(768) NULL;
 CREATE INDEX IF NOT EXISTS idx_foods_embedding
   ON foods USING hnsw (embedding vector_cosine_ops);

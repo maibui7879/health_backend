@@ -65,6 +65,14 @@ export const vi = {
 
   'workout.notFound': 'Không tìm thấy bài tập',
   'workout.deleted': 'Đã xóa bài tập và cập nhật lại Calo đốt cháy',
+  'workout.mediaRequired': 'Vui lòng đính kèm file media.',
+  'workout.mediaTypeOnly':
+    'Chỉ chấp nhận ảnh/video (jpg, png, webp, mp4, webm)',
+  'workout.mediaNotFound': 'Bài tập chưa có media',
+  'workout.templateNotFound': 'Không tìm thấy bài tập mẫu',
+  'workout.goalExists':
+    'Bạn đang có mục tiêu streak, hoàn thành hoặc chờ chốt trước khi đặt mới',
+  'workout.goalNotFound': 'Không có mục tiêu streak đang theo',
 
   'ai.imageRequired': 'Vui lòng đính kèm một hình ảnh món ăn.',
   'ai.imageTypeOnly': 'Chỉ chấp nhận ảnh (jpg, png, webp)',

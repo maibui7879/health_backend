@@ -24,6 +24,7 @@ async function bootstrap() {
   // là ephemeral — production nên chuyển object storage (VD: Supabase Storage).
   const uploadDir = process.env.UPLOAD_DIR ?? join(process.cwd(), 'uploads');
   mkdirSync(join(uploadDir, 'avatars'), { recursive: true });
+  mkdirSync(join(uploadDir, 'workouts'), { recursive: true });
   app.useStaticAssets(uploadDir, { prefix: '/uploads/' });
   // Locale sớm nhất có thể: ValidationPipe cũng thấy locale từ header.
   app.use(localeMiddleware);

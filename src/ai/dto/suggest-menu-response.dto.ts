@@ -11,7 +11,9 @@ export class SuggestMenuItemDto {
   @ApiProperty({ example: 550 })
   estimated_kcal!: number;
 
-  @ApiPropertyOptional({ example: 'Giàu đạm, ít dầu mỡ, hợp mục tiêu giảm cân' })
+  @ApiPropertyOptional({
+    example: 'Giàu đạm, ít dầu mỡ, hợp mục tiêu giảm cân',
+  })
   reason?: string;
 }
 

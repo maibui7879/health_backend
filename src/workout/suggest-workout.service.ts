@@ -97,40 +97,39 @@ export class SuggestWorkoutService {
     const suggestions: WorkoutSuggestion[] = (
       Object.keys(MUSCLES) as ActivityType[]
     ).map((activity) => {
-        const groups = MUSCLES[activity] ?? [];
-        const fresh = groups.filter((g) => !yesterdayGroups.has(g));
-        const rotation = Math.min(fresh.length, 2);
-        const tasteScore =
-          maxPref > 0 ? ((prefs[activity] ?? 0) / maxPref) * tasteWeight : 0;
-        const prev = lastDuration.get(activity);
-        const duration =
-          prev !== undefined
-            ? round5(prev * (1 + PROGRESSION_RATE))
-            : DEFAULT_DURATION;
+      const groups = MUSCLES[activity] ?? [];
+      const fresh = groups.filter((g) => !yesterdayGroups.has(g));
+      const rotation = Math.min(fresh.length, 2);
+      const tasteScore =
+        maxPref > 0 ? ((prefs[activity] ?? 0) / maxPref) * tasteWeight : 0;
+      const prev = lastDuration.get(activity);
+      const duration =
+        prev !== undefined
+          ? round5(prev * (1 + PROGRESSION_RATE))
+          : DEFAULT_DURATION;
 
-        const reasons: WorkoutSuggestReason[] = [];
-        if (fresh.length > 0)
-          reasons.push({ code: 'rotation_recovery', tags: fresh });
-        if ((prefs[activity] ?? 0) > 0)
-          reasons.push({ code: 'taste_match', tags: [activity] });
-        if (prev !== undefined)
-          reasons.push({ code: 'progression', tags: [`${prev}→${duration}`] });
-        if (prev === undefined) reasons.push({ code: 'variety_new' });
+      const reasons: WorkoutSuggestReason[] = [];
+      if (fresh.length > 0)
+        reasons.push({ code: 'rotation_recovery', tags: fresh });
+      if ((prefs[activity] ?? 0) > 0)
+        reasons.push({ code: 'taste_match', tags: [activity] });
+      if (prev !== undefined)
+        reasons.push({ code: 'progression', tags: [`${prev}→${duration}`] });
+      if (prev === undefined) reasons.push({ code: 'variety_new' });
 
-        return {
-          activity_type: activity,
-          rest: false,
-          duration_minutes: duration,
-          muscle_groups: groups,
-          score: {
-            rotation: rotation,
-            taste: Math.round(tasteScore * 100) / 100,
-            total: Math.round((rotation + tasteScore) * 100) / 100,
-          },
-          reasons: reasons.slice(0, 3),
-        };
-      },
-    );
+      return {
+        activity_type: activity,
+        rest: false,
+        duration_minutes: duration,
+        muscle_groups: groups,
+        score: {
+          rotation: rotation,
+          taste: Math.round(tasteScore * 100) / 100,
+          total: Math.round((rotation + tasteScore) * 100) / 100,
+        },
+        reasons: reasons.slice(0, 3),
+      };
+    });
     suggestions.sort((a, b) => b.score.total - a.score.total);
 
     // Nghỉ sau chuỗi ngày tập liên tiếp — đặt lên đầu, vẫn kèm lựa chọn nhẹ.
