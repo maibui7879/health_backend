@@ -16,6 +16,11 @@ export enum AuthProvider {
   GOOGLE = 'GOOGLE',
 }
 
+export enum UserRole {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
+}
+
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -35,6 +40,9 @@ export class User {
 
   @Column({ default: 'ACTIVE' })
   status!: string;
+
+  @Column({ type: 'varchar', length: 10, default: UserRole.USER })
+  role!: UserRole;
 
   @OneToOne('UserProfile', 'user', { cascade: true })
   profile!: UserProfile;

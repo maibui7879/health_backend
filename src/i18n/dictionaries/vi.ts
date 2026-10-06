@@ -21,6 +21,7 @@ export const vi = {
   'auth.registerOtpSent':
     'Mã OTP đã được gửi tới email. Mã có hiệu lực 10 phút.',
   'auth.registerDone': 'Đăng ký thành công.',
+  'auth.forbidden': 'Bạn không có quyền thực hiện thao tác này.',
   'mail.registerOtpSubject': 'Mã OTP đăng ký BeroHealth',
   'mail.registerOtpBody':
     'Mã OTP đăng ký của bạn là: {code}. Mã có hiệu lực 10 phút. Nếu không phải bạn yêu cầu, hãy bỏ qua email này.',
@@ -62,7 +63,11 @@ export const vi = {
   'favorites.notFound': 'Không tìm thấy món yêu thích',
   'favorites.forbidden': 'Bạn không có quyền sửa món yêu thích này',
   'favorites.nameRequired': 'Vui lòng nhập tên món ăn',
-
+  'foods.submitted': 'Đã gửi món, chờ admin duyệt',
+  'foods.exists': 'Món đã có trong catalog',
+  'foods.submissionNotFound': 'Không tìm thấy yêu cầu hoặc đã xử lý',
+  'foods.approved': 'Đã duyệt và đưa vào catalog',
+  'foods.rejected': 'Đã từ chối món này',
   'workout.notFound': 'Không tìm thấy bài tập',
   'workout.deleted': 'Đã xóa bài tập và cập nhật lại Calo đốt cháy',
   'workout.mediaRequired': 'Vui lòng đính kèm file media.',

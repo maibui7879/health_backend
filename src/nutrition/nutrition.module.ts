@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
 import { DailyNutrition } from './entities/daily-nutrition.entity';
 import { FavoriteFood } from './entities/favorite-food.entity';
@@ -19,6 +20,9 @@ import { FoodsController } from './foods.controller';
 import { FoodsService } from './foods.service';
 import { FavoritesController } from './favorites.controller';
 import { FavoritesService } from './favorites.service';
+import { FoodSubmission } from './entities/food-submission.entity';
+import { ModerationController } from './moderation.controller';
+import { ModerationService } from './moderation.service';
 
 @Module({
   imports: [
@@ -31,15 +35,18 @@ import { FavoritesService } from './favorites.service';
       DailyLog,
       Food,
       FavoriteFood,
+      FoodSubmission,
     ]),
     UsersModule,
     InsightsModule,
+    AuthModule,
   ],
   controllers: [
     NutritionController,
     NutritionPlansController,
     FoodsController,
     FavoritesController,
+    ModerationController,
   ],
   providers: [
     NutritionService,
@@ -47,6 +54,7 @@ import { FavoritesService } from './favorites.service';
     FoodsService,
     FavoritesService,
     SuggestService,
+    ModerationService,
   ],
   exports: [NutritionService, NutritionPlansService],
 })

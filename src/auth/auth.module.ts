@@ -10,6 +10,7 @@ import { User } from '../users/entities/user.entity';
 import { MailService } from '../common/mail/mail.service';
 import { AccessTokenStrategy } from './strategies/access-token.strategy';
 import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
+import { RolesGuard } from './guards/roles.guard';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
     MailService,
     AccessTokenStrategy,
     RefreshTokenStrategy,
+    RolesGuard,
   ],
-  exports: [AccessTokenStrategy, RefreshTokenStrategy],
+  exports: [AccessTokenStrategy, RefreshTokenStrategy, RolesGuard],
 })
 export class AuthModule {}

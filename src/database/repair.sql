@@ -263,7 +263,30 @@ CREATE INDEX IF NOT EXISTS idx_community_reports_post
   ON community_reports (post_id);
 
 -- Hồ sơ gu ngầm (Phase 7B): tín hiệu chung cho gợi ý + feed.
-CREATE TABLE IF NOT EXISTS user_taste_profiles (
+ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(10) NOT NULL DEFAULT 'USER';
+
+-- Duyệt món user gửi (food moderation).
+CREATE TABLE IF NOT EXISTS food_submissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  food_name_vi VARCHAR(255) NOT NULL,
+  food_name_en VARCHAR(255) NULL,
+  kcal_100g FLOAT NOT NULL DEFAULT 0,
+  protein_100g FLOAT NOT NULL DEFAULT 0,
+  carbs_100g FLOAT NOT NULL DEFAULT 0,
+  fat_100g FLOAT NOT NULL DEFAULT 0,
+  image_url VARCHAR(500) NULL,
+  note VARCHAR(255) NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'PENDING'
+    CHECK (status IN ('PENDING','APPROVED','REJECTED')),
+  reviewer_id UUID NULL REFERENCES users(id) ON DELETE SET NULL,
+  reviewed_at TIMESTAMPTZ NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_food_submissions_status
+  ON food_submissions (status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_food_submissions_user
+  ON food_submissions (user_id, created_at DESC);CREATE TABLE IF NOT EXISTS user_taste_profiles (
   user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
   liked_tags JSONB NOT NULL DEFAULT '{}',
   disliked_tags JSONB NOT NULL DEFAULT '{}',

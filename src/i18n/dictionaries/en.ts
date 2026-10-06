@@ -22,6 +22,7 @@ export const en: Record<TranslationKey, string> = {
   'auth.registerOtpSent':
     'An OTP has been sent to your email. Valid for 10 minutes.',
   'auth.registerDone': 'Registration successful.',
+  'auth.forbidden': 'You are not allowed to perform this action.',
   'mail.registerOtpSubject': 'BeroHealth registration OTP',
   'mail.registerOtpBody':
     'Your registration OTP is: {code}. Valid for 10 minutes. If this was not you, ignore this email.',
@@ -63,6 +64,11 @@ export const en: Record<TranslationKey, string> = {
   'favorites.notFound': 'Favorite not found',
   'favorites.forbidden': 'You are not allowed to modify this favorite',
   'favorites.nameRequired': 'Please enter the dish name',
+  'foods.submitted': 'Submitted, pending admin review',
+  'foods.exists': 'Already in catalog',
+  'foods.submissionNotFound': 'Request not found or already handled',
+  'foods.approved': 'Approved and added to catalog',
+  'foods.rejected': 'Submission rejected',
 
   'workout.notFound': 'Workout not found',
   'workout.deleted': 'Workout deleted and burned calories updated',
