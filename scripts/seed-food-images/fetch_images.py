@@ -33,6 +33,11 @@ def get(url, params, retries=4):
                 time.sleep(10 * (i + 1))
                 continue
             raise
+        except OSError as e:
+            # timeout/SSL/reset mạng: backoff rồi thử lại
+            last = e
+            time.sleep(5 * (i + 1))
+            continue
     raise last
 
 
@@ -40,17 +45,20 @@ def strip_tags(s):
     return html.unescape(re.sub(r"<[^>]+>", "", s or "")).strip()
 
 
-def fetch_one(article):
-    data = get(VI_API, {
-        "action": "query", "prop": "pageimages", "titles": article,
-        "format": "json", "pithumbsize": 640, "pilicense": "free",
-    })
-    pages = data.get("query", {}).get("pages", {}).values()
-    page = next(iter(pages), {})
-    if page.get("missing") is not None or not page.get("thumbnail"):
+def fetch_one(article, fallback=""):
+    for title in [a for a in [article, fallback] if a]:
+        data = get(VI_API, {
+            "action": "query", "prop": "pageimages", "titles": title,
+            "format": "json", "pithumbsize": 640, "pilicense": "free",
+        })
+        pages = data.get("query", {}).get("pages", {}).values()
+        page = next(iter(pages), {})
+        if page.get("missing") is None and page.get("thumbnail"):
+            thumb = page["thumbnail"]["source"]
+            file = "File:" + page["pageimage"]
+            break
+    else:
         return ("no-image", "", "")
-    thumb = page["thumbnail"]["source"]
-    file = "File:" + page["pageimage"]
     info = get(COMMONS_API, {
         "action": "query", "titles": file, "prop": "imageinfo",
         "iiprop": "user|extmetadata",
@@ -68,46 +76,68 @@ def fetch_one(article):
 
 def main():
     emit = "--emit" in sys.argv
+    out_name = "023-food-images-3.sql"
+    for a in sys.argv:
+        if a.startswith("--out="):
+            out_name = a.split("=", 1)[1]
     rows = list(csv.DictReader((BASE / "dishes.csv").open(encoding="utf-8")))
     if not emit:
+        done = {}
+        try:
+            for r in csv.DictReader((BASE / "pending.csv").open(encoding="utf-8")):
+                if r["status"] == "ok" and r.get("image_url"):
+                    done[r["food_name_vi"]] = r
+        except FileNotFoundError:
+            pass
         out = []
         for r in rows:
+            if r["food_name_vi"] in done:
+                print(f"{ascii(r['food_name_vi'])}: kept", flush=True)
+                out.append(done[r["food_name_vi"]])
+                continue
             try:
-                status, url, credit = fetch_one(r["article"])
+                status, url, credit = fetch_one(r["article"], r.get("fallback", ""))
             except Exception as e:  # noqa: BLE001 - ghi nhận để review
                 status, url, credit = (f"error: {e}", "", "")
-            out.append({**r, "status": status, "image_url": url, "image_credit": credit})
-            print(f"{ascii(r['food_name_vi'])}: {ascii(status)}")
+            out.append({**{k: r.get(k, "") for k in ("food_name_vi", "article", "fallback")}, "status": status, "image_url": url, "image_credit": credit})
+            print(f"{ascii(r['food_name_vi'])}: {ascii(status)}", flush=True)
             time.sleep(2)
         with (BASE / "pending.csv").open("w", encoding="utf-8", newline="") as f:
-            w = csv.DictWriter(f, fieldnames=["food_name_vi", "article", "status", "image_url", "image_credit"])
+            w = csv.DictWriter(f, fieldnames=["food_name_vi", "article", "fallback", "status", "image_url", "image_credit"])
             w.writeheader()
             w.writerows(out)
         print(f"wrote {len(out)} rows -> pending.csv (review manually before --emit)")
         return
     pend = [r for r in csv.DictReader((BASE / "pending.csv").open(encoding="utf-8")) if r["status"] == "ok"]
+    covered_path = BASE / "covered.txt"
+    covered = set(covered_path.read_text(encoding="utf-8").splitlines()) if covered_path.exists() else set()
+    pend = [r for r in pend if r["food_name_vi"] not in covered]
+    if not pend:
+        print("không có món mới, bỏ qua")
+        return
 
     def sql_str(v):
         return "'" + v.replace("'", "''") + "'"
 
-    lines = [
-        "",
-        "-- Seed ảnh Wikimedia (sinh tự động, đã review). UPDATE theo tên canonical.",
-    ]
-    for r in pend:
-        lines.append(
-            f"UPDATE foods SET image_url = {sql_str(r['image_url'])}, "
-            f"image_credit = {sql_str(r['image_credit'])} "
-            f"WHERE food_name_vi = {sql_str(r['food_name_vi'])} AND image_url IS NULL;"
-        )
-    mig = BASE.parent.parent / "src" / "database" / "migrations" / "021-food-images.sql"
-    text = mig.read_text(encoding="utf-8")
-    marker = "-- Seed ảnh Wikimedia"
-    if marker in text:
-        print("021 đã có seed, bỏ qua (immutable sau khi applied)")
+    header = """-- Migration: ảnh món ăn đợt 2 (Wikimedia Commons, đã review tay).
+-- UPDATE theo tên canonical + AND image_url IS NULL (idempotent,
+-- không đè ảnh đợt 1 hay sửa tay).
+
+"""
+    body = "\n".join(
+        f"UPDATE foods SET image_url = {sql_str(r['image_url'])}, "
+        f"image_credit = {sql_str(r['image_credit'])} "
+        f"WHERE food_name_vi = {sql_str(r['food_name_vi'])} AND image_url IS NULL;"
+        for r in pend
+    ) + "\n"
+    out_path = BASE.parent.parent / "src" / "database" / "migrations" / out_name
+    if out_path.exists():
+        print(f"{out_name} đã tồn tại, bỏ qua (immutable sau khi applied)")
         return
-    mig.write_text(text + "\n".join(lines) + "\n", encoding="utf-8")
-    print(f"appended {len(pend)} updates -> 021-food-images.sql")
+    out_path.write_text(header + body, encoding="utf-8")
+    with covered_path.open("a", encoding="utf-8") as f:
+        f.write("\n" + "\n".join(r["food_name_vi"] for r in pend))
+    print(f"wrote {len(pend)} updates -> {out_name}")
 
 
 if __name__ == "__main__":

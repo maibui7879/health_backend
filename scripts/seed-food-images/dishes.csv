@@ -1,33 +1,604 @@
-food_name_vi,article
-Phở bò,Phở
-Bánh mì thịt,Bánh mì
-Bún bò Huế,Bún bò Huế
-Cơm gà,Cơm gà
-Gỏi cuốn,Gỏi cuốn
-Bánh xèo,Bánh xèo
-Chả giò,Chả giò
-Thịt kho trứng,Thịt kho tàu
-Cá kho tộ,Cá kho tộ
-Canh chua,Canh chua
-Chuối,Chuối
-Khoai lang,Khoai lang
-Bún chả Hà Nội,Bún chả
-Bún riêu cua,Bún riêu
-Bún thịt nướng,Bún thịt nướng
-Phở gà,Phở
-Cơm tấm sườn bì chả,Cơm tấm
-Bánh cuốn,Bánh cuốn
-Bánh chưng,Bánh chưng
-Mì Quảng,Mì Quảng
-Cao lầu,Cao lầu
-Hủ tiếu Nam Vang,Hủ tiếu
-Bánh canh cua,Bánh canh
-Cháo lòng,Cháo lòng
-Bánh tráng nướng,Bánh tráng nướng
-Gà nướng,Gà nướng
-Vịt quay,Vịt quay
-Chả cá Lã Vọng,Chả cá Lã Vọng
-Lẩu Thái,Lẩu Thái
-Bánh bèo,Bánh bèo
-Trứng chiên,Trứng chiên
-Cơm chiên Dương Châu,Cơm chiên
+food_name_vi,article,fallback
+Phở bò,Phở,
+Bánh mì thịt,Bánh mì,
+Bún bò Huế,Bún bò Huế,
+Cơm gà,Cơm gà,
+Gỏi cuốn,Gỏi cuốn,
+Bánh xèo,Bánh xèo,
+Chả giò,Chả giò,Nem rán
+Thịt kho trứng,Thịt kho tàu,Thịt kho
+Cá kho tộ,Cá kho tộ,Cá kho
+Canh chua,Canh chua,
+Chuối,Chuối,
+Khoai lang,Khoai lang,
+Bún chả Hà Nội,Bún chả,
+Bún riêu cua,Bún riêu cua,Bún riêu
+Bún thịt nướng,Bún thịt nướng,
+Phở gà,Phở,
+Cơm tấm sườn bì chả,Cơm tấm,
+Bánh cuốn,Bánh cuốn,
+Bánh chưng,Bánh chưng,
+Mì Quảng,Mì Quảng,
+Cao lầu,Cao lầu,
+Hủ tiếu Nam Vang,Hủ tiếu,
+Bánh canh cua,Bánh canh,
+Cháo lòng,Cháo lòng,
+Bánh tráng nướng,Bánh tráng nướng,Bánh tráng
+Gà nướng,Gà nướng,Gà quay
+Vịt quay,Vịt quay,Vịt quay Bắc Kinh
+Chả cá Lã Vọng,Chả cá Lã Vọng,
+Lẩu Thái,Lẩu Thái,Lẩu
+Bánh bèo,Bánh bèo,
+Trứng chiên,Trứng chiên,Trứng rán
+Cơm chiên Dương Châu,Cơm chiên,Cơm rang
+Bún mắm,Bún mắm,
+Bún cá,Bún cá,
+Bún ốc,Bún ốc,
+Bún thang,Bún thang,
+Bún đậu mắm tôm,Bún đậu mắm tôm,
+Miến lươn,Miến lươn,Miến
+Xôi gà,Xôi gà,Xôi
+Cháo gà,Cháo gà,Cháo
+Bánh tét,Bánh tét,
+Bánh ướt,Bánh ướt,Bánh cuốn
+Bánh bột lọc,Bánh bột lọc,
+Bánh giò,Bánh giò,
+Bánh khọt,Bánh khọt,Bánh căn
+Bắp xào,Bắp xào,Ngô xào
+Sườn nướng,Sườn nướng,
+Heo quay,Heo quay,
+Cá diêu hồng chiên,Cá diêu hồng,Cá rán
+Ốc len xào dừa,Ốc len,Ốc
+Canh khổ qua,Canh khổ qua,Mướp đắng
+Đậu hũ sốt cà,Đậu hũ,Đậu phụ
+Thịt rim tôm,Thịt rim,Thịt kho
+Kho quẹt,Kho quẹt,
+Rau muống xào,Rau muống xào,Rau muống
+Thịt bò xào,Thịt bò xào,Thịt bò
+Tôm hấp,Tôm hấp,Tôm
+Đậu phụ,Đậu phụ,
+Cà chua,Cà chua,
+Cà rốt,Cà rốt,
+Khoai tây,Khoai tây,
+Dưa chuột,Dưa chuột,Dưa leo
+Hành tây,Hành tây,
+Tỏi,Tỏi,
+Chanh,Chanh,
+Cam,Cam,
+Dứa,Dứa,Thơm
+Dưa hấu,Dưa hấu,
+Xoài,Xoài,
+Táo,Táo,
+Mật ong,Mật ong,
+Trứng gà,Trứng gà,Trứng
+Thịt bò,Thịt bò,
+Thịt lợn,Thịt lợn,
+Thịt gà,Thịt gà,
+Lạc,Đậu phộng,Lạc
+Sữa tươi,Sữa,Sữa bò
+Gạo nếp cái,Gạo nếp cái,
+Gạo nếp máy (Loại thường),Gạo nếp máy (Loại thường),Gạo nếp máy
+Gạo tẻ giã,Gạo tẻ giã,
+Gạo tẻ máy,Gạo tẻ máy,
+Gạo lứt,Gạo lứt,
+Kê,Kê,
+Ngô bắp tươi,Ngô bắp tươi,
+Ngô vàng hạt khô,Ngô vàng hạt khô,
+Bánh bao nhân thịt,Bánh bao nhân thịt,
+Bánh đa nem,Bánh đa nem,
+Bánh đúc,Bánh đúc,
+Bánh mỳ,Bánh mỳ,
+Bánh phở,Bánh phở,
+Bánh quẩy,Bánh quẩy,
+Bỏng ngô,Bỏng ngô,
+Bột gạo nếp,Bột gạo nếp,
+Bột gạo tẻ,Bột gạo tẻ,
+Bột mì,Bột mì,
+Bột ngô vàng,Bột ngô vàng,
+Bún,Bún,
+Cốm,Cốm,
+Mỳ sợi,Mỳ sợi,
+Ngô nếp luộc,Ngô nếp luộc,
+Củ ấu,Củ ấu,
+Củ cái,Củ cái,
+Củ dong,Củ dong,
+Củ sắn,Củ sắn,
+Củ sắn dây,Củ sắn dây,
+Củ súng khô (đã bỏ vỏ),Củ súng khô (đã bỏ vỏ),Củ súng khô
+Củ từ,Củ từ,
+Khoai lang nghệ,Khoai lang nghệ,
+Khoai môn,Khoai môn,
+Khoai nước,Khoai nước,
+Khoai riềng,Khoai riềng,
+Khoai sọ,Khoai sọ,
+Miến dong,Miến dong,
+Bột dong lọc,Bột dong lọc,
+Bột khoai lang,Bột khoai lang,
+Bột khoai riềng (bột đao),Bột khoai riềng (bột đao),Bột khoai riềng
+Bột khoai tây (lọc),Bột khoai tây (lọc),Bột khoai tây
+Bột sắn,Bột sắn,
+Bột sắn dây,Bột sắn dây,
+Khoai lang khô,Khoai lang khô,
+Khoai tây khô,Khoai tây khô,
+Khoai tây lát chiên,Khoai tây lát chiên,
+Sắn khô,Sắn khô,
+Trân châu sắn,Trân châu sắn,
+Cùi dừa già,Cùi dừa già,
+Cùi dừa non,Cùi dừa non,
+Đậu cô ve (hạt),Đậu cô ve (hạt),Đậu cô ve
+Đậu đen (hạt),Đậu đen (hạt),Đậu đen
+Đậu đũa (hạt),Đậu đũa (hạt),Đậu đũa
+Đậu Hà lan (hạt),Đậu Hà lan (hạt),Đậu Hà lan
+Đậu tương (đậu nành),Đậu tương (đậu nành),Đậu tương
+Đậu trắng hạt (Đậu Tây),Đậu trắng hạt (Đậu Tây),Đậu trắng hạt
+Đậu trứng cuốc,Đậu trứng cuốc,
+Đậu xanh (đậu tắt),Đậu xanh (đậu tắt),Đậu xanh
+Hạt dẻ to,Hạt dẻ to,
+Hạt dẻ tươi,Hạt dẻ tươi,
+Hạt dẻ khô,Hạt dẻ khô,
+Hạt đen,Hạt đen,
+Hạt điều,Hạt điều,
+Hạt mít,Hạt mít,
+Lạc hạt,Lạc hạt,
+Quả cọ tươi,Quả cọ tươi,
+Quả đại hái tươi,Quả đại hái tươi,
+"Vừng (đen, trắng)","Vừng (đen, trắng)",Vừng
+Bột đậu tương đã loại béo (đậu nành),Bột đậu tương đã loại béo (đậu nành),Bột đậu tương đã loại béo
+Bột đậu tương rang chín,Bột đậu tương rang chín,
+Bột đậu xanh,Bột đậu xanh,
+Bột lạc,Bột lạc,
+Đậu phụ chúc,Đậu phụ chúc,
+Đậu phụ nướng,Đậu phụ nướng,
+Hạt bí đỏ rang,Hạt bí đỏ rang,
+Hạt dưa đỏ rang (dưa hấu),Hạt dưa đỏ rang (dưa hấu),Hạt dưa đỏ rang
+"Hạt điều khô, chiên dầu","Hạt điều khô, chiên dầu",Hạt điều khô
+Sữa bột đậu nành,Sữa bột đậu nành,
+Sữa đậu nành (100g đậu/lít),Sữa đậu nành (100g đậu/lít),Sữa đậu nành
+Tào phớ,Tào phớ,
+Bầu,Bầu,
+Bí đao (bí xanh),Bí đao (bí xanh),Bí đao
+Bí ngô,Bí ngô,
+Cà bát,Cà bát,
+Cà pháo,Cà pháo,
+"Cà rốt (củ đỏ, vàng)","Cà rốt (củ đỏ, vàng)",Cà rốt
+Cà rốt khô,Cà rốt khô,
+Cà tím,Cà tím,
+Cải bắp,Cải bắp,
+Cải bắp đỏ,Cải bắp đỏ,
+Cải bắp khô,Cải bắp khô,
+Cải cúc,Cải cúc,
+Cải soong,Cải soong,
+Cải thìa (cải trắng),Cải thìa (cải trắng),Cải thìa
+Cải xanh,Cải xanh,
+Cần ta,Cần ta,
+Cần tây,Cần tây,
+Chuối xanh,Chuối xanh,
+Củ cải đỏ,Củ cải đỏ,
+Củ cải trắng,Củ cải trắng,
+Củ cải trắng khô,Củ cải trắng khô,
+Củ đậu,Củ đậu,
+Củ niễng,Củ niễng,
+Dọc củ cải (non),Dọc củ cải (non),Dọc củ cải
+Dọc mùng,Dọc mùng,
+Dưa gang,Dưa gang,
+Đậu cô ve,Đậu cô ve,
+Đậu đũa,Đậu đũa,
+Đậu Hà Lan,Đậu Hà Lan,
+Đậu rồng (quả non),Đậu rồng (quả non),Đậu rồng
+Đu đủ xanh,Đu đủ xanh,
+Gấc,Gấc,
+Giá đậu tương,Giá đậu tương,
+Giá đậu xanh,Giá đậu xanh,
+Hành củ tươi,Hành củ tươi,
+Hành lá (hành hoa),Hành lá (hành hoa),Hành lá
+Hạt sen tươi,Hạt sen tươi,
+Hạt sen khô,Hạt sen khô,
+Hẹ lá,Hẹ lá,
+Hoa chuối,Hoa chuối,
+Hoa lý,Hoa lý,
+Khế,Khế,
+Lá lốt,Lá lốt,
+Lá me,Lá me,
+Lá mơ lông,Lá mơ lông,
+Lá sắn tươi,Lá sắn tươi,
+Măng chua,Măng chua,
+Măng khô,Măng khô,
+Măng tây,Măng tây,
+Măng tre,Măng tre,
+Mướp,Mướp,
+Mướp đắng,Mướp đắng,
+Mướp Nhật bản,Mướp Nhật bản,
+Ngải cứu,Ngải cứu,
+Ngô bao tử,Ngô bao tử,
+Ngó sen,Ngó sen,
+Nụ mướp,Nụ mướp,
+ớt đỏ to,ớt đỏ to,
+ớt vàng to,ớt vàng to,
+ớt xanh to,ớt xanh to,
+Quả dọc,Quả dọc,
+Quả me chua,Quả me chua,
+Rau bí,Rau bí,
+Rau câu khô,Rau câu khô,
+Rau câu tươi,Rau câu tươi,
+Rau diếp,Rau diếp,
+Rau đay,Rau đay,
+"Rau giấp cá, diếp cá","Rau giấp cá, diếp cá",Rau giấp cá
+Rau giền cơm,Rau giền cơm,
+Rau giền đỏ,Rau giền đỏ,
+Rau giền trắng,Rau giền trắng,
+Rau húng,Rau húng,
+Rau khoai lang,Rau khoai lang,
+Rau kinh giới,Rau kinh giới,
+Rau má rừng,Rau má rừng,
+"Rau má, má mơ","Rau má, má mơ",Rau má
+Rau mồng tơi,Rau mồng tơi,
+Rau mùi,Rau mùi,
+Rau mùi tàu,Rau mùi tàu,
+Rau muống,Rau muống,
+Rau muống khô,Rau muống khô,
+Rau ngổ,Rau ngổ,
+Rau ngót,Rau ngót,
+Rau ngót khô,Rau ngót khô,
+Rau răm,Rau răm,
+Rau rút,Rau rút,
+Rau sà lách,Rau sà lách,
+Rau sam,Rau sam,
+Rau sắng (chùa Hương),Rau sắng (chùa Hương),Rau sắng
+Rau tàu bay,Rau tàu bay,
+Rau thơm,Rau thơm,
+Sấu xanh,Sấu xanh,
+Su hào,Su hào,
+Su hào khô,Su hào khô,
+"Su su, quả","Su su, quả",Su su
+Súp lơ trắng,Súp lơ trắng,
+Súp lơ xanh,Súp lơ xanh,
+Thìa là,Thìa là,
+Tía tô,Tía tô,
+Tỏi ta,Tỏi ta,
+Tỏi tây (cả lá),Tỏi tây (cả lá),Tỏi tây
+Trám đen chín,Trám đen chín,
+"Trám xanh sống, trám trắng","Trám xanh sống, trám trắng",Trám xanh sống
+Xương sông,Xương sông,
+Cà chua muối,Cà chua muối,
+Cà muối nén,Cà muối nén,
+Cà muối sổi,Cà muối sổi,
+Dưa cải bắp,Dưa cải bắp,
+Dưa cải bẹ,Dưa cải bẹ,
+Dưa cải sen,Dưa cải sen,
+Dưa chuột muối,Dưa chuột muối,
+Dưa giá (đậu xanh),Dưa giá (đậu xanh),Dưa giá
+Hành củ muối,Hành củ muối,
+Kiệu muối,Kiệu muối,
+"Nhút (muối từ mít non, ngọn đậu xanh non...)","Nhút (muối từ mít non, ngọn đậu xanh non...)",Nhút
+Men bia khô,Men bia khô,
+Men bia tươi,Men bia tươi,
+Mộc nhĩ,Mộc nhĩ,
+Nấm hương khô,Nấm hương khô,
+Nấm hương tươi,Nấm hương tươi,
+Nấm mỡ (Nấm tây),Nấm mỡ (Nấm tây),Nấm mỡ
+Nấm rơm,Nấm rơm,
+Nấm thường tươi,Nấm thường tươi,
+Bưởi,Bưởi,
+Chôm chôm,Chôm chôm,
+Chuối khô,Chuối khô,
+Chuối tây,Chuối tây,
+Chuối tiêu,Chuối tiêu,
+Dâu gia,Dâu gia,
+Dâu tây,Dâu tây,
+Dưa bở,Dưa bở,
+Dưa hồng,Dưa hồng,
+Dưa lê,Dưa lê,
+Dứa ta,Dứa ta,
+Dứa tây,Dứa tây,
+Đào,Đào,
+Đu đủ chín,Đu đủ chín,
+Gioi,Gioi,
+Hồng bì,Hồng bì,
+Hồng đỏ,Hồng đỏ,
+Hồng ngâm,Hồng ngâm,
+Hồng xiêm,Hồng xiêm,
+Lê,Lê,
+Lựu,Lựu,
+Mãng cầu xiêm,Mãng cầu xiêm,
+Mắc coọc,Mắc coọc,
+Mận,Mận,
+Mít dai,Mít dai,
+Mít khô,Mít khô,
+Mít mật,Mít mật,
+Mơ,Mơ,
+Mơ khô,Mơ khô,
+"Muỗm, quéo","Muỗm, quéo",Muỗm
+Na,Na,
+Nhãn,Nhãn,
+Nhãn khô,Nhãn khô,
+Nho ngọt,Nho ngọt,
+Nho ta (nho chua),Nho ta (nho chua),Nho ta
+Nhót,Nhót,
+ổi,ổi,
+Quả bơ vỏ tím,Quả bơ vỏ tím,
+Quả bơ vỏ xanh,Quả bơ vỏ xanh,
+Quả cóc,Quả cóc,
+Quả thanh long,Quả thanh long,
+Quả trứng gà,Quả trứng gà,
+Quất chín (cả vỏ),Quất chín (cả vỏ),Quất chín
+Quít,Quít,
+Sầu riêng,Sầu riêng,
+Sấu chín,Sấu chín,
+Táo ta,Táo ta,
+Táo tây,Táo tây,
+Vải,Vải,
+Vải khô,Vải khô,
+Vú sữa,Vú sữa,
+Xoài chín,Xoài chín,
+Quả kiwi,Quả kiwi,
+Bơ,Bơ,
+"Dầu thảo mộc (Lạc, vừng, cám...)","Dầu thảo mộc (Lạc, vừng, cám...)",Dầu thảo mộc
+Mỡ lợn muối,Mỡ lợn muối,
+Mỡ lợn nước,Mỡ lợn nước,
+Bơ thực vật,Bơ thực vật,
+Dầu bông,Dầu bông,
+Dầu cám gạo,Dầu cám gạo,
+Dầu cọ,Dầu cọ,
+Dầu dừa,Dầu dừa,
+Dầu đậu tương,Dầu đậu tương,
+Dầu lạc,Dầu lạc,
+Dầu mè,Dầu mè,
+Dầu ngô,Dầu ngô,
+Dầu oliu,Dầu oliu,
+Thịt bê mỡ,Thịt bê mỡ,
+Thịt bê nạc,Thịt bê nạc,
+Thịt bò loại I,Thịt bò loại I,
+Thịt bò loại II,Thịt bò loại II,
+"Thịt bò, lưng, nạc","Thịt bò, lưng, nạc",Thịt bò
+"Thịt bò, lưng, nạc và mỡ","Thịt bò, lưng, nạc và mỡ",Thịt bò
+Thịt bồ câu ra ràng,Thịt bồ câu ra ràng,
+Thịt chó sấn,Thịt chó sấn,
+Thịt chó vai,Thịt chó vai,
+"Thịt cừu, nạc","Thịt cừu, nạc",Thịt cừu
+"Thịt dê, nạc","Thịt dê, nạc",Thịt dê
+Thịt gà rừng,Thịt gà rừng,
+Thịt gà ta,Thịt gà ta,
+Thịt gà tây,Thịt gà tây,
+Thịt hươu,Thịt hươu,
+Thịt lợn mỡ,Thịt lợn mỡ,
+Thịt lợn nạc,Thịt lợn nạc,
+"Thịt lợn nửa nạc, nửa mỡ","Thịt lợn nửa nạc, nửa mỡ",Thịt lợn nửa nạc
+Thịt ngỗng,Thịt ngỗng,
+Thịt ngựa,Thịt ngựa,
+Thịt thỏ nhà,Thịt thỏ nhà,
+Thịt thỏ rừng,Thịt thỏ rừng,
+Thịt trâu,Thịt trâu,
+Thịt trâu bắp,Thịt trâu bắp,
+Thịt trâu cổ,Thịt trâu cổ,
+Thịt trâu đùi,Thịt trâu đùi,
+Thịt trâu thăn,Thịt trâu thăn,
+Thịt vịt,Thịt vịt,
+Bầu dục bò,Bầu dục bò,
+Bầu dục lợn,Bầu dục lợn,
+Bì lợn,Bì lợn,
+Chân giò lợn,Chân giò lợn,
+Dạ dày bò,Dạ dày bò,
+Dạ dày lợn,Dạ dày lợn,
+Đầu bò,Đầu bò,
+Đầu lợn,Đầu lợn,
+Đuôi bò,Đuôi bò,
+Đuôi lợn,Đuôi lợn,
+Gan bò,Gan bò,
+Gan gà,Gan gà,
+Gan lợn,Gan lợn,
+Gan vịt,Gan vịt,
+Gân chân bò,Gân chân bò,
+Lưỡi bò,Lưỡi bò,
+Lưỡi lợn,Lưỡi lợn,
+Lòng lợn (ruột già),Lòng lợn (ruột già),Lòng lợn
+Lòng lợn (ruột non),Lòng lợn (ruột non),Lòng lợn
+Mề gà,Mề gà,
+óc bò,óc bò,
+óc lợn,óc lợn,
+Phổi bò,Phổi bò,
+Phổi lợn,Phổi lợn,
+Sườn lợn,Sườn lợn,
+Tai lợn,Tai lợn,
+Tim bò,Tim bò,
+Tim gà,Tim gà,
+Tim lợn,Tim lợn,
+Tiết bò,Tiết bò,
+Tiết lợn luộc,Tiết lợn luộc,
+Tiết lợn sống,Tiết lợn sống,
+Tủy xương bò,Tủy xương bò,
+Tủy xương lợn,Tủy xương lợn,
+Ba tê,Ba tê,
+Chả lợn,Chả lợn,
+Chả quế lợn,Chả quế lợn,
+Dăm bông lợn,Dăm bông lợn,
+Dồi lợn,Dồi lợn,
+Giò bò,Giò bò,
+Giò lụa,Giò lụa,
+Giò thủ lợn,Giò thủ lợn,
+Lạp xường,Lạp xường,
+Nem chạo,Nem chạo,
+Nem chua,Nem chua,
+Ruốc thịt lợn,Ruốc thịt lợn,
+Thịt bò khô,Thịt bò khô,
+Thịt trâu khô,Thịt trâu khô,
+Xúc xích,Xúc xích,
+Bột cóc,Bột cóc,
+Châu chấu,Châu chấu,
+ếch (thịt đùi),ếch (thịt đùi),ếch
+Nhộng,Nhộng,
+Lòng gà (cả bộ),Lòng gà (cả bộ),Lòng gà
+Cá bống,Cá bống,
+Cá chày,Cá chày,
+Cá chép,Cá chép,
+Cá dưa,Cá dưa,
+Cá dầu,Cá dầu,
+Cá diếc,Cá diếc,
+Cá đao,Cá đao,
+Cá đé,Cá đé,
+Cá đối,Cá đối,
+Cá đồng tiền,Cá đồng tiền,
+Cá hồi,Cá hồi,
+"Cá khô (chim, thu, nụ, đé)","Cá khô (chim, thu, nụ, đé)",Cá khô
+Cá lác,Cá lác,
+Cá mè,Cá mè,
+Cá mòi,Cá mòi,
+Cá mỡ,Cá mỡ,
+Cá mối,Cá mối,
+Cá nạc,Cá nạc,
+Cá ngừ,Cá ngừ,
+Cá nục,Cá nục,
+Cá phèn,Cá phèn,
+Cá quả,Cá quả,
+Cá rô đồng,Cá rô đồng,
+Cá rô phi,Cá rô phi,
+Cá thờn bơn (cá bơn),Cá thờn bơn (cá bơn),Cá thờn bơn
+Cá thu,Cá thu,
+Cá thu đao,Cá thu đao,
+Cá trạch (cá chạch),Cá trạch (cá chạch),Cá trạch
+Cá trắm cỏ,Cá trắm cỏ,
+Cá trê,Cá trê,
+Cá trích,Cá trích,
+Cá trôi,Cá trôi,
+Cua bể,Cua bể,
+Cua đồng,Cua đồng,
+ghẹ,ghẹ,
+Hải sâm,Hải sâm,
+Hến,Hến,
+Lươn,Lươn,
+Mực khô,Mực khô,
+Mực tươi,Mực tươi,
+ốc bươu,ốc bươu,
+ốc đá,ốc đá,
+ốc nhồi,ốc nhồi,
+ốc vặn,ốc vặn,
+"Rạm (muối, đồ)","Rạm (muối, đồ)",Rạm
+Rạm tươi,Rạm tươi,
+Rươi,Rươi,
+Sò,Sò,
+Tép gạo,Tép gạo,
+Tép khô,Tép khô,
+Tôm biển,Tôm biển,
+Tôm đồng,Tôm đồng,
+Tôm khô,Tôm khô,
+Trai,Trai,
+Bánh phồng tôm rán,Bánh phồng tôm rán,
+Bánh phồng tôm sống,Bánh phồng tôm sống,
+Bột cá,Bột cá,
+Ruốc cá quả,Ruốc cá quả,
+Ruốc tôm,Ruốc tôm,
+Lòng đỏ trứng gà,Lòng đỏ trứng gà,
+Lòng trắng trứng gà,Lòng trắng trứng gà,
+Trứng vịt,Trứng vịt,
+Lòng đỏ trứng vịt,Lòng đỏ trứng vịt,
+Lòng trắng trứng vịt,Lòng trắng trứng vịt,
+Trứng chim cút,Trứng chim cút,
+Trứng cá,Trứng cá,
+Trứng cá muối,Trứng cá muối,
+Trứng vịt lộn,Trứng vịt lộn,
+Bột trứng,Bột trứng,
+Sữa bò tươi,Sữa bò tươi,
+Sữa dê tươi,Sữa dê tươi,
+Sữa mẹ (sữa người),Sữa mẹ (sữa người),Sữa mẹ
+Sữa chua (từ sữa bò),Sữa chua (từ sữa bò),Sữa chua
+Sữa chua vớt béo,Sữa chua vớt béo,
+Sữa bột toàn phần,Sữa bột toàn phần,
+Sữa bột tách béo,Sữa bột tách béo,
+Sữa đặc có đường Việt Nam,Sữa đặc có đường Việt Nam,
+Pho mát,Pho mát,
+Chuối nước đường,Chuối nước đường,
+Dưa chuột hộp,Dưa chuột hộp,
+Dứa hộp,Dứa hộp,
+Lạc chao dầu,Lạc chao dầu,
+Mắc coọc nước đường,Mắc coọc nước đường,
+Mận nước đường,Mận nước đường,
+Mứt bí ngô,Mứt bí ngô,
+Mứt cam có vỏ,Mứt cam có vỏ,
+Mứt chuối,Mứt chuối,
+Mứt dứa,Mứt dứa,
+Tên thực phẩm ( Vietnamese) Mứt đu đủ,Tên thực phẩm ( Vietnamese) Mứt đu đủ,Tên thực phẩm
+Nhãn nước đường,Nhãn nước đường,
+Nước dứa hộp,Nước dứa hộp,
+Vải nước đường,Vải nước đường,
+Cá thu hộp,Cá thu hộp,
+Cá trích hộp,Cá trích hộp,
+Thịt bò hộp,Thịt bò hộp,
+Thịt gà hộp,Thịt gà hộp,
+Thịt lợn hộp,Thịt lợn hộp,
+"Thịt lợn, thịt bò xay hộp","Thịt lợn, thịt bò xay hộp",Thịt lợn
+Thịt vịt hầm,Thịt vịt hầm,
+Bánh bích cốt,Bánh bích cốt,
+Bánh bích quy,Bánh bích quy,
+Bánh chả,Bánh chả,
+Bánh con cá,Bánh con cá,
+Bánh đậu xanh,Bánh đậu xanh,
+Bánh kem xốp,Bánh kem xốp,
+Bánh khảo chay,Bánh khảo chay,
+Bánh quế,Bánh quế,
+Bánh sô cô la,Bánh sô cô la,
+Bánh thỏi sô cô la,Bánh thỏi sô cô la,
+Bánh trứng nhện,Bánh trứng nhện,
+Bột ca cao,Bột ca cao,
+Đường cát,Đường cát,
+Đường kính,Đường kính,
+Kẹo bơ cứng,Kẹo bơ cứng,
+Kẹo cà phê,Kẹo cà phê,
+Kẹo cam chanh,Kẹo cam chanh,
+Kẹo dừa mềm,Kẹo dừa mềm,
+Kẹo dứa mềm,Kẹo dứa mềm,
+Kẹo lạc,Kẹo lạc,
+Kẹo Pastille (kẹo ngậm bạc hà),Kẹo Pastille (kẹo ngậm bạc hà),Kẹo Pastille
+Kẹo sô cô la,Kẹo sô cô la,
+Kẹo sữa,Kẹo sữa,
+Kẹo vừng viên,Kẹo vừng viên,
+Mạch nha,Mạch nha,
+Mứt lạc,Mứt lạc,
+Cary bột,Cary bột,
+Gừng khô (bột),Gừng khô (bột),Gừng khô
+Gừng tươi,Gừng tươi,
+Hạt tiêu,Hạt tiêu,
+Muối,Muối,
+"Nghệ khô, bột","Nghệ khô, bột",Nghệ khô
+Nghệ tươi,Nghệ tươi,
+ớt khô bột,ớt khô bột,
+Riềng,Riềng,
+Magi,Magi,
+Mắm tôm đặc,Mắm tôm đặc,
+Mắm tôm loãng,Mắm tôm loãng,
+Mắm tép chua,Mắm tép chua,
+Nước mắm cá (loại đặc biệt),Nước mắm cá (loại đặc biệt),Nước mắm cá
+Nước mắm cá loại I,Nước mắm cá loại I,
+Nước mắm loại II,Nước mắm loại II,
+Nước mắm cá,Nước mắm cá,
+Nước mắm cô,Nước mắm cô,
+Tương ngô,Tương ngô,
+Tương nếp,Tương nếp,
+Tương ớt,Tương ớt,
+Xì dầu,Xì dầu,
+Sốt mayonnaise,Sốt mayonnaise,
+"Bia (cồn: 4,5 g)","Bia (cồn: 4,5 g)",Bia
+Cô nhắc (cồn 32 g),Cô nhắc (cồn 32 g),Cô nhắc
+Cốc tai (cồn 13 g),Cốc tai (cồn 13 g),Cốc tai
+Coca cola,Coca cola,
+Nước cam tươi,Nước cam tươi,
+Nước dừa non tươi,Nước dừa non tươi,
+Nước ép cà chua,Nước ép cà chua,
+Nước khoáng,Nước khoáng,
+Nước quít tươi,Nước quít tươi,
+"Rượu cam, chanh (cồn 24,2 g)","Rượu cam, chanh (cồn 24,2 g)",Rượu cam
+Rượu nếp (80g/ 24 ml) (cồn 5 g),Rượu nếp (80g/ 24 ml) (cồn 5 g),Rượu nếp
+Rượu trắng (cồn 39 g),Rượu trắng (cồn 39 g),Rượu trắng
+"Rượu vang đỏ (cồn 9,5 g)","Rượu vang đỏ (cồn 9,5 g)",Rượu vang đỏ
+"Rượu vang trắng (cồn 9,5 g)","Rượu vang trắng (cồn 9,5 g)",Rượu vang trắng
+Rượu vang trắng ngọt (cồn 10.2 g),Rượu vang trắng ngọt (cồn 10.2 g),Rượu vang trắng ngọt
+"Rượu Whisky (cồn 35,2 g)","Rượu Whisky (cồn 35,2 g)",Rượu Whisky
+Bánh đa cua,Bánh đa cua,
+Miến gà,Miến gà,
+Xôi xéo,Xôi xéo,
+Bánh căn,Bánh căn,
+Bột chiên,Bột chiên,
+Thịt ba chỉ nướng,Thịt ba chỉ nướng,
+Cơm trắng,Cơm trắng,
+Trứng luộc,Trứng luộc,
+Ức gà luộc,Ức gà luộc,
+Cá hồi nướng,Cá hồi nướng,
+Quả bơ,Quả bơ,
