@@ -117,6 +117,8 @@ CREATE INDEX IF NOT EXISTS idx_foods_name_en ON foods (food_name_en);
 ALTER TABLE foods ADD COLUMN IF NOT EXISTS source VARCHAR(30) NULL;
 ALTER TABLE foods ADD COLUMN IF NOT EXISTS code VARCHAR(60) NULL;
 ALTER TABLE foods ADD COLUMN IF NOT EXISTS display_name_vi VARCHAR(255) NULL;
+ALTER TABLE foods ADD COLUMN IF NOT EXISTS image_url VARCHAR(500) NULL;
+ALTER TABLE foods ADD COLUMN IF NOT EXISTS image_credit VARCHAR(255) NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_foods_code ON foods (code);
 
 -- Tìm kiếm mờ tiếng Việt (Phase 7A + fix 015): search_norm + trigger + index trigram.

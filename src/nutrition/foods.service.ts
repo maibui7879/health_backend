@@ -80,7 +80,7 @@ export class FoodsService {
       params.push(limit);
       const raw: unknown = await this.foodRepo.query(
         `SELECT id, code, food_name_vi, display_name_vi, food_name_en, kcal_100g, protein_100g,
-          carbs_100g, fat_100g, source,
+          carbs_100g, fat_100g, source, image_url, image_credit,
           1 - (embedding <=> $1) AS similarity
          FROM foods
          WHERE embedding IS NOT NULL ${kcalFilter}

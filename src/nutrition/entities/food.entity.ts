@@ -55,6 +55,14 @@ export class Food {
   @Column({ type: 'text', nullable: true, select: false })
   embedding!: string | null;
 
+  // Ảnh minh họa (Wikimedia Commons, migration 021). NULL = chưa có.
+  // image_credit giữ attribution tác giả/license (bắt buộc CC BY-SA).
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  image_url!: string | null;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  image_credit!: string | null;
+
   @CreateDateColumn()
   created_at!: Date;
 

@@ -25,6 +25,7 @@ Hạ tầng `device_token` đã có.
 - [x] **DB tra cứu thực phẩm chung** (01/10/2026): bảng `foods` (tên vi/en, kcal/protein/carbs/fat/100g) + `GET /foods/search` (ILIKE 2 tên, cap 50) + `GET /foods/:id`, seed 24 món Việt ước tính (migration 007)
 - [x] **Mở rộng catalog lên ~574 món** (01/10/2026, Hướng 2): import Bảng thành phần thực phẩm VN 2007 (Viện Dinh dưỡng/Bộ Y tế, mirror FAO — 526 nguyên liệu vi+en chuẩn, parse PDF + decode font TCVN3 có kiểm chứng) + ~48 món nấu phổ biến ước tính (VFCT không có món tổng hợp) — migration 010, cột `source` (`VFCT 2007`/`estimate`), script tái tạo trong `scripts/seed-foods/`
 - [x] **Món yêu thích** (01/10/2026): bảng `favorite_foods` + CRUD `GET/POST/DELETE /favorites` — từ catalog (snapshot giá trị) hoặc tự nhập, chống trùng 409, phân quyền 403/404
+- [x] **Ảnh món ăn** (06/10/2026): `foods.image_url/image_credit` (migration 021) + seed 25 món phổ biến từ lead image vi.wikipedia (hotlink thumb, kèm attribution CC) — script `scripts/seed-food-images/` (mapping tay → fetch → review `pending.csv` → `--emit`), NULL thì FE fallback emoji
 - [x] **BMI** (có sẵn): `src/users/bmi.ts` tính lúc đọc + phân loại WHO, trả trong `GET /users/me`
 - [x] **Cảnh báo lệch TDEE/BMI** (có sẵn): `warnings[]` real-time trong dashboard (`OVER_BUDGET` ≥120%, `UNDER_BUDGET` ≤50%, `UNSAFE_MEAL`)
 - [ ] **Tự điều chỉnh plan**: khi user nhiều ngày không theo (so `daily` vs target), gợi ý plan mới hoặc cảnh báo — hiện chỉ suggest tĩnh
