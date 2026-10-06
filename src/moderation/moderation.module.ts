@@ -4,6 +4,7 @@ import { AuthModule } from '../auth/auth.module';
 import { CommunityComment } from '../community/entities/comment.entity';
 import { Post } from '../community/entities/post.entity';
 import { Food } from '../nutrition/entities/food.entity';
+import { NotificationsModule } from '../notifications/notifications.module';
 import { User } from '../users/entities/user.entity';
 import { ExerciseTemplate } from '../workout/entities/exercise-template.entity';
 import { Workout } from '../workout/entities/workout.entity';
@@ -24,6 +25,7 @@ import { ReportsService } from './reports.service';
       Food,
     ]),
     AuthModule,
+    NotificationsModule,
   ],
   controllers: [ReportsController, AdminReportsController],
   providers: [ReportsService],

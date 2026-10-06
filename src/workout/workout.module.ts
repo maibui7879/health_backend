@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DailyNutrition } from '../nutrition/entities/daily-nutrition.entity';
 import { InsightsModule } from '../insights/insights.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 import { ExerciseTemplatesService } from './exercise-templates.service';
 import { SuggestWorkoutService } from './suggest-workout.service';
 import { WorkoutController } from './workout.controller';
@@ -20,6 +21,7 @@ import { Workout } from './entities/workout.entity';
       WorkoutGoal,
     ]),
     InsightsModule,
+    NotificationsModule,
   ],
   controllers: [WorkoutController],
   providers: [

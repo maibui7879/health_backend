@@ -14,6 +14,13 @@ import { UserProfile } from '../users/entities/user-profile.entity';
 import { Workout } from '../workout/entities/workout.entity';
 import { ReportsService } from '../moderation/reports.service';
 import { CommunityService } from './community.service';
+
+jest.mock('expo-server-sdk', () => ({
+  Expo: jest.fn().mockImplementation(() => ({
+    chunkPushNotifications: jest.fn((messages: unknown[]) => [messages]),
+    sendPushNotificationsAsync: jest.fn(() => Promise.resolve([])),
+  })),
+}));
 import { CommunityComment } from './entities/comment.entity';
 import { AuthorScore } from './entities/author-score.entity';
 import { PostView } from './entities/post-view.entity';

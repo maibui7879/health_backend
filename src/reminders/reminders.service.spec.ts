@@ -3,6 +3,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PushService } from '../common/push/push.service';
 import { localizationMockProvider } from '../i18n/localization.mock';
+import { NotificationsService } from '../notifications/notifications.service';
 import { User } from '../users/entities/user.entity';
 import { UserSetting } from '../users/entities/user-setting.entity';
 import { Reminder, ReminderType } from './entities/reminder.entity';
@@ -40,6 +41,7 @@ describe('RemindersService', () => {
   };
   const mockSettingRepo = { findOne: jest.fn() };
   const mockPushService = { isPushToken: jest.fn(), sendMany: jest.fn() };
+  const mockNotifications = { notify: jest.fn(() => Promise.resolve(null)) };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -50,6 +52,7 @@ describe('RemindersService', () => {
         { provide: getRepositoryToken(User), useValue: mockUserRepo },
         { provide: getRepositoryToken(UserSetting), useValue: mockSettingRepo },
         { provide: PushService, useValue: mockPushService },
+        { provide: NotificationsService, useValue: mockNotifications },
       ],
     }).compile();
 
@@ -253,6 +256,36 @@ describe('RemindersService', () => {
       await service.sendDueReminders(monday8);
 
       expect(uqb.execute).toHaveBeenCalled();
+    });
+
+    it('user không push token vẫn lưu in-app và stamp', async () => {
+      const { qb } = mockDue([
+        {
+          id: 'r1',
+          user_id: 'u1',
+          type: ReminderType.WATER,
+          time: '08:00',
+          days: [],
+          title: null,
+          body: null,
+        },
+      ]);
+      mockUserRepo.findOne.mockResolvedValue({ id: 'u1', device_token: null });
+      mockSettingRepo.findOne.mockResolvedValue({
+        locale: 'vi',
+        remind_water: true,
+        remind_meals: true,
+      });
+
+      const res = await service.sendDueReminders(monday8);
+
+      expect(res.sent).toBe(0);
+      expect(mockPushService.sendMany).not.toHaveBeenCalled();
+      expect(mockNotifications.notify).toHaveBeenCalledWith(
+        'u1',
+        expect.objectContaining({ push: false }),
+      );
+      expect(qb.execute).toHaveBeenCalled();
     });
   });
 });

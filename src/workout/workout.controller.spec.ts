@@ -1,6 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WorkoutController } from './workout.controller';
 import { WorkoutService } from './workout.service';
+
+jest.mock('expo-server-sdk', () => ({
+  Expo: jest.fn().mockImplementation(() => ({
+    chunkPushNotifications: jest.fn((messages: unknown[]) => [messages]),
+    sendPushNotificationsAsync: jest.fn(() => Promise.resolve([])),
+  })),
+}));
 import { SuggestWorkoutService } from './suggest-workout.service';
 import { ExerciseTemplatesService } from './exercise-templates.service';
 import { WorkoutGoalsService } from './workout-goals.service';

@@ -1,5 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { NotificationsService } from '../notifications/notifications.service';
+
+jest.mock('expo-server-sdk', () => ({
+  Expo: jest.fn().mockImplementation(() => ({
+    chunkPushNotifications: jest.fn((messages: unknown[]) => [messages]),
+    sendPushNotificationsAsync: jest.fn(() => Promise.resolve([])),
+  })),
+}));
 import { Workout } from './entities/workout.entity';
 import { WorkoutGoal, WorkoutGoalStatus } from './entities/workout-goal.entity';
 import { WorkoutGoalsService } from './workout-goals.service';
@@ -32,6 +40,10 @@ describe('WorkoutGoalsService', () => {
         localizationMockProvider,
         { provide: getRepositoryToken(WorkoutGoal), useValue: mockGoalRepo },
         { provide: getRepositoryToken(Workout), useValue: mockWorkoutRepo },
+        {
+          provide: NotificationsService,
+          useValue: { notify: jest.fn(() => Promise.resolve(null)) },
+        },
       ],
     }).compile();
     service = module.get<WorkoutGoalsService>(WorkoutGoalsService);

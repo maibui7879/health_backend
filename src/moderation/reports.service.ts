@@ -11,6 +11,8 @@ import { CommunityComment } from '../community/entities/comment.entity';
 import { Post } from '../community/entities/post.entity';
 import { LocalizationService } from '../i18n/localization.service';
 import { Food } from '../nutrition/entities/food.entity';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../notifications/entities/notification.entity';
 import { User } from '../users/entities/user.entity';
 import { ExerciseTemplate } from '../workout/entities/exercise-template.entity';
 import { Workout } from '../workout/entities/workout.entity';
@@ -43,6 +45,7 @@ export class ReportsService {
     @InjectRepository(Food)
     private readonly foodRepo: Repository<Food>,
     private readonly i18n: LocalizationService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   // Gửi report mọi loại target. Trả case + ownerId (để caller check self).
@@ -122,7 +125,21 @@ export class ReportsService {
     }
     report.reviewer_id = reviewerId;
     report.reviewed_at = new Date();
-    return this.reportRepo.save(report);
+    const saved = await this.reportRepo.save(report);
+    void this.notifications
+      .notify(report.reporter_id, {
+        type: NotificationType.REPORT_ACTIONED,
+        title:
+          dto.decision === ReportDecision.DISMISS
+            ? { vi: 'Tố cáo đã được xem xét', en: 'Your report was reviewed' }
+            : { vi: 'Tố cáo đã được xử lý', en: 'Your report was actioned' },
+        body: {
+          vi: 'Cảm ơn bạn đã giúp cộng đồng sạch hơn.',
+          en: 'Thanks for keeping the community clean.',
+        },
+      })
+      .catch(() => undefined);
+    return saved;
   }
 
   private async applyAction(

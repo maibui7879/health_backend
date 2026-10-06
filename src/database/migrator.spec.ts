@@ -54,7 +54,7 @@ describe('runMigrations', () => {
     const inserts = executed.filter((s) =>
       s.startsWith('INSERT INTO schema_migrations'),
     );
-    expect(inserts).toHaveLength(24);
+    expect(inserts).toHaveLength(25);
     // Repair luôn chạy sau cùng kể cả khi không còn migration nào.
     expect(executed[executed.length - 1]).toContain('password_reset_otps');
   });
@@ -85,6 +85,7 @@ describe('runMigrations', () => {
       '023-food-images-3.sql',
       '024-food-moderation.sql',
       '025-reports.sql',
+      '026-notifications.sql',
     ];
     await runMigrations();
     const executed: string[] = query.mock.calls.map(

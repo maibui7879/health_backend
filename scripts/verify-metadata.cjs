@@ -23,6 +23,7 @@ async function main() {
   const plan = D('nutrition', 'entities', 'nutrition-plan.entity.js');
   const sub = D('nutrition', 'entities', 'food-submission.entity.js');
   const rc = D('moderation', 'entities', 'report-case.entity.js');
+  const nt = D('notifications', 'entities', 'notification.entity.js');
 
   const ds = new DataSource({
     type: 'postgres',
@@ -42,6 +43,7 @@ async function main() {
       plan.NutritionPlan,
       sub.FoodSubmission,
       rc.ReportCase,
+      nt.AppNotification,
     ],
   });
   await ds.buildMetadatas();

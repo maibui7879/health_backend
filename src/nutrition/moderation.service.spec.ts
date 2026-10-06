@@ -1,5 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { NotificationsService } from '../notifications/notifications.service';
+
+jest.mock('expo-server-sdk', () => ({
+  Expo: jest.fn().mockImplementation(() => ({
+    chunkPushNotifications: jest.fn((messages: unknown[]) => [messages]),
+    sendPushNotificationsAsync: jest.fn(() => Promise.resolve([])),
+  })),
+}));
 import { Food } from './entities/food.entity';
 import {
   FoodSubmission,
@@ -28,6 +36,10 @@ describe('ModerationService', () => {
           useValue: mockSubmissionRepo,
         },
         { provide: getRepositoryToken(Food), useValue: mockFoodRepo },
+        {
+          provide: NotificationsService,
+          useValue: { notify: jest.fn(() => Promise.resolve(null)) },
+        },
       ],
     }).compile();
     service = module.get<ModerationService>(ModerationService);

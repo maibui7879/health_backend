@@ -4,9 +4,17 @@ import { CommunityComment } from '../community/entities/comment.entity';
 import { Post } from '../community/entities/post.entity';
 import { localizationMockProvider } from '../i18n/localization.mock';
 import { Food } from '../nutrition/entities/food.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 import { User } from '../users/entities/user.entity';
 import { ExerciseTemplate } from '../workout/entities/exercise-template.entity';
 import { Workout } from '../workout/entities/workout.entity';
+
+jest.mock('expo-server-sdk', () => ({
+  Expo: jest.fn().mockImplementation(() => ({
+    chunkPushNotifications: jest.fn((messages: unknown[]) => [messages]),
+    sendPushNotificationsAsync: jest.fn(() => Promise.resolve([])),
+  })),
+}));
 import {
   ReportCase,
   ReportCategory,
@@ -44,6 +52,10 @@ describe('ReportsService', () => {
         { provide: getRepositoryToken(Workout), useValue: mockWorkoutRepo },
         { provide: getRepositoryToken(ExerciseTemplate), useValue: mockTemplateRepo },
         { provide: getRepositoryToken(Food), useValue: mockFoodRepo },
+        {
+          provide: NotificationsService,
+          useValue: { notify: jest.fn(() => Promise.resolve(null)) },
+        },
       ],
     }).compile();
     service = module.get<ReportsService>(ReportsService);

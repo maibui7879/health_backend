@@ -12,6 +12,8 @@ import {
   SubmissionStatus,
 } from './entities/food-submission.entity';
 import { SubmitFoodDto } from './dto/submit-food.dto';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../notifications/entities/notification.entity';
 
 @Injectable()
 export class ModerationService {
@@ -21,6 +23,7 @@ export class ModerationService {
     @InjectRepository(Food)
     private readonly foodRepo: Repository<Food>,
     private readonly i18n: LocalizationService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   async submit(userId: string, dto: SubmitFoodDto) {
@@ -88,6 +91,17 @@ export class ModerationService {
     submission.reviewer_id = adminId;
     submission.reviewed_at = new Date();
     await this.submissionRepo.save(submission);
+    void this.notifications
+      .notify(submission.user_id, {
+        type: NotificationType.SUBMISSION_APPROVED,
+        title: { vi: 'Món bạn gửi đã được duyệt', en: 'Your dish was approved' },
+        body: {
+          vi: `${submission.food_name_vi} đã vào catalog chung.`,
+          en: `${submission.food_name_vi} is now in the catalog.`,
+        },
+        data: { route: '/foods', food_id: saved.id },
+      })
+      .catch(() => undefined);
     return { message: this.i18n.t('foods.approved'), food: saved };
   }
 
@@ -97,6 +111,16 @@ export class ModerationService {
     submission.reviewer_id = adminId;
     submission.reviewed_at = new Date();
     await this.submissionRepo.save(submission);
+    void this.notifications
+      .notify(submission.user_id, {
+        type: NotificationType.SUBMISSION_REJECTED,
+        title: { vi: 'Món bạn gửi chưa được duyệt', en: 'Your dish was not approved' },
+        body: {
+          vi: `${submission.food_name_vi} chưa đạt, bạn có thể gửi lại bản khác.`,
+          en: `${submission.food_name_vi} did not pass, feel free to resubmit.`,
+        },
+      })
+      .catch(() => undefined);
     return { message: this.i18n.t('foods.rejected') };
   }
 }

@@ -8,6 +8,8 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PushService } from '../common/push/push.service';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../notifications/entities/notification.entity';
 import { LocalizationService } from '../i18n/localization.service';
 import type { TranslationKey } from '../i18n/dictionaries/vi';
 import type { AppLocale } from '../i18n/locale';
@@ -59,6 +61,7 @@ export class RemindersService {
     @InjectRepository(UserSetting)
     private readonly settingRepo: Repository<UserSetting>,
     private readonly pushService: PushService,
+    private readonly notifications: NotificationsService,
     private readonly i18n: LocalizationService,
   ) {}
 
@@ -113,6 +116,15 @@ export class RemindersService {
     return reminder;
   }
 
+  private async stampFired(ids: string[]) {
+    await this.reminderRepo
+      .createQueryBuilder()
+      .update()
+      .set({ last_sent_at: () => 'now()' })
+      .where('id IN (:...ids)', { ids })
+      .execute();
+  }
+
   // Chạy mỗi phút: bắn reminder đến giờ (giờ UTC — FE tự đổi sang UTC).
   @Cron(CronExpression.EVERY_MINUTE)
   async sendDueReminders(now = new Date()) {
@@ -133,6 +145,7 @@ export class RemindersService {
     if (due.length === 0) return { sent: 0 };
 
     const messages: { to: string; title: string; body: string }[] = [];
+    const fired: { user_id: string; title: string; body: string }[] = [];
     const firedIds: string[] = [];
     for (const r of due) {
       const days = r.days ?? [];
@@ -142,29 +155,41 @@ export class RemindersService {
         this.settingRepo.findOne({ where: { user_id: r.user_id } }),
       ]);
       if (!isGatedBySettings(r.type, setting)) continue;
-      const token = user?.device_token;
-      if (!token || !this.pushService.isPushToken(token)) continue;
       const lang: AppLocale =
         setting?.locale === 'en' || setting?.locale === 'vi'
           ? setting.locale
           : 'vi';
-      messages.push({
-        to: token,
-        title: r.title ?? this.i18n.tIn(lang, DEFAULT_TITLE[r.type]),
-        body: r.body ?? this.i18n.tIn(lang, DEFAULT_BODY[r.type]),
-      });
+      const title = r.title ?? this.i18n.tIn(lang, DEFAULT_TITLE[r.type]);
+      const body = r.body ?? this.i18n.tIn(lang, DEFAULT_BODY[r.type]);
+      // Lưu in-app cho mọi lịch đến giờ (kể cả user không có push token).
+      fired.push({ user_id: r.user_id, title, body });
       firedIds.push(r.id);
+      const token = user?.device_token;
+      if (!token || !this.pushService.isPushToken(token)) continue;
+      messages.push({ to: token, title, body });
     }
 
-    if (messages.length === 0) return { sent: 0 };
+    for (const f of fired) {
+      await this.notifications
+        .notify(f.user_id, {
+          type: NotificationType.REMINDER,
+          title: { vi: f.title, en: f.title },
+          body: { vi: f.body, en: f.body },
+          data: { route: '/reminders' },
+          push: false,
+        })
+        .catch(() => undefined);
+    }
+
+    if (messages.length === 0) {
+      if (firedIds.length > 0) {
+        await this.stampFired(firedIds);
+      }
+      return { sent: 0 };
+    }
     const { sent, invalidTokens } = await this.pushService.sendMany(messages);
 
-    await this.reminderRepo
-      .createQueryBuilder()
-      .update()
-      .set({ last_sent_at: () => 'now()' })
-      .where('id IN (:...ids)', { ids: firedIds })
-      .execute();
+    await this.stampFired(firedIds);
 
     if (invalidTokens.length > 0) {
       // Token chết (gỡ app) → xóa để lần sau khỏi gửi.

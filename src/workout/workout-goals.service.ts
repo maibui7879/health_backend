@@ -7,6 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { LocalizationService } from '../i18n/localization.service';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../notifications/entities/notification.entity';
 import { CreateWorkoutGoalDto } from './dto/create-workout-goal.dto';
 import { Workout } from './entities/workout.entity';
 import { WorkoutGoal, WorkoutGoalStatus } from './entities/workout-goal.entity';
@@ -32,6 +34,7 @@ export class WorkoutGoalsService {
     @InjectRepository(Workout)
     private readonly workoutRepo: Repository<Workout>,
     private readonly i18n: LocalizationService,
+    private readonly notifications: NotificationsService,
   ) {}
 
   // Streak tập riêng (không dùng daily_logs.is_streak_day).
@@ -135,7 +138,19 @@ export class WorkoutGoalsService {
       goal.status = WorkoutGoalStatus.COMPLETED;
       goal.badge = `STREAK_${goal.target_days}`;
       goal.completed_at = new Date();
-      return this.goalRepo.save(goal);
+      const done = await this.goalRepo.save(goal);
+      void this.notifications
+        .notify(goal.user_id, {
+          type: NotificationType.GOAL_COMPLETED,
+          title: { vi: 'Chúc mừng! Hoàn thành mục tiêu', en: 'Congrats! Goal completed' },
+          body: {
+            vi: `Bạn đã tập liên tiếp ${goal.target_days} ngày. Huy hiệu ${goal.badge}.`,
+            en: `${goal.target_days}-day streak done. Badge ${goal.badge}.`,
+          },
+          data: { route: '/workout' },
+        })
+        .catch(() => undefined);
+      return done;
     }
     return goal; // chưa tới hạn, giữ ACTIVE
   }
