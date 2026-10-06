@@ -67,7 +67,7 @@ Hành tây,Hành tây,,ok,https://upload.wikimedia.org/wikipedia/commons/b/b8/H%
 Tỏi,Tỏi,,ok,https://upload.wikimedia.org/wikipedia/commons/3/39/Allium_sativum_Woodwill_1793.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,(Public domain)
 Chanh,Chanh,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/16-09-17-WikiLovesCocktails-Zutaten-Img0144.jpg/960px-16-09-17-WikiLovesCocktails-Zutaten-Img0144.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Ralf Roletschek (GFDL 1.2)
 Cam,Cam,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e3/Oranges_-_whole-halved-segment.jpg/960px-Oranges_-_whole-halved-segment.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Ivar Leidus (CC BY-SA 4.0)
-Dứa,Dứa,Thơm,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/%E0%B4%95%E0%B5%88%E0%B4%A4%E0%B4%9A%E0%B5%8D%E0%B4%9A%E0%B4%95%E0%B5%8D%E0%B4%95.jpg/960px-%E0%B4%95%E0%B5%88%E0%B4%A4%E0%B4%9A%E0%B5%8D%E0%B4%9A%E0%B4%95%E0%B5%8D%E0%B4%95.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Suniltg at Malayalam Wikipedia (CC BY 3.0)
+Dứa,Dứa,Thơm,drop-wrong-image,https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/%E0%B4%95%E0%B5%88%E0%B4%A4%E0%B4%9A%E0%B5%8D%E0%B4%9A%E0%B4%95%E0%B5%8D%E0%B4%95.jpg/960px-%E0%B4%95%E0%B5%88%E0%B4%A4%E0%B4%9A%E0%B5%8D%E0%B4%9A%E0%B4%95%E0%B5%8D%E0%B4%95.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Suniltg at Malayalam Wikipedia (CC BY 3.0)
 Dưa hấu,Dưa hấu,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Watermelons.jpg/960px-Watermelons.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Steve Evans (CC BY 2.0)
 Xoài,Xoài,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Mango_and_cross_section_edit.jpg/960px-Mango_and_cross_section_edit.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Fir0002 (GFDL 1.2)
 Táo,Táo,,no-image,,
@@ -78,3 +78,531 @@ Thịt lợn,Thịt lợn,,ok,https://thumb.wikimedia.org/wikipedia/commons/thum
 Thịt gà,Thịt gà,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Chickens_in_market.jpg/960px-Chickens_in_market.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Tomás Castelazo (CC BY-SA 3.0)
 Lạc,Đậu phộng,Lạc,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Arachis_hypogaea_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-163.jpg/960px-Arachis_hypogaea_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-163.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,"Franz Eugen Köhler, Köhler's Medizinal-Pflanzen (Public domain)"
 Sữa tươi,Sữa,Sữa bò,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Glass_of_milk.jpg/960px-Glass_of_milk.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Santeri Viinamäki (CC BY-SA 4.0)
+Gạo nếp cái,Gạo nếp cái,,no-image,,
+Gạo nếp máy (Loại thường),Gạo nếp máy (Loại thường),Gạo nếp máy,no-image,,
+Gạo tẻ giã,Gạo tẻ giã,,no-image,,
+Gạo tẻ máy,Gạo tẻ máy,,no-image,,
+Gạo lứt,Gạo lứt,,ok,https://upload.wikimedia.org/wikipedia/commons/d/d1/Reis_-_Sorte_C_voll.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,(CC BY-SA 2.0 de)
+Kê,Kê,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/Grain_millet%2C_early_grain_fill%2C_Tifton%2C_7-3-02.jpg/960px-Grain_millet%2C_early_grain_fill%2C_Tifton%2C_7-3-02.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,(Public domain)
+Ngô bắp tươi,Ngô bắp tươi,,no-image,,
+Ngô vàng hạt khô,Ngô vàng hạt khô,,no-image,,
+Bánh bao nhân thịt,Bánh bao nhân thịt,,no-image,,
+Bánh đa nem,Bánh đa nem,,no-image,,
+Bánh đúc,Bánh đúc,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Banhduc-northern.jpg/960px-Banhduc-northern.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Flickr user: hongnhung106 ( https://www.flickr.com/photos/53433754@N00/ ) (CC BY 2.0)
+Bánh mỳ,Bánh mỳ,,no-image,,
+Bánh phở,Bánh phở,,ok,https://upload.wikimedia.org/wikipedia/commons/6/65/Pho_rice_noodle_PC210323.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Akiyoshi's Room (CC BY 3.0)
+Bánh quẩy,Bánh quẩy,,no-image,,
+Bỏng ngô,Bỏng ngô,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Popcorn02.jpg/960px-Popcorn02.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,"fir0002  flagstaffotos [at] gmail.com
+		Canon 20D + Tamron 28-75mm f/2.8 (GFDL 1.2)"
+Bột gạo nếp,Bột gạo nếp,,no-image,,
+Bột gạo tẻ,Bột gạo tẻ,,no-image,,
+Bột mì,Bột mì,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/All-Purpose_Flour_%284107895947%29.jpg/960px-All-Purpose_Flour_%284107895947%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Veganbaking.net from USA (CC BY-SA 2.0)
+Bột ngô vàng,Bột ngô vàng,,no-image,,
+Bún,Bún,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6f/Rice_vermicelli.jpg/960px-Rice_vermicelli.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Popo le Chien (CC BY-SA 3.0)
+Cốm,Cốm,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/C%E1%BB%91m_M%E1%BB%85_Tr%C3%AC_-_NKS.jpg/960px-C%E1%BB%91m_M%E1%BB%85_Tr%C3%AC_-_NKS.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,NKSTTSSHNVN (CC BY-SA 4.0)
+Mỳ sợi,Mỳ sợi,,no-image,,
+Ngô nếp luộc,Ngô nếp luộc,,no-image,,
+Củ ấu,Củ ấu,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/7/76/Illustration_Trapa_natans0.jpg/960px-Illustration_Trapa_natans0.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,(Public domain)
+Củ cái,Củ cái,,no-image,,
+Củ dong,Củ dong,,no-image,,
+Củ sắn,Củ sắn,,no-image,,
+Củ sắn dây,Củ sắn dây,,no-image,,
+Củ súng khô (đã bỏ vỏ),Củ súng khô (đã bỏ vỏ),Củ súng khô,no-image,,
+Củ từ,Củ từ,,no-image,,
+Khoai lang nghệ,Khoai lang nghệ,,no-image,,
+Khoai môn,Khoai môn,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Songe-R%C3%A9union.JPG/960px-Songe-R%C3%A9union.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,No machine-readable author provided. Thierry Caro assumed (based on copyright claims). (CC BY-SA 2.5)
+Khoai nước,Khoai nước,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/TaroAKL.jpg/960px-TaroAKL.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Kahuroa (Public domain)
+Khoai riềng,Khoai riềng,,no-image,,
+Khoai sọ,Khoai sọ,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/8/81/Three_Eddos_With_Inch_Scale.jpg/960px-Three_Eddos_With_Inch_Scale.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,RoySmith (CC BY-SA 4.0)
+Miến dong,Miến dong,,no-image,,
+Bột dong lọc,Bột dong lọc,,no-image,,
+Bột khoai lang,Bột khoai lang,,no-image,,
+Bột khoai riềng (bột đao),Bột khoai riềng (bột đao),Bột khoai riềng,no-image,,
+Bột khoai tây (lọc),Bột khoai tây (lọc),Bột khoai tây,no-image,,
+Bột sắn,Bột sắn,,no-image,,
+Bột sắn dây,Bột sắn dây,,no-image,,
+Khoai lang khô,Khoai lang khô,,no-image,,
+Khoai tây khô,Khoai tây khô,,no-image,,
+Khoai tây lát chiên,Khoai tây lát chiên,,no-image,,
+Sắn khô,Sắn khô,,no-image,,
+Trân châu sắn,Trân châu sắn,,no-image,,
+Cùi dừa già,Cùi dừa già,,no-image,,
+Cùi dừa non,Cùi dừa non,,no-image,,
+Đậu cô ve (hạt),Đậu cô ve (hạt),Đậu cô ve,no-image,,
+Đậu đen (hạt),Đậu đen (hạt),Đậu đen,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/Vigna_unguiculata_ssp._cylindrica.JPG/960px-Vigna_unguiculata_ssp._cylindrica.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Nguyễn Thanh Quang (CC BY-SA 3.0)
+Đậu đũa (hạt),Đậu đũa (hạt),Đậu đũa,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Vigna_unguiculata_Blanco2.286.png/960px-Vigna_unguiculata_Blanco2.286.png?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Francisco Manuel Blanco (O.S.A.) (Public domain)
+Đậu Hà lan (hạt),Đậu Hà lan (hạt),Đậu Hà lan,no-image,,
+Đậu tương (đậu nành),Đậu tương (đậu nành),Đậu tương,ok,https://upload.wikimedia.org/wikipedia/commons/8/82/Soybean.USDA.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,(Public domain)
+Đậu trắng hạt (Đậu Tây),Đậu trắng hạt (Đậu Tây),Đậu trắng hạt,no-image,,
+Đậu trứng cuốc,Đậu trứng cuốc,,no-image,,
+Đậu xanh (đậu tắt),Đậu xanh (đậu tắt),Đậu xanh,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Hoa_%C4%91%E1%BA%ADu_xanh.jpg/960px-Hoa_%C4%91%E1%BA%ADu_xanh.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Bùi Thụy Đào Nguyên (CC BY-SA 3.0)
+Hạt dẻ to,Hạt dẻ to,,no-image,,
+Hạt dẻ tươi,Hạt dẻ tươi,,no-image,,
+Hạt dẻ khô,Hạt dẻ khô,,no-image,,
+Hạt đen,Hạt đen,,no-image,,
+Hạt điều,Hạt điều,,no-image,,
+Hạt mít,Hạt mít,,no-image,,
+Lạc hạt,Lạc hạt,,no-image,,
+Quả cọ tươi,Quả cọ tươi,,no-image,,
+Quả đại hái tươi,Quả đại hái tươi,,no-image,,
+"Vừng (đen, trắng)","Vừng (đen, trắng)",Vừng,ok,https://upload.wikimedia.org/wikipedia/commons/6/6a/Sesamum_indicum.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,(CC BY-SA 3.0)
+Bột đậu tương đã loại béo (đậu nành),Bột đậu tương đã loại béo (đậu nành),Bột đậu tương đã loại béo,no-image,,
+Bột đậu tương rang chín,Bột đậu tương rang chín,,no-image,,
+Bột đậu xanh,Bột đậu xanh,,no-image,,
+Bột lạc,Bột lạc,,no-image,,
+Đậu phụ chúc,Đậu phụ chúc,,no-image,,
+Đậu phụ nướng,Đậu phụ nướng,,no-image,,
+Hạt bí đỏ rang,Hạt bí đỏ rang,,no-image,,
+Hạt dưa đỏ rang (dưa hấu),Hạt dưa đỏ rang (dưa hấu),Hạt dưa đỏ rang,no-image,,
+"Hạt điều khô, chiên dầu","Hạt điều khô, chiên dầu",Hạt điều khô,no-image,,
+Sữa bột đậu nành,Sữa bột đậu nành,,no-image,,
+Sữa đậu nành (100g đậu/lít),Sữa đậu nành (100g đậu/lít),Sữa đậu nành,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/001-soymilk.jpg/960px-001-soymilk.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Kjokkenutstyr (CC BY-SA 4.0)
+Tào phớ,Tào phớ,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Dofuhua-lamma.jpg/960px-Dofuhua-lamma.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,(CC BY-SA 2.0)
+Bầu,Bầu,,no-image,,
+Bí đao (bí xanh),Bí đao (bí xanh),Bí đao,ok,https://upload.wikimedia.org/wikipedia/commons/b/bb/W_tougan4091.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,草花写真館 (Copyrighted free use)
+Bí ngô,Bí ngô,,ok,https://upload.wikimedia.org/wikipedia/commons/9/99/Pumpkins.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,"Martin Doege (Morn), uploaded to English WP on 2003-08-21 (GFDL 1.2)"
+Cà bát,Cà bát,,no-image,,
+Cà pháo,Cà pháo,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Solanum_macrocarpon_HabitusFruits_BotGardBln0906a.JPG/960px-Solanum_macrocarpon_HabitusFruits_BotGardBln0906a.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,(CC BY-SA 3.0)
+"Cà rốt (củ đỏ, vàng)","Cà rốt (củ đỏ, vàng)",Cà rốt,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Baby_carrots_-_jules.jpg/960px-Baby_carrots_-_jules.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,jules / stone soup (CC BY 2.0)
+Cà rốt khô,Cà rốt khô,,no-image,,
+Cà tím,Cà tím,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/L%C3%A1_v%C3%A0_qu%E1%BA%A3_c%C3%A0_t%C3%ADm.jpg/960px-L%C3%A1_v%C3%A0_qu%E1%BA%A3_c%C3%A0_t%C3%ADm.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Bùi Thụy Đào Nguyên (CC BY-SA 3.0)
+Cải bắp,Cải bắp,,ok,https://upload.wikimedia.org/wikipedia/commons/7/70/Cabbage.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Bill Tarpenning (Public domain)
+Cải bắp đỏ,Cải bắp đỏ,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/Brassica_oleracea_var_capitata_Rubyball.jpg/960px-Brassica_oleracea_var_capitata_Rubyball.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,KENPEI (CC BY-SA 3.0)
+Cải bắp khô,Cải bắp khô,,no-image,,
+Cải cúc,Cải cúc,,no-image,,
+Cải soong,Cải soong,,no-image,,
+Cải thìa (cải trắng),Cải thìa (cải trắng),Cải thìa,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Brassica_rapa_var._chinensis_%28leaf%29.jpg/960px-Brassica_rapa_var._chinensis_%28leaf%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,おむこさん志望 (CC BY 2.5)
+Cải xanh,Cải xanh,,no-image,,
+Cần ta,Cần ta,,no-image,,
+Cần tây,Cần tây,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Illustration_Apium_graveolens0.jpg/960px-Illustration_Apium_graveolens0.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,(Public domain)
+Chuối xanh,Chuối xanh,,no-image,,
+Củ cải đỏ,Củ cải đỏ,,no-image,,
+Củ cải trắng,Củ cải trắng,,ok,https://upload.wikimedia.org/wikipedia/commons/5/57/Daikon%2C_Nara_Prefecture%2C_Japan.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,jetsun (CC BY-SA 3.0)
+Củ cải trắng khô,Củ cải trắng khô,,no-image,,
+Củ đậu,Củ đậu,,no-image,,
+Củ niễng,Củ niễng,,no-image,,
+Dọc củ cải (non),Dọc củ cải (non),Dọc củ cải,no-image,,
+Dọc mùng,Dọc mùng,,ok,https://upload.wikimedia.org/wikipedia/commons/3/30/Gardenology.org-IMG_7621_qsbg11mar.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Raffi Kojian (CC BY-SA 3.0)
+Dưa gang,Dưa gang,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Cucumis_melo_on_white_background.jpg/960px-Cucumis_melo_on_white_background.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Filo gèn' (CC BY-SA 4.0)
+Đậu cô ve,Đậu cô ve,,no-image,,
+Đậu đũa,Đậu đũa,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Vigna_unguiculata_Blanco2.286.png/960px-Vigna_unguiculata_Blanco2.286.png?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Francisco Manuel Blanco (O.S.A.) (Public domain)
+Đậu Hà Lan,Đậu Hà Lan,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Peas_in_pods_-_Studio.jpg/960px-Peas_in_pods_-_Studio.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Bill Ebbesen (CC BY-SA 3.0)
+Đậu rồng (quả non),Đậu rồng (quả non),Đậu rồng,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/%C4%90%E1%BA%ADu_r%E1%BB%93ng.jpg/960px-%C4%90%E1%BA%ADu_r%E1%BB%93ng.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Bùi Thụy Đào Nguyên (CC BY-SA 3.0)
+Đu đủ xanh,Đu đủ xanh,,no-image,,
+Gấc,Gấc,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Qua_Gac.JPG/960px-Qua_Gac.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Qoheletal (CC BY-SA 3.0)
+Giá đậu tương,Giá đậu tương,,no-image,,
+Giá đậu xanh,Giá đậu xanh,,no-image,,
+Hành củ tươi,Hành củ tươi,,no-image,,
+Hành lá (hành hoa),Hành lá (hành hoa),Hành lá,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/d/da/CSA-Red-Spring-Onions.jpg/960px-CSA-Red-Spring-Onions.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Evan-Amos (Public domain)
+Hạt sen tươi,Hạt sen tươi,,no-image,,
+Hạt sen khô,Hạt sen khô,,no-image,,
+Hẹ lá,Hẹ lá,,no-image,,
+Hoa chuối,Hoa chuối,,no-image,,
+Hoa lý,Hoa lý,,no-image,,
+Khế,Khế,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/Vietnam-0472_-_Star_Fruit_%283354315635%29.jpg/960px-Vietnam-0472_-_Star_Fruit_%283354315635%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Dennis G. Jarvis (CC BY-SA 2.0)
+Lá lốt,Lá lốt,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/%28MHNT%29_Piper_sarmentosum_%28B%C3%A9tel_sauvage%29_-_Feuilles_et_infrutescence_immature.jpg/960px-%28MHNT%29_Piper_sarmentosum_%28B%C3%A9tel_sauvage%29_-_Feuilles_et_infrutescence_immature.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Didier Descouens (CC BY-SA 4.0)
+Lá me,Lá me,,no-image,,
+Lá mơ lông,Lá mơ lông,,no-image,,
+Lá sắn tươi,Lá sắn tươi,,no-image,,
+Măng chua,Măng chua,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/M%C4%83ng_chua_ng%C3%A2m_qu%E1%BA%A3_m%C3%B3c_m%E1%BA%ADt.jpg/960px-M%C4%83ng_chua_ng%C3%A2m_qu%E1%BA%A3_m%C3%B3c_m%E1%BA%ADt.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Hungda (CC BY-SA 4.0)
+Măng khô,Măng khô,,no-image,,
+Măng tây,Măng tây,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Illustration_Asparagus_officinalis0b.jpg/960px-Illustration_Asparagus_officinalis0b.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,CSvBibra (Public domain)
+Măng tre,Măng tre,,no-image,,
+Mướp,Mướp,,no-image,,
+Mướp đắng,Mướp đắng,,no-image,,
+Mướp Nhật bản,Mướp Nhật bản,,no-image,,
+Ngải cứu,Ngải cứu,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6f/ArtemisiaVulgaris.jpg/960px-ArtemisiaVulgaris.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,(CC BY-SA 3.0)
+Ngô bao tử,Ngô bao tử,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/Stir_fry_%C3%A0_la_Gabi-showcasingbabycorn.jpg/960px-Stir_fry_%C3%A0_la_Gabi-showcasingbabycorn.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Brian Snelson (CC BY 2.0)
+Ngó sen,Ngó sen,,no-image,,
+Nụ mướp,Nụ mướp,,no-image,,
+ớt đỏ to,ớt đỏ to,,no-image,,
+ớt vàng to,ớt vàng to,,no-image,,
+ớt xanh to,ớt xanh to,,no-image,,
+Quả dọc,Quả dọc,,no-image,,
+Quả me chua,Quả me chua,,no-image,,
+Rau bí,Rau bí,,no-image,,
+Rau câu khô,Rau câu khô,,no-image,,
+Rau câu tươi,Rau câu tươi,,no-image,,
+Rau diếp,Rau diếp,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Romaine_lettuce.jpg/960px-Romaine_lettuce.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Rainer Zenz (CC BY-SA 3.0)
+Rau đay,Rau đay,,no-image,,
+"Rau giấp cá, diếp cá","Rau giấp cá, diếp cá",Rau giấp cá,no-image,,
+Rau giền cơm,Rau giền cơm,,no-image,,
+Rau giền đỏ,Rau giền đỏ,,no-image,,
+Rau giền trắng,Rau giền trắng,,no-image,,
+Rau húng,Rau húng,,no-image,,
+Rau khoai lang,Rau khoai lang,,no-image,,
+Rau kinh giới,Rau kinh giới,,no-image,,
+Rau má rừng,Rau má rừng,,no-image,,
+"Rau má, má mơ","Rau má, má mơ",Rau má,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Starr_020803-0094_Centella_asiatica.jpg/960px-Starr_020803-0094_Centella_asiatica.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Forest & Kim Starr (CC BY 3.0)
+Rau mồng tơi,Rau mồng tơi,,no-image,,
+Rau mùi,Rau mùi,,ok,https://upload.wikimedia.org/wikipedia/commons/1/13/Coriandrum_sativum_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-193.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,"Franz Eugen Köhler, Köhler's Medizinal-Pflanzen (Public domain)"
+Rau mùi tàu,Rau mùi tàu,,no-image,,
+Rau muống,Rau muống,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Ipomoea_aquatica_%282%29.JPG/960px-Ipomoea_aquatica_%282%29.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Prenn (CC BY-SA 3.0)
+Rau muống khô,Rau muống khô,,no-image,,
+Rau ngổ,Rau ngổ,,no-image,,
+Rau ngót,Rau ngót,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/SauropusAndrogynus.jpg/960px-SauropusAndrogynus.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Lordtct (Public domain)
+Rau ngót khô,Rau ngót khô,,no-image,,
+Rau răm,Rau răm,,ok,https://upload.wikimedia.org/wikipedia/commons/d/d8/Rau_ram_Polygonum_odoratum.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Jean-Paul Bigand (CC BY-SA 3.0)
+Rau rút,Rau rút,,ok,https://upload.wikimedia.org/wikipedia/commons/7/7e/An-updated-checklist-of-aquatic-plants-of-Myanmar-and-Thailand-biodiversity_data_journal-2-e1019-g008.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,"Ito Y, Barfod A (CC BY 4.0)"
+Rau sà lách,Rau sà lách,,no-image,,
+Rau sam,Rau sam,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Portulaca_oleracea_MHNT.jpg/960px-Portulaca_oleracea_MHNT.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Didier Descouens (CC BY-SA 4.0)
+Rau sắng (chùa Hương),Rau sắng (chùa Hương),Rau sắng,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Melientha_suavis.jpg/960px-Melientha_suavis.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,"Rau sắng.jpg: Viethavvh
+derivative work: Phó Nháy (talk) (CC BY-SA 3.0)"
+Rau tàu bay,Rau tàu bay,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Rau_t%C3%A0u_bay.JPG/960px-Rau_t%C3%A0u_bay.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Gió Đông (thảo luận) (CC BY 3.0)
+Rau thơm,Rau thơm,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Rau_th%C6%A1m.jpg/960px-Rau_th%C6%A1m.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Viethavvh at Vietnamese Wikipedia (CC BY-SA 3.0)
+Sấu xanh,Sấu xanh,,no-image,,
+Su hào,Su hào,,ok,https://upload.wikimedia.org/wikipedia/commons/5/5f/KohlrabiinMarket.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Secretlondon (CC BY-SA 3.0)
+Su hào khô,Su hào khô,,no-image,,
+"Su su, quả","Su su, quả",Su su,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Sechium_edule_dsc07767.jpg/960px-Sechium_edule_dsc07767.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,(CC BY-SA 3.0)
+Súp lơ trắng,Súp lơ trắng,,no-image,,
+Súp lơ xanh,Súp lơ xanh,,no-image,,
+Thìa là,Thìa là,,no-image,,
+Tía tô,Tía tô,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Perilla_frutescens_var._acuta.JPG/960px-Perilla_frutescens_var._acuta.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Dalgial (CC BY-SA 3.0)
+Tỏi ta,Tỏi ta,,no-image,,
+Tỏi tây (cả lá),Tỏi tây (cả lá),Tỏi tây,ok,https://upload.wikimedia.org/wikipedia/commons/9/90/Leeks.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,TadejM (CC BY-SA 3.0)
+Trám đen chín,Trám đen chín,,no-image,,
+"Trám xanh sống, trám trắng","Trám xanh sống, trám trắng",Trám xanh sống,no-image,,
+Xương sông,Xương sông,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/2/27/Blumea_lanceolaria.JPG/960px-Blumea_lanceolaria.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Nguyễn Thanh Quang (CC BY-SA 3.0)
+Cà chua muối,Cà chua muối,,no-image,,
+Cà muối nén,Cà muối nén,,no-image,,
+Cà muối sổi,Cà muối sổi,,no-image,,
+Dưa cải bắp,Dưa cải bắp,,no-image,,
+Dưa cải bẹ,Dưa cải bẹ,,no-image,,
+Dưa cải sen,Dưa cải sen,,no-image,,
+Dưa chuột muối,Dưa chuột muối,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/02014_Salzgurken_in_der_Einmachkeramik%2C_Mrzyg%C5%82od.JPG/960px-02014_Salzgurken_in_der_Einmachkeramik%2C_Mrzyg%C5%82od.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Silar (CC BY-SA 4.0)
+Dưa giá (đậu xanh),Dưa giá (đậu xanh),Dưa giá,no-image,,
+Hành củ muối,Hành củ muối,,no-image,,
+Kiệu muối,Kiệu muối,,no-image,,
+"Nhút (muối từ mít non, ngọn đậu xanh non...)","Nhút (muối từ mít non, ngọn đậu xanh non...)",Nhút,no-image,,
+Men bia khô,Men bia khô,,no-image,,
+Men bia tươi,Men bia tươi,,no-image,,
+Mộc nhĩ,Mộc nhĩ,,no-image,,
+Nấm hương khô,Nấm hương khô,,no-image,,
+Nấm hương tươi,Nấm hương tươi,,no-image,,
+Nấm mỡ (Nấm tây),Nấm mỡ (Nấm tây),Nấm mỡ,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/Champignons_Agaricus.jpg/960px-Champignons_Agaricus.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Darkone (talk · contribs) (CC BY-SA 2.5)
+Nấm rơm,Nấm rơm,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/StrawMushroom.jpg/960px-StrawMushroom.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Chong Fat (Public domain)
+Nấm thường tươi,Nấm thường tươi,,no-image,,
+Bưởi,Bưởi,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Pomelo_fruit.jpg/960px-Pomelo_fruit.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Ivar Leidus (CC BY-SA 4.0)
+Chôm chôm,Chôm chôm,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Rambutan_white_background_alt.jpg/960px-Rambutan_white_background_alt.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Muhammad Mahdi Karim (GFDL 1.2)
+Chuối khô,Chuối khô,,no-image,,
+Chuối tây,Chuối tây,,no-image,,
+Chuối tiêu,Chuối tiêu,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/2018_06_TropicalIslands_IMG_2170.jpg/960px-2018_06_TropicalIslands_IMG_2170.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Daniela Kloth (GFDL 1.2)
+Dâu gia,Dâu gia,,no-image,,
+Dâu tây,Dâu tây,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Garden_strawberry_%28Fragaria_%C3%97_ananassa%29_single2.jpg/960px-Garden_strawberry_%28Fragaria_%C3%97_ananassa%29_single2.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Ivar Leidus (CC BY-SA 4.0)
+Dưa bở,Dưa bở,,no-image,,
+Dưa hồng,Dưa hồng,,no-image,,
+Dưa lê,Dưa lê,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Honeydew.jpg/960px-Honeydew.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Yotoen (Public domain)
+Dứa ta,Dứa ta,,no-image,,
+Dứa tây,Dứa tây,,no-image,,
+Đào,Đào,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Illustration_Prunus_persica0.jpg/960px-Illustration_Prunus_persica0.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,(Public domain)
+Đu đủ chín,Đu đủ chín,,no-image,,
+Gioi,Gioi,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Gioi%2C_Salerno%2C_Campania%2C_Italy.jpg/960px-Gioi%2C_Salerno%2C_Campania%2C_Italy.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,PLBechly (CC BY-SA 4.0)
+Hồng bì,Hồng bì,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/Clausena_lansium.jpg/960px-Clausena_lansium.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,WingkLEE (Public domain)
+Hồng đỏ,Hồng đỏ,,no-image,,
+Hồng ngâm,Hồng ngâm,,no-image,,
+Hồng xiêm,Hồng xiêm,,ok,https://upload.wikimedia.org/wikipedia/commons/a/a9/ManilZapot_070624_188_ckup.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,W.A. Djatmiko (Wie146) (CC BY-SA 3.0)
+Lê,Lê,,no-image,,
+Lựu,Lựu,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6a/Pomegranate_Juice_%282019%29.jpg/960px-Pomegranate_Juice_%282019%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Augustus Binu : flickr (CC BY-SA 3.0)
+Mãng cầu xiêm,Mãng cầu xiêm,,no-image,,
+Mắc coọc,Mắc coọc,,no-image,,
+Mận,Mận,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Plums_African_Rose_-_whole%2C_halved_and_slice.jpg/960px-Plums_African_Rose_-_whole%2C_halved_and_slice.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Ivar Leidus (CC BY-SA 4.0)
+Mít dai,Mít dai,,no-image,,
+Mít khô,Mít khô,,no-image,,
+Mít mật,Mít mật,,no-image,,
+Mơ,Mơ,,no-image,,
+Mơ khô,Mơ khô,,no-image,,
+"Muỗm, quéo","Muỗm, quéo",Muỗm,no-image,,
+Na,Na,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Sugar_apple_on_tree.jpg/960px-Sugar_apple_on_tree.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Muhammad Mahdi Karim (GFDL 1.2)
+Nhãn,Nhãn,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Longan_tree_at_Pine_Island_Nursery.jpg/960px-Longan_tree_at_Pine_Island_Nursery.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Pouletic (CC BY-SA 3.0)
+Nhãn khô,Nhãn khô,,no-image,,
+Nho ngọt,Nho ngọt,,no-image,,
+Nho ta (nho chua),Nho ta (nho chua),Nho ta,no-image,,
+Nhót,Nhót,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/Elaeagnus_latifolia_Bra46.png/960px-Elaeagnus_latifolia_Bra46.png?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,(Public domain)
+ổi,ổi,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Goiaba_vermelha.jpg/960px-Goiaba_vermelha.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Rodrigo.Argenton (CC BY-SA 4.0)
+Quả bơ vỏ tím,Quả bơ vỏ tím,,no-image,,
+Quả bơ vỏ xanh,Quả bơ vỏ xanh,,no-image,,
+Quả cóc,Quả cóc,,no-image,,
+Quả thanh long,Quả thanh long,,no-image,,
+Quả trứng gà,Quả trứng gà,,no-image,,
+Quất chín (cả vỏ),Quất chín (cả vỏ),Quất chín,no-image,,
+Quít,Quít,,no-image,,
+Sầu riêng,Sầu riêng,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Durian.jpg/960px-Durian.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Kalai (CC BY-SA 3.0)
+Sấu chín,Sấu chín,,no-image,,
+Táo ta,Táo ta,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Zizip_maurit_110716-15922_Fr_sntong.jpg/960px-Zizip_maurit_110716-15922_Fr_sntong.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Wibowo Djatmiko (Wie146) (CC BY-SA 3.0)
+Táo tây,Táo tây,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Apples_on_tree_2011_G1.jpg/960px-Apples_on_tree_2011_G1.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,George Chernilevsky (Public domain)
+Vải,Vải,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Flores_y_colores_hechos_a_mano.jpg/960px-Flores_y_colores_hechos_a_mano.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Lily Sánchez (CC BY-SA 4.0)
+Vải khô,Vải khô,,no-image,,
+Vú sữa,Vú sữa,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/8/80/Tr%C3%A1i_v%C3%BA_s%E1%BB%AFa_c%C3%B2n_xanh.jpg/960px-Tr%C3%A1i_v%C3%BA_s%E1%BB%AFa_c%C3%B2n_xanh.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Bùi Thụy Đào Nguyên (CC BY-SA 3.0)
+Xoài chín,Xoài chín,,no-image,,
+Quả kiwi,Quả kiwi,,no-image,,
+Bơ,Bơ,,drop-wrong-image,https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Minikrentenbollen_IMGP6988_wp.jpg/960px-Minikrentenbollen_IMGP6988_wp.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,smial (talk) (FAL)
+"Dầu thảo mộc (Lạc, vừng, cám...)","Dầu thảo mộc (Lạc, vừng, cám...)",Dầu thảo mộc,no-image,,
+Mỡ lợn muối,Mỡ lợn muối,,no-image,,
+Mỡ lợn nước,Mỡ lợn nước,,no-image,,
+Bơ thực vật,Bơ thực vật,,ok,https://upload.wikimedia.org/wikipedia/commons/2/2d/Margarine_BMK.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,BMK (CC BY-SA 3.0)
+Dầu bông,Dầu bông,,no-image,,
+Dầu cám gạo,Dầu cám gạo,,no-image,,
+Dầu cọ,Dầu cọ,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Palm_oil_in_a_bowl.jpg/960px-Palm_oil_in_a_bowl.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Kulttuurinavigaattori (CC BY-SA 4.0)
+Dầu dừa,Dầu dừa,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Coconut_oil_2.jpg/960px-Coconut_oil_2.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Tiia Monto (CC BY-SA 4.0)
+Dầu đậu tương,Dầu đậu tương,,no-image,,
+Dầu lạc,Dầu lạc,,no-image,,
+Dầu mè,Dầu mè,,ok,https://upload.wikimedia.org/wikipedia/commons/d/d9/SesameSeedOil.png?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Itineranttrader (Public domain)
+Dầu ngô,Dầu ngô,,ok,https://upload.wikimedia.org/wikipedia/commons/1/1f/Corn_oil_%28mais%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Basilicofresco (CC BY-SA 3.0)
+Dầu oliu,Dầu oliu,,no-image,,
+Thịt bê mỡ,Thịt bê mỡ,,no-image,,
+Thịt bê nạc,Thịt bê nạc,,no-image,,
+Thịt bò loại I,Thịt bò loại I,,no-image,,
+Thịt bò loại II,Thịt bò loại II,,no-image,,
+"Thịt bò, lưng, nạc","Thịt bò, lưng, nạc",Thịt bò,ok,https://upload.wikimedia.org/wikipedia/commons/6/60/Standing-rib-roast.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,"Michael C. Berch, aka MCB at en.wikipedia (CC BY-SA 2.5)"
+"Thịt bò, lưng, nạc và mỡ","Thịt bò, lưng, nạc và mỡ",Thịt bò,ok,https://upload.wikimedia.org/wikipedia/commons/6/60/Standing-rib-roast.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,"Michael C. Berch, aka MCB at en.wikipedia (CC BY-SA 2.5)"
+Thịt bồ câu ra ràng,Thịt bồ câu ra ràng,,no-image,,
+Thịt chó sấn,Thịt chó sấn,,no-image,,
+Thịt chó vai,Thịt chó vai,,no-image,,
+"Thịt cừu, nạc","Thịt cừu, nạc",Thịt cừu,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Spit_Braai_-_Lamb_on_a_spit_02.jpg/960px-Spit_Braai_-_Lamb_on_a_spit_02.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Bobbynicholson23 (CC BY-SA 4.0)
+"Thịt dê, nạc","Thịt dê, nạc",Thịt dê,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/Barbecue_kenya.jpg/960px-Barbecue_kenya.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,safaritravelplus (CC0)
+Thịt gà rừng,Thịt gà rừng,,no-image,,
+Thịt gà ta,Thịt gà ta,,no-image,,
+Thịt gà tây,Thịt gà tây,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/RoastTurkey.jpg/960px-RoastTurkey.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Photo by M. Rehemtulla (CC BY 2.0)
+Thịt hươu,Thịt hươu,,no-image,,
+Thịt lợn mỡ,Thịt lợn mỡ,,no-image,,
+Thịt lợn nạc,Thịt lợn nạc,,no-image,,
+"Thịt lợn nửa nạc, nửa mỡ","Thịt lợn nửa nạc, nửa mỡ",Thịt lợn nửa nạc,no-image,,
+Thịt ngỗng,Thịt ngỗng,,no-image,,
+Thịt ngựa,Thịt ngựa,,ok,https://upload.wikimedia.org/wikipedia/commons/7/7d/Basashi.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Richard W.M. Jones (CC BY-SA 3.0)
+Thịt thỏ nhà,Thịt thỏ nhà,,no-image,,
+Thịt thỏ rừng,Thịt thỏ rừng,,no-image,,
+Thịt trâu,Thịt trâu,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Laos_%284047448684%29.jpg/960px-Laos_%284047448684%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,M M from Switzerland (CC BY-SA 2.0)
+Thịt trâu bắp,Thịt trâu bắp,,no-image,,
+Thịt trâu cổ,Thịt trâu cổ,,no-image,,
+Thịt trâu đùi,Thịt trâu đùi,,no-image,,
+Thịt trâu thăn,Thịt trâu thăn,,no-image,,
+Thịt vịt,Thịt vịt,,no-image,,
+Bầu dục bò,Bầu dục bò,,no-image,,
+Bầu dục lợn,Bầu dục lợn,,no-image,,
+Bì lợn,Bì lợn,,no-image,,
+Chân giò lợn,Chân giò lợn,,no-image,,
+Dạ dày bò,Dạ dày bò,,no-image,,
+Dạ dày lợn,Dạ dày lợn,,no-image,,
+Đầu bò,Đầu bò,,no-image,,
+Đầu lợn,Đầu lợn,,no-image,,
+Đuôi bò,Đuôi bò,,no-image,,
+Đuôi lợn,Đuôi lợn,,no-image,,
+Gan bò,Gan bò,,no-image,,
+Gan gà,Gan gà,,no-image,,
+Gan lợn,Gan lợn,,no-image,,
+Gan vịt,Gan vịt,,no-image,,
+Gân chân bò,Gân chân bò,,no-image,,
+Lưỡi bò,Lưỡi bò,,no-image,,
+Lưỡi lợn,Lưỡi lợn,,no-image,,
+Lòng lợn (ruột già),Lòng lợn (ruột già),Lòng lợn,ok,https://upload.wikimedia.org/wikipedia/commons/4/49/Tr%C3%A0ng_l%E1%BB%A3n_lu%E1%BB%99c.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,hongnhung106 (CC BY 2.0)
+Lòng lợn (ruột non),Lòng lợn (ruột non),Lòng lợn,ok,https://upload.wikimedia.org/wikipedia/commons/4/49/Tr%C3%A0ng_l%E1%BB%A3n_lu%E1%BB%99c.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,hongnhung106 (CC BY 2.0)
+Mề gà,Mề gà,,no-image,,
+óc bò,óc bò,,no-image,,
+óc lợn,óc lợn,,no-image,,
+Phổi bò,Phổi bò,,no-image,,
+Phổi lợn,Phổi lợn,,no-image,,
+Sườn lợn,Sườn lợn,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Home_-_Lunch_-_Flickr_-_USDAgov.jpg/960px-Home_-_Lunch_-_Flickr_-_USDAgov.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,U.S. Department of Agriculture (Public domain)
+Tai lợn,Tai lợn,,no-image,,
+Tim bò,Tim bò,,no-image,,
+Tim gà,Tim gà,,no-image,,
+Tim lợn,Tim lợn,,no-image,,
+Tiết bò,Tiết bò,,no-image,,
+Tiết lợn luộc,Tiết lợn luộc,,no-image,,
+Tiết lợn sống,Tiết lợn sống,,no-image,,
+Tủy xương bò,Tủy xương bò,,no-image,,
+Tủy xương lợn,Tủy xương lợn,,no-image,,
+Ba tê,Ba tê,,no-image,,
+Chả lợn,Chả lợn,,no-image,,
+Chả quế lợn,Chả quế lợn,,no-image,,
+Dăm bông lợn,Dăm bông lợn,,no-image,,
+Dồi lợn,Dồi lợn,,no-image,,
+Giò bò,Giò bò,,no-image,,
+Giò lụa,Giò lụa,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Gi%C3%B2_l%E1%BB%A5a_2.jpg/960px-Gi%C3%B2_l%E1%BB%A5a_2.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Viethavvh (CC BY-SA 4.0)
+Giò thủ lợn,Giò thủ lợn,,no-image,,
+Lạp xường,Lạp xường,,no-image,,
+Nem chạo,Nem chạo,,no-image,,
+Nem chua,Nem chua,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Fermented_pork_wrapped_in_leaves.jpg/960px-Fermented_pork_wrapped_in_leaves.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Basile Morin (CC BY-SA 4.0)
+Ruốc thịt lợn,Ruốc thịt lợn,,no-image,,
+Thịt bò khô,Thịt bò khô,,no-image,,
+Thịt trâu khô,Thịt trâu khô,,no-image,,
+Xúc xích,Xúc xích,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Grobe_Wildschweinbratwurst_auf_Holzkohlegrill.jpg/960px-Grobe_Wildschweinbratwurst_auf_Holzkohlegrill.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Michel Schauch (CC BY-SA 3.0)
+Bột cóc,Bột cóc,,no-image,,
+Châu chấu,Châu chấu,,no-image,,
+ếch (thịt đùi),ếch (thịt đùi),ếch,no-image,,
+Nhộng,Nhộng,,ok,https://upload.wikimedia.org/wikipedia/commons/1/14/Meikever_pop_onderzijde_%28Melolontha_melolontha%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Rasbak (CC BY-SA 3.0)
+Lòng gà (cả bộ),Lòng gà (cả bộ),Lòng gà,no-image,,
+Cá bống,Cá bống,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Rhinogobius_sp._CB%28Hamamatsu%2CShizuoka%2CJapan%29.jpg/960px-Rhinogobius_sp._CB%28Hamamatsu%2CShizuoka%2CJapan%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Seotaro (CC BY-SA 3.0)
+Cá chày,Cá chày,,no-image,,
+Cá chép,Cá chép,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Cyprinus_carpio_2008_G1_%28cropped%29.jpg/960px-Cyprinus_carpio_2008_G1_%28cropped%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,George Chernilevsky (CC BY-SA 3.0)
+Cá dưa,Cá dưa,,no-image,,
+Cá dầu,Cá dầu,,no-image,,
+Cá diếc,Cá diếc,,no-image,,
+Cá đao,Cá đao,,no-image,,
+Cá đé,Cá đé,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Elongate_ilisha.jpg/960px-Elongate_ilisha.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Micromesistius (CC BY-SA 3.0)
+Cá đối,Cá đối,,no-image,,
+Cá đồng tiền,Cá đồng tiền,,no-image,,
+Cá hồi,Cá hồi,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Salmon_leaping_at_Willamette_Falls.jpg/960px-Salmon_leaping_at_Willamette_Falls.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Unknown authorUnknown author (Public domain)
+"Cá khô (chim, thu, nụ, đé)","Cá khô (chim, thu, nụ, đé)",Cá khô,no-image,,
+Cá lác,Cá lác,,no-image,,
+Cá mè,Cá mè,,ok,https://upload.wikimedia.org/wikipedia/commons/a/af/Bighead_carp.gif?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,(CC BY-SA 3.0)
+Cá mòi,Cá mòi,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Sardines_-_%E9%B0%AF%28%E3%81%84%E3%82%8F%E3%81%97%29.jpg/960px-Sardines_-_%E9%B0%AF%28%E3%81%84%E3%82%8F%E3%81%97%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,TANAKA Juuyoh (田中十洋) (CC BY 2.0)
+Cá mỡ,Cá mỡ,,no-image,,
+Cá mối,Cá mối,,no-image,,
+Cá nạc,Cá nạc,,no-image,,
+Cá ngừ,Cá ngừ,,no-image,,
+Cá nục,Cá nục,,no-image,,
+Cá phèn,Cá phèn,,no-image,,
+Cá quả,Cá quả,,no-image,,
+Cá rô đồng,Cá rô đồng,,ok,https://upload.wikimedia.org/wikipedia/commons/f/f0/Anabas_testudineus.png?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Sahat Ratmuangkhwang (CC BY 3.0)
+Cá rô phi,Cá rô phi,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/Blue_Tilapia.jpg/960px-Blue_Tilapia.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Michael Rupert Hayes (CC BY-SA 2.0)
+Cá thờn bơn (cá bơn),Cá thờn bơn (cá bơn),Cá thờn bơn,no-image,,
+Cá thu,Cá thu,,ok,https://upload.wikimedia.org/wikipedia/vi/f/f4/Mackerel.gif?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,
+Cá thu đao,Cá thu đao,,no-image,,
+Cá trạch (cá chạch),Cá trạch (cá chạch),Cá trạch,no-image,,
+Cá trắm cỏ,Cá trắm cỏ,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Ctenopharyngodon_idella_01_Pengo.jpg/960px-Ctenopharyngodon_idella_01_Pengo.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,(CC BY-SA 3.0)
+Cá trê,Cá trê,,no-image,,
+Cá trích,Cá trích,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/Harengula_jaguana.jpg/960px-Harengula_jaguana.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,NOAA Photo Library (Public domain)
+Cá trôi,Cá trôi,,no-image,,
+Cua bể,Cua bể,,no-image,,
+Cua đồng,Cua đồng,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Parath_convex_060324-4042_ckup.jpg/960px-Parath_convex_060324-4042_ckup.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Wibowo Djatmiko (Wie146) (CC BY-SA 3.0)
+ghẹ,ghẹ,,no-image,,
+Hải sâm,Hải sâm,,ok,https://upload.wikimedia.org/wikipedia/commons/d/df/Sea_cucumber.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Jacinta Richardson and Paul Fenwick (CC BY-SA 3.0)
+Hến,Hến,,no-image,,
+Lươn,Lươn,,ok,https://upload.wikimedia.org/wikipedia/commons/8/89/Monopterus_albus_4.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,(Public domain)
+Mực khô,Mực khô,,ok,https://upload.wikimedia.org/wikipedia/commons/7/7c/Dried_squid_3.png?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Binh Giang (Public domain)
+Mực tươi,Mực tươi,,no-image,,
+ốc bươu,ốc bươu,,ok,https://upload.wikimedia.org/wikipedia/commons/f/fc/Pila_polita_%28Deshayes%2C_1830%29_%284574793147%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Udo Schmidt from Deutschland (CC BY-SA 2.0)
+ốc đá,ốc đá,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/Bellamya_chinensis.jpg/960px-Bellamya_chinensis.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Oregon Department of Fish & Wildlife (CC BY-SA 2.0)
+ốc nhồi,ốc nhồi,,no-image,,
+ốc vặn,ốc vặn,,no-image,,
+"Rạm (muối, đồ)","Rạm (muối, đồ)",Rạm,ok,https://upload.wikimedia.org/wikipedia/commons/c/c2/Hamagani0811.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,ふうけ (Public domain)
+Rạm tươi,Rạm tươi,,no-image,,
+Rươi,Rươi,,no-image,,
+Sò,Sò,,no-image,,
+Tép gạo,Tép gạo,,no-image,,
+Tép khô,Tép khô,,no-image,,
+Tôm biển,Tôm biển,,no-image,,
+Tôm đồng,Tôm đồng,,no-image,,
+Tôm khô,Tôm khô,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/T%C3%B4m_kh%C3%B4_%E1%BB%9F_B%E1%BA%A1c_Li%C3%AAu.jpg/960px-T%C3%B4m_kh%C3%B4_%E1%BB%9F_B%E1%BA%A1c_Li%C3%AAu.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Bùi Thụy Đào Nguyên (CC BY-SA 3.0)
+Trai,Trai,,no-image,,
+Bánh phồng tôm rán,Bánh phồng tôm rán,,no-image,,
+Bánh phồng tôm sống,Bánh phồng tôm sống,,no-image,,
+Bột cá,Bột cá,,no-image,,
+Ruốc cá quả,Ruốc cá quả,,no-image,,
+Ruốc tôm,Ruốc tôm,,no-image,,
+Lòng đỏ trứng gà,Lòng đỏ trứng gà,,no-image,,
+Lòng trắng trứng gà,Lòng trắng trứng gà,,no-image,,
+Trứng vịt,Trứng vịt,,no-image,,
+Lòng đỏ trứng vịt,Lòng đỏ trứng vịt,,no-image,,
+Lòng trắng trứng vịt,Lòng trắng trứng vịt,,no-image,,
+Trứng chim cút,Trứng chim cút,,no-image,,
+Trứng cá,Trứng cá,,no-image,,
+Trứng cá muối,Trứng cá muối,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Seven_types_of_caviar.jpg/960px-Seven_types_of_caviar.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,T Chu (CC BY 2.0)
+Trứng vịt lộn,Trứng vịt lộn,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Hotvitlon.jpg/960px-Hotvitlon.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Aterux at Vietnamese Wikipedia (CC BY-SA 3.0)
+Bột trứng,Bột trứng,,no-image,,
+Sữa bò tươi,Sữa bò tươi,,no-image,,
+Sữa dê tươi,Sữa dê tươi,,no-image,,
+Sữa mẹ (sữa người),Sữa mẹ (sữa người),Sữa mẹ,ok,https://upload.wikimedia.org/wikipedia/commons/c/c6/Jess_Dobkin%2C_Lactation_Station_promotional_photo%2C_2006.jpeg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Jess Dobkin/David Hawr (CC BY-SA 3.0)
+Sữa chua (từ sữa bò),Sữa chua (từ sữa bò),Sữa chua,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Turkish_strained_yogurt.jpg/960px-Turkish_strained_yogurt.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Takeaway (CC BY-SA 4.0)
+Sữa chua vớt béo,Sữa chua vớt béo,,no-image,,
+Sữa bột toàn phần,Sữa bột toàn phần,,no-image,,
+Sữa bột tách béo,Sữa bột tách béo,,no-image,,
+Sữa đặc có đường Việt Nam,Sữa đặc có đường Việt Nam,,no-image,,
+Pho mát,Pho mát,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6b/Reblochon_AOC.jpg/960px-Reblochon_AOC.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Myrabella (CC BY-SA 3.0)
+Chuối nước đường,Chuối nước đường,,no-image,,
+Dưa chuột hộp,Dưa chuột hộp,,no-image,,
+Dứa hộp,Dứa hộp,,no-image,,
+Lạc chao dầu,Lạc chao dầu,,no-image,,
+Mắc coọc nước đường,Mắc coọc nước đường,,no-image,,
+Mận nước đường,Mận nước đường,,no-image,,
+Mứt bí ngô,Mứt bí ngô,,no-image,,
+Mứt cam có vỏ,Mứt cam có vỏ,,no-image,,
+Mứt chuối,Mứt chuối,,no-image,,
+Mứt dứa,Mứt dứa,,no-image,,
+Tên thực phẩm ( Vietnamese) Mứt đu đủ,Tên thực phẩm ( Vietnamese) Mứt đu đủ,Tên thực phẩm,no-image,,
+Nhãn nước đường,Nhãn nước đường,,no-image,,
+Nước dứa hộp,Nước dứa hộp,,no-image,,
+Vải nước đường,Vải nước đường,,no-image,,
+Cá thu hộp,Cá thu hộp,,no-image,,
+Cá trích hộp,Cá trích hộp,,no-image,,
+Thịt bò hộp,Thịt bò hộp,,no-image,,
+Thịt gà hộp,Thịt gà hộp,,no-image,,
+Thịt lợn hộp,Thịt lợn hộp,,no-image,,
+"Thịt lợn, thịt bò xay hộp","Thịt lợn, thịt bò xay hộp",Thịt lợn,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Th%E1%BB%8Bt_heo_quay_c%C3%BAng.jpg/960px-Th%E1%BB%8Bt_heo_quay_c%C3%BAng.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Hongtrakemsua7 (CC BY-SA 4.0)
+Thịt vịt hầm,Thịt vịt hầm,,no-image,,
+Bánh bích cốt,Bánh bích cốt,,no-image,,
+Bánh bích quy,Bánh bích quy,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Crackers_and_Oreo.jpg/960px-Crackers_and_Oreo.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Susan Slater (CC BY-SA 4.0)
+Bánh chả,Bánh chả,,no-image,,
+Bánh con cá,Bánh con cá,,no-image,,
+Bánh đậu xanh,Bánh đậu xanh,,ok,https://upload.wikimedia.org/wikipedia/commons/8/8e/Banh-Dau-Xanh.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,MrMaThaMi (CC BY-SA 4.0)
+Bánh kem xốp,Bánh kem xốp,,no-image,,
+Bánh khảo chay,Bánh khảo chay,,no-image,,
+Bánh quế,Bánh quế,,no-image,,
+Bánh sô cô la,Bánh sô cô la,,no-image,,
+Bánh thỏi sô cô la,Bánh thỏi sô cô la,,no-image,,
+Bánh trứng nhện,Bánh trứng nhện,,no-image,,
+Bột ca cao,Bột ca cao,,no-image,,
+Đường cát,Đường cát,,no-image,,
+Đường kính,Đường kính,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bd/V%C3%B2ng_tr%C3%B2n.svg/960px-V%C3%B2ng_tr%C3%B2n.svg.png?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Tttrung (CC BY-SA 4.0)
+Kẹo bơ cứng,Kẹo bơ cứng,,no-image,,
+Kẹo cà phê,Kẹo cà phê,,no-image,,
+Kẹo cam chanh,Kẹo cam chanh,,no-image,,
+Kẹo dừa mềm,Kẹo dừa mềm,,no-image,,
+Kẹo dứa mềm,Kẹo dứa mềm,,no-image,,
+Kẹo lạc,Kẹo lạc,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Golden_peanut_brittle_cracked_on_a_serving_dish.jpg/960px-Golden_peanut_brittle_cracked_on_a_serving_dish.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Janet Hudson (CC BY 2.0)
+Kẹo Pastille (kẹo ngậm bạc hà),Kẹo Pastille (kẹo ngậm bạc hà),Kẹo Pastille,no-image,,
+Kẹo sô cô la,Kẹo sô cô la,,no-image,,
+Kẹo sữa,Kẹo sữa,,no-image,,
+Kẹo vừng viên,Kẹo vừng viên,,no-image,,
+Mạch nha,Mạch nha,,ok,https://upload.wikimedia.org/wikipedia/commons/3/32/Sjb_whiskey_malt.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Finlay_McWalter's friend SJB (CC BY-SA 3.0)
+Mứt lạc,Mứt lạc,,no-image,,
+Cary bột,Cary bột,,no-image,,
+Gừng khô (bột),Gừng khô (bột),Gừng khô,no-image,,
+Gừng tươi,Gừng tươi,,no-image,,
+Hạt tiêu,Hạt tiêu,,no-image,,
+Muối,Muối,,no-image,,
+"Nghệ khô, bột","Nghệ khô, bột",Nghệ khô,no-image,,
+Nghệ tươi,Nghệ tươi,,no-image,,
+ớt khô bột,ớt khô bột,,no-image,,
+Riềng,Riềng,,ok,https://upload.wikimedia.org/wikipedia/commons/8/89/Alpinia_officinarum_-_K%C3%B6hler%E2%80%93s_Medizinal-Pflanzen-156.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,"Franz Eugen Köhler, Köhler's Medizinal-Pflanzen (Public domain)"
+Magi,Magi,,no-image,,
+Mắm tôm đặc,Mắm tôm đặc,,no-image,,
+Mắm tôm loãng,Mắm tôm loãng,,no-image,,
+Mắm tép chua,Mắm tép chua,,no-image,,
+Nước mắm cá (loại đặc biệt),Nước mắm cá (loại đặc biệt),Nước mắm cá,no-image,,
+Nước mắm cá loại I,Nước mắm cá loại I,,no-image,,
+Nước mắm loại II,Nước mắm loại II,,no-image,,
+Nước mắm cá,Nước mắm cá,,no-image,,
+Nước mắm cô,Nước mắm cô,,no-image,,
+Tương ngô,Tương ngô,,no-image,,
+Tương nếp,Tương nếp,,no-image,,
+Tương ớt,Tương ớt,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/Ch%C3%A9n_t%C6%B0%C6%A1ng_%E1%BB%9Bt_ng%C3%A0y_20_th%C3%A1ng_3_n%C4%83m_2021_%281%29.jpg/960px-Ch%C3%A9n_t%C6%B0%C6%A1ng_%E1%BB%9Bt_ng%C3%A0y_20_th%C3%A1ng_3_n%C4%83m_2021_%281%29.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Phương Huy (CC BY-SA 4.0)
+Xì dầu,Xì dầu,,no-image,,
+Sốt mayonnaise,Sốt mayonnaise,,no-image,,
+"Bia (cồn: 4,5 g)","Bia (cồn: 4,5 g)",Bia,no-image,,
+Cô nhắc (cồn 32 g),Cô nhắc (cồn 32 g),Cô nhắc,no-image,,
+Cốc tai (cồn 13 g),Cốc tai (cồn 13 g),Cốc tai,no-image,,
+Coca cola,Coca cola,,no-image,,
+Nước cam tươi,Nước cam tươi,,no-image,,
+Nước dừa non tươi,Nước dừa non tươi,,no-image,,
+Nước ép cà chua,Nước ép cà chua,,no-image,,
+Nước khoáng,Nước khoáng,,ok,https://upload.wikimedia.org/wikipedia/commons/4/42/Vata-Gurgur.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,GreatJoe at English Wikipedia (CC BY-SA 3.0)
+Nước quít tươi,Nước quít tươi,,no-image,,
+"Rượu cam, chanh (cồn 24,2 g)","Rượu cam, chanh (cồn 24,2 g)",Rượu cam,no-image,,
+Rượu nếp (80g/ 24 ml) (cồn 5 g),Rượu nếp (80g/ 24 ml) (cồn 5 g),Rượu nếp,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Ruou_de.jpg/960px-Ruou_de.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Viethavvh at vi.wikipedia (Public domain)
+Rượu trắng (cồn 39 g),Rượu trắng (cồn 39 g),Rượu trắng,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/3/39/Ruou_de.jpg/960px-Ruou_de.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Viethavvh at vi.wikipedia (Public domain)
+"Rượu vang đỏ (cồn 9,5 g)","Rượu vang đỏ (cồn 9,5 g)",Rượu vang đỏ,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/R%C6%B0%E1%BB%A3u_vang_%C4%91%E1%BB%8F_%C4%90%C3%A0_L%E1%BA%A1t_%28t%E1%BA%A1i_S%C3%A0i_G%C3%B2n%29.JPG/960px-R%C6%B0%E1%BB%A3u_vang_%C4%91%E1%BB%8F_%C4%90%C3%A0_L%E1%BA%A1t_%28t%E1%BA%A1i_S%C3%A0i_G%C3%B2n%29.JPG?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Phương Huy (thảo luận) (Public domain)
+"Rượu vang trắng (cồn 9,5 g)","Rượu vang trắng (cồn 9,5 g)",Rượu vang trắng,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/White_Wine_Glass.jpg/960px-White_Wine_Glass.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Jon Sullivan (Public domain)
+Rượu vang trắng ngọt (cồn 10.2 g),Rượu vang trắng ngọt (cồn 10.2 g),Rượu vang trắng ngọt,no-image,,
+"Rượu Whisky (cồn 35,2 g)","Rượu Whisky (cồn 35,2 g)",Rượu Whisky,no-image,,
+Bánh đa cua,Bánh đa cua,,ok,https://upload.wikimedia.org/wikipedia/commons/8/81/BANH_DA_CUA_1.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,HoangTuanAnh (CC BY-SA 3.0)
+Miến gà,Miến gà,,no-image,,
+Xôi xéo,Xôi xéo,,no-image,,
+Bánh căn,Bánh căn,,ok,https://upload.wikimedia.org/wikipedia/commons/a/a3/B%C3%A1nh_c%C4%83n_1.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled,Memberofc1 (CC BY-SA 3.0)
+Bột chiên,Bột chiên,,no-image,,
+Thịt ba chỉ nướng,Thịt ba chỉ nướng,,no-image,,
+Cơm trắng,Cơm trắng,,no-image,,
+Trứng luộc,Trứng luộc,,ok,https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/Boiled_eggs%2C_increasing_in_boiling_time_from_left_to_right.jpg/960px-Boiled_eggs%2C_increasing_in_boiling_time_from_left_to_right.jpg?utm_source=vi.wikipedia.org&utm_campaign=api&utm_content=thumbnail,Wikisearcher (CC BY-SA 3.0)
+Ức gà luộc,Ức gà luộc,,no-image,,
+Cá hồi nướng,Cá hồi nướng,,no-image,,
+Quả bơ,Quả bơ,,no-image,,

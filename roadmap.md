@@ -27,6 +27,7 @@ Hạ tầng `device_token` đã có.
 - [x] **Món yêu thích** (01/10/2026): bảng `favorite_foods` + CRUD `GET/POST/DELETE /favorites` — từ catalog (snapshot giá trị) hoặc tự nhập, chống trùng 409, phân quyền 403/404
 - [x] **Ảnh món ăn** (06/10/2026): `foods.image_url/image_credit` (migration 021) + seed 25 món phổ biến từ lead image vi.wikipedia (hotlink thumb, kèm attribution CC) — script `scripts/seed-food-images/` (mapping tay → fetch → review `pending.csv` → `--emit`), NULL thì FE fallback emoji
 - [x] **Ảnh món ăn đợt 2** (06/10/2026): migration `022-food-images-2.sql` (+42 món: fallback bài viết liên quan, retry 429/timeout, guard `IS NULL`) — tổng ~67 món có ảnh, 10 món không bài/ảnh free để NULL
+- [x] **Ảnh món ăn đợt 3 toàn catalog** (06/10/2026): quét 603 món (VFCT + món nấu + seed 007), migration `023-food-images-3.sql` (+140 món mới, loại 2 ảnh sai kiểm chứng tay: `Dứa`, `Bơ`) — tổng ~207 món có ảnh
 - [x] **BMI** (có sẵn): `src/users/bmi.ts` tính lúc đọc + phân loại WHO, trả trong `GET /users/me`
 - [x] **Cảnh báo lệch TDEE/BMI** (có sẵn): `warnings[]` real-time trong dashboard (`OVER_BUDGET` ≥120%, `UNDER_BUDGET` ≤50%, `UNSAFE_MEAL`)
 - [ ] **Tự điều chỉnh plan**: khi user nhiều ngày không theo (so `daily` vs target), gợi ý plan mới hoặc cảnh báo — hiện chỉ suggest tĩnh
