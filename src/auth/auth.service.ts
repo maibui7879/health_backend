@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -181,6 +182,10 @@ export class AuthService {
       throw new UnauthorizedException(this.i18n.t('auth.invalidCredentials'));
     }
 
+    if (user.status === 'BANNED') {
+      throw new ForbiddenException(this.i18n.t('auth.banned'));
+    }
+
     const isPasswordMatch = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordMatch) {
       throw new UnauthorizedException(this.i18n.t('auth.invalidCredentials'));
@@ -196,6 +201,10 @@ export class AuthService {
 
     if (!user) {
       throw new UnauthorizedException(this.i18n.t('auth.invalidRefreshToken'));
+    }
+
+    if (user.status === 'BANNED') {
+      throw new ForbiddenException(this.i18n.t('auth.banned'));
     }
 
     return this.generateToken(user);
@@ -318,6 +327,10 @@ export class AuthService {
       const { email, name, picture } = payload;
       let user = await this.userRepository.findOne({ where: { email } });
 
+      if (user && user.status === 'BANNED') {
+        throw new ForbiddenException(this.i18n.t('auth.banned'));
+      }
+
       if (!user) {
         const profile = new UserProfile();
         profile.full_name = name || 'Google User';
@@ -335,6 +348,7 @@ export class AuthService {
 
       return this.generateToken(user);
     } catch (error) {
+      if (error instanceof ForbiddenException) throw error;
       console.error('LỖI XÁC THỰC GOOGLE:', error);
       throw new UnauthorizedException(this.i18n.t('auth.googleTokenExpired'));
     }

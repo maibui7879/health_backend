@@ -5,6 +5,7 @@ import { NutritionPlan } from '../nutrition/entities/nutrition-plan.entity';
 import { UserProfile } from '../users/entities/user-profile.entity';
 import { Workout } from '../workout/entities/workout.entity';
 import { InsightsModule } from '../insights/insights.module';
+import { ModerationModule } from '../moderation/moderation.module';
 import { CommunityController } from './community.controller';
 import { CommunityService } from './community.service';
 import { CommunityComment } from './entities/comment.entity';
@@ -12,7 +13,6 @@ import { Post } from './entities/post.entity';
 import { AuthorScore } from './entities/author-score.entity';
 import { PostView } from './entities/post-view.entity';
 import { Reaction } from './entities/reaction.entity';
-import { Report } from './entities/report.entity';
 
 @Module({
   imports: [
@@ -20,7 +20,6 @@ import { Report } from './entities/report.entity';
       Post,
       CommunityComment,
       Reaction,
-      Report,
       UserProfile,
       NutritionPlan,
       Workout,
@@ -29,6 +28,7 @@ import { Report } from './entities/report.entity';
       AuthorScore,
     ]),
     InsightsModule,
+    ModerationModule,
   ],
   controllers: [CommunityController],
   providers: [CommunityService],

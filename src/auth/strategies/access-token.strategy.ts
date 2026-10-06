@@ -1,7 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { LocalizationService } from '../../i18n/localization.service';
+import { User } from '../../users/entities/user.entity';
 
 export interface AccessTokenPayload {
   sub: string;
@@ -14,7 +17,11 @@ export class AccessTokenStrategy extends PassportStrategy(
   Strategy,
   'jwt-access',
 ) {
-  constructor(private readonly i18n: LocalizationService) {
+  constructor(
+    private readonly i18n: LocalizationService,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
@@ -25,8 +32,13 @@ export class AccessTokenStrategy extends PassportStrategy(
     });
   }
 
-  validate(payload: AccessTokenPayload) {
+  async validate(payload: AccessTokenPayload) {
     if (payload.token_type !== 'access') {
+      throw new UnauthorizedException(this.i18n.t('auth.invalidAccessToken'));
+    }
+    // Chặn session của tài khoản vừa bị BAN (không chờ token hết hạn).
+    const user = await this.userRepo.findOne({ where: { id: payload.sub } });
+    if (!user || user.status === 'BANNED') {
       throw new UnauthorizedException(this.i18n.t('auth.invalidAccessToken'));
     }
 

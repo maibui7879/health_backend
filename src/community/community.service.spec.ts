@@ -12,6 +12,7 @@ import { Meal } from '../nutrition/entities/meal.entity';
 import { NutritionPlan } from '../nutrition/entities/nutrition-plan.entity';
 import { UserProfile } from '../users/entities/user-profile.entity';
 import { Workout } from '../workout/entities/workout.entity';
+import { ReportsService } from '../moderation/reports.service';
 import { CommunityService } from './community.service';
 import { CommunityComment } from './entities/comment.entity';
 import { AuthorScore } from './entities/author-score.entity';
@@ -19,7 +20,6 @@ import { PostView } from './entities/post-view.entity';
 import { LinkedType } from './entities/post.entity';
 import { Post } from './entities/post.entity';
 import { Reaction } from './entities/reaction.entity';
-import { Report } from './entities/report.entity';
 
 describe('CommunityService', () => {
   let service: CommunityService;
@@ -60,10 +60,9 @@ describe('CommunityService', () => {
     save: jest.fn(),
     remove: jest.fn(),
   };
-  const mockReportRepo = {
-    findOne: jest.fn(),
-    create: jest.fn(),
-    save: jest.fn(),
+  const mockReports = {
+    fileReport: jest.fn(),
+    activeCount: jest.fn(),
   };
   const mockProfileRepo = { find: jest.fn(() => Promise.resolve([])) };
   const mockViewRepo = {
@@ -93,7 +92,10 @@ describe('CommunityService', () => {
           useValue: mockCommentRepo,
         },
         { provide: getRepositoryToken(Reaction), useValue: mockReactionRepo },
-        { provide: getRepositoryToken(Report), useValue: mockReportRepo },
+        {
+          provide: ReportsService,
+          useValue: mockReports,
+        },
         {
           provide: getRepositoryToken(UserProfile),
           useValue: mockProfileRepo,
@@ -265,6 +267,9 @@ describe('CommunityService', () => {
   describe('reports', () => {
     it('self-report throws BadRequest', async () => {
       mockPostRepo.findOne.mockResolvedValue(post());
+      mockReports.fileReport.mockRejectedValueOnce(
+        new BadRequestException('reports.reportSelf'),
+      );
       await expect(
         service.report('u1', 'p1', { reason: 'spam' }),
       ).rejects.toBeInstanceOf(BadRequestException);
@@ -272,7 +277,9 @@ describe('CommunityService', () => {
 
     it('duplicate report throws Conflict', async () => {
       mockPostRepo.findOne.mockResolvedValue(post({ user_id: 'u1' }));
-      mockReportRepo.findOne.mockResolvedValue({ id: 'rep1' });
+      mockReports.fileReport.mockRejectedValueOnce(
+        new ConflictException('reports.reportExists'),
+      );
       await expect(
         service.report('u2', 'p1', { reason: 'spam' }),
       ).rejects.toBeInstanceOf(ConflictException);
@@ -282,10 +289,8 @@ describe('CommunityService', () => {
       mockPostRepo.findOne
         .mockResolvedValueOnce(post({ user_id: 'u1' }))
         .mockResolvedValueOnce(post({ user_id: 'u1', report_count: 3 }));
-      mockReportRepo.findOne.mockResolvedValue(null);
-      mockReportRepo.save.mockImplementation((v: unknown) =>
-        Promise.resolve(v),
-      );
+      mockReports.fileReport.mockResolvedValueOnce({ report: { id: 'r1' } });
+      mockReports.activeCount.mockResolvedValueOnce(3);
 
       const res = await service.report('u2', 'p1', { reason: 'spam' });
       expect(res.message).toBe('community.reportCreated');

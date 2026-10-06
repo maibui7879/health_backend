@@ -14,6 +14,7 @@ import { EmbeddingsModule } from './embeddings/embeddings.module';
 import { WorkoutModule } from './workout/workout.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { I18nModule } from './i18n/i18n.module';
+import { ModerationModule } from './moderation/moderation.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { I18nModule } from './i18n/i18n.module';
     WorkoutModule,
     RemindersModule,
     CommunityModule,
+    ModerationModule,
   ],
 })
 export class AppModule {}

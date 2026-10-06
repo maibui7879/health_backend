@@ -23,6 +23,7 @@ export const en: Record<TranslationKey, string> = {
     'An OTP has been sent to your email. Valid for 10 minutes.',
   'auth.registerDone': 'Registration successful.',
   'auth.forbidden': 'You are not allowed to perform this action.',
+  'auth.banned': 'Account suspended for violations. Contact support to appeal.',
   'mail.registerOtpSubject': 'BeroHealth registration OTP',
   'mail.registerOtpBody':
     'Your registration OTP is: {code}. Valid for 10 minutes. If this was not you, ignore this email.',
@@ -128,6 +129,13 @@ export const en: Record<TranslationKey, string> = {
   'community.reportExists': 'You have already reported this post',
   'community.reportCreated': 'Report submitted, thank you',
   'community.reportSelf': 'You cannot report your own post',
+
+  'reports.submitted': 'Report recorded',
+  'reports.reportSelf': 'You cannot report yourself',
+  'reports.reportExists': 'You already reported this item',
+  'reports.notFound': 'Report not found or already handled',
+  'reports.invalidTarget': 'Invalid target type',
+  'reports.actionMismatch': 'Action does not apply to this target type',
   'community.linkedNotFound': 'Linked content not found',
   'community.linkedIncomplete': 'Linking requires both type and id',
 

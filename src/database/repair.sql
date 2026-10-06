@@ -286,7 +286,28 @@ CREATE TABLE IF NOT EXISTS food_submissions (
 CREATE INDEX IF NOT EXISTS idx_food_submissions_status
   ON food_submissions (status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_food_submissions_user
-  ON food_submissions (user_id, created_at DESC);CREATE TABLE IF NOT EXISTS user_taste_profiles (
+  ON food_submissions (user_id, created_at DESC);
+
+-- Report kiểm duyệt chung (POST/COMMENT/USER/WORKOUT/EXERCISE_TEMPLATE/FOOD).
+CREATE TABLE IF NOT EXISTS reports (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  reporter_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  target_type VARCHAR(20) NOT NULL
+    CHECK (target_type IN ('POST','COMMENT','USER','WORKOUT','EXERCISE_TEMPLATE','FOOD')),
+  target_id UUID NOT NULL,
+  category VARCHAR(20) NOT NULL DEFAULT 'OTHER'
+    CHECK (category IN ('SPAM','INAPPROPRIATE','MISINFORMATION','HARASSMENT','OTHER')),
+  details VARCHAR(500) NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'PENDING'
+    CHECK (status IN ('PENDING','ACTIONED','DISMISSED')),
+  action_taken VARCHAR(30) NULL,
+  reviewer_id UUID NULL REFERENCES users(id) ON DELETE SET NULL,
+  reviewed_at TIMESTAMPTZ NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (reporter_id, target_type, target_id)
+);
+CREATE INDEX IF NOT EXISTS idx_reports_status ON reports (status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_reports_target ON reports (target_type, target_id);CREATE TABLE IF NOT EXISTS user_taste_profiles (
   user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
   liked_tags JSONB NOT NULL DEFAULT '{}',
   disliked_tags JSONB NOT NULL DEFAULT '{}',

@@ -11,6 +11,11 @@ import { In, Repository } from 'typeorm';
 import { LocalizationService } from '../i18n/localization.service';
 import { InsightsService } from '../insights/insights.service';
 import { tokenizeTaste } from '../insights/taste-tokenizer';
+import {
+  ReportCategory,
+  ReportTarget,
+} from '../moderation/entities/report-case.entity';
+import { ReportsService } from '../moderation/reports.service';
 import { Meal } from '../nutrition/entities/meal.entity';
 import { NutritionPlan } from '../nutrition/entities/nutrition-plan.entity';
 import { UserProfile } from '../users/entities/user-profile.entity';
@@ -29,7 +34,6 @@ import { LinkedType, Post } from './entities/post.entity';
 import { AuthorScore } from './entities/author-score.entity';
 import { PostView } from './entities/post-view.entity';
 import { Reaction, ReactionType } from './entities/reaction.entity';
-import { Report } from './entities/report.entity';
 
 // Đủ 3 report từ 3 user khác nhau → tự ẩn khỏi feed chờ xem lại.
 const AUTO_HIDE_REPORTS = 3;
@@ -67,8 +71,6 @@ export class CommunityService {
     private readonly commentRepo: Repository<CommunityComment>,
     @InjectRepository(Reaction)
     private readonly reactionRepo: Repository<Reaction>,
-    @InjectRepository(Report)
-    private readonly reportRepo: Repository<Report>,
     @InjectRepository(UserProfile)
     private readonly profileRepo: Repository<UserProfile>,
     @InjectRepository(NutritionPlan)
@@ -83,6 +85,7 @@ export class CommunityService {
     private readonly authorScoreRepo: Repository<AuthorScore>,
     private readonly i18n: LocalizationService,
     private readonly insights: InsightsService,
+    private readonly reports: ReportsService,
   ) {}
 
   // ---- Bài đăng ----
@@ -335,36 +338,37 @@ export class CommunityService {
 
   async report(userId: string, postId: string, dto: ReportPostDto) {
     const post = await this.getVisible(userId, postId);
-    if (post.user_id === userId) {
-      throw new BadRequestException(this.i18n.t('community.reportSelf'));
+    // Ghi vào bảng reports chung (giữ message + auto-hide + affinity cũ).
+    try {
+      await this.reports.fileReport(userId, {
+        target_type: ReportTarget.POST,
+        target_id: post.id,
+        category: ReportCategory.OTHER,
+        details: dto.reason.trim(),
+      });
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException(this.i18n.t('community.reportSelf'));
+      }
+      if (error instanceof ConflictException) {
+        throw new ConflictException(this.i18n.t('community.reportExists'));
+      }
+      throw error;
     }
-    const dup = await this.reportRepo.findOne({
-      where: { post_id: post.id, reporter_id: userId },
-    });
-    if (dup) {
-      throw new ConflictException(this.i18n.t('community.reportExists'));
-    }
-    await this.reportRepo.save(
-      this.reportRepo.create({
-        post_id: post.id,
-        reporter_id: userId,
-        reason: dto.reason.trim(),
-      }),
-    );
     await this.postRepo
       .createQueryBuilder()
       .update()
       .set({ report_count: () => 'report_count + 1' })
       .where('id = :id', { id: post.id })
       .execute();
+    const count = await this.reports.activeCount(
+      ReportTarget.POST,
+      post.id,
+    );
     const refreshed = await this.postRepo.findOne({
       where: { id: post.id },
     });
-    if (
-      refreshed &&
-      !refreshed.is_hidden &&
-      refreshed.report_count >= AUTO_HIDE_REPORTS
-    ) {
+    if (refreshed && !refreshed.is_hidden && count >= AUTO_HIDE_REPORTS) {
       refreshed.is_hidden = true;
       await this.postRepo.save(refreshed);
     }

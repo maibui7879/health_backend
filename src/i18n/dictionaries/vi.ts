@@ -22,6 +22,7 @@ export const vi = {
     'Mã OTP đã được gửi tới email. Mã có hiệu lực 10 phút.',
   'auth.registerDone': 'Đăng ký thành công.',
   'auth.forbidden': 'Bạn không có quyền thực hiện thao tác này.',
+  'auth.banned': 'Tài khoản đã bị khóa do vi phạm. Liên hệ hỗ trợ để khiếu nại.',
   'mail.registerOtpSubject': 'Mã OTP đăng ký BeroHealth',
   'mail.registerOtpBody':
     'Mã OTP đăng ký của bạn là: {code}. Mã có hiệu lực 10 phút. Nếu không phải bạn yêu cầu, hãy bỏ qua email này.',
@@ -129,6 +130,13 @@ export const vi = {
   'community.reportExists': 'Bạn đã báo cáo bài viết này rồi',
   'community.reportCreated': 'Đã gửi báo cáo, cảm ơn bạn',
   'community.reportSelf': 'Không thể báo cáo bài viết của chính mình',
+
+  'reports.submitted': 'Đã ghi nhận tố cáo',
+  'reports.reportSelf': 'Không thể tố cáo chính mình',
+  'reports.reportExists': 'Bạn đã tố cáo mục này rồi',
+  'reports.notFound': 'Không tìm thấy tố cáo hoặc đã xử lý',
+  'reports.invalidTarget': 'Loại mục tiêu không hợp lệ',
+  'reports.actionMismatch': 'Hành động không áp dụng cho loại mục này',
   'community.linkedNotFound': 'Không tìm thấy nội dung được gắn kèm',
   'community.linkedIncomplete': 'Gắn kèm cần cả loại và id',
 
