@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { ActivityType } from './workout.entity';
+import type { ActivityType } from './workout.entity';
 
 export enum ExerciseDifficulty {
   EASY = 'EASY',
@@ -18,7 +18,9 @@ export class ExerciseTemplate {
   @Column({ type: 'varchar', length: 60, unique: true })
   code!: string;
 
-  @Column({ type: 'enum', enum: ActivityType })
+  // VARCHAR cho khớp DDL migration 017 (đồng thời tránh circular import
+  // runtime với workout.entity — ActivityType chỉ dùng ở kiểu dữ liệu).
+  @Column({ type: 'varchar', length: 20 })
   activity_type!: ActivityType;
 
   @Column({ type: 'varchar', length: 255 })

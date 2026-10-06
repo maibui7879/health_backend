@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LocalizationService } from '../i18n/localization.service';
-import { ActivityType } from './entities/workout.entity';
+import type { ActivityType } from './entities/workout.entity';
 import { ExerciseTemplate } from './entities/exercise-template.entity';
 
 @Injectable()

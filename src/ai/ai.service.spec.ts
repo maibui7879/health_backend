@@ -65,7 +65,7 @@ describe('AiService', () => {
     expect(groqCreate).toHaveBeenCalledTimes(1);
   });
 
-  it('reviewDay maps Groq 429 to 429', async () => {
+  it('reviewDay maps Groq 429 to 429 sau 3 lần thử', async () => {
     groqCreate.mockRejectedValue({ status: 429 });
     await expect(
       service.reviewDay({
@@ -77,7 +77,28 @@ describe('AiService', () => {
         lang: 'en',
       }),
     ).rejects.toMatchObject({ status: 429 });
-  });
+    expect(groqCreate).toHaveBeenCalledTimes(3);
+  }, 30000);
+
+  it('reviewDay thử lại 1 lần 429 rồi thành công', async () => {
+    groqCreate
+      .mockRejectedValueOnce({ status: 429 })
+      .mockResolvedValueOnce({
+        choices: [
+          { message: { content: JSON.stringify({ overall_comment: 'ok', warning: null }) } },
+        ],
+      });
+    const result = await service.reviewDay({
+      userName: 'An',
+      allergies: [],
+      dietType: 'STANDARD',
+      goalType: 'MAINTAIN',
+      adherence: {},
+      lang: 'vi',
+    });
+    expect(result).toMatchObject({ overall_comment: 'ok' });
+    expect(groqCreate).toHaveBeenCalledTimes(2);
+  }, 30000);
 
   it('suggestMenu chèn tasteContext RAG vào prompt (Phase 8)', async () => {
     groqCreate.mockResolvedValue({

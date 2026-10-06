@@ -364,6 +364,34 @@ ${langLine}
     }
   }
 
+  private isRateLimit(error: unknown): boolean {
+    const status =
+      (error as { status?: number })?.status ??
+      (error as { statusCode?: number })?.statusCode;
+    const code =
+      (error as { code?: string })?.code ??
+      (error as { error?: { code?: string } })?.error?.code;
+    return status === 429 || code === 'rate_limit_exceeded';
+  }
+
+  // Retry backoff cho Groq 429 (tier on_demand quota thấp).
+  // Chỉ retry lỗi rate-limit, tối đa 2 lần (đợi 3s, 8s).
+  private async groqWithRetry<T>(fn: () => Promise<T>, what: string): Promise<T> {
+    const delays = [3000, 8000];
+    for (let attempt = 0; ; attempt++) {
+      try {
+        return await fn();
+      } catch (error) {
+        if (!this.isRateLimit(error) || attempt >= delays.length) throw error;
+        const wait = delays[attempt] ?? 8000;
+        this.logger.warn(
+          `${what} dính 429, thử lại sau ${wait}ms (lần ${attempt + 1}/${delays.length})...`,
+        );
+        await new Promise((r) => setTimeout(r, wait));
+      }
+    }
+  }
+
   async reviewDay(args: {
     userName: string;
     allergies: string[];
@@ -394,13 +422,17 @@ Nếu nặng (nguy cơ dị ứng, đau ngực, khó thở, ngất, nôn ra máu
 Chỉ trả JSON, không văn bản khác:
 {"overall_comment":"...","meal_comments":[{"meal_type":"LUNCH","comment":"..."}],"workout_comment":"...","suggestions":["..."],"warning":null}`;
 
-      const completion = await this.groq.chat.completions.create({
-        messages: [{ role: 'user', content: prompt }],
-        model,
-        temperature: 0.4,
-        max_tokens: 700,
-        response_format: { type: 'json_object' },
-      });
+      const completion = await this.groqWithRetry(
+        () =>
+          this.groq.chat.completions.create({
+            messages: [{ role: 'user', content: prompt }],
+            model,
+            temperature: 0.4,
+            max_tokens: 700,
+            response_format: { type: 'json_object' },
+          }),
+        'reviewDay',
+      );
 
       const responseContent = completion.choices[0]?.message?.content;
       if (!responseContent) throw new Error('Kết quả trả về rỗng');
@@ -409,13 +441,7 @@ Chỉ trả JSON, không văn bản khác:
       return parsed;
     } catch (error) {
       this.logger.error('Lỗi khi nhận xét ngày:', error);
-      const status =
-        (error as { status?: number })?.status ??
-        (error as { statusCode?: number })?.statusCode;
-      const code =
-        (error as { code?: string })?.code ??
-        (error as { error?: { code?: string } })?.error?.code;
-      if (status === 429 || code === 'rate_limit_exceeded') {
+      if (this.isRateLimit(error)) {
         throw new HttpException(
           this.i18n.t('ai.planOverloaded'),
           HttpStatus.TOO_MANY_REQUESTS,
