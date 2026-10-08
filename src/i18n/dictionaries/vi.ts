@@ -31,6 +31,8 @@ export const vi = {
     'Mã OTP của bạn là: {code}. Mã có hiệu lực 10 phút. Nếu không phải bạn yêu cầu, hãy bỏ qua email này.',
   'mail.sendFailed':
     'Không gửi được email lúc này. Vui lòng thử lại sau.',
+  'mail.otpTitle': 'Mã xác thực của bạn',
+  'mail.footer': 'Email tự động, vui lòng không trả lời.',
 
   'users.notFound': 'Không tìm thấy người dùng',
   'users.profileNotFound': 'Không tìm thấy profile',

@@ -66,9 +66,10 @@ export class MailService {
   ): Promise<boolean> {
     const subject = this.i18n.t(subjectKey);
     const text = this.i18n.t(bodyKey, { code });
+    const html = this.buildOtpHtml(text, code);
     // Ưu tiên email API qua HTTPS (qua được firewall chặn SMTP của HF).
-    if (await this.sendViaResend(to, subject, text)) return true;
-    if (await this.sendViaBrevo(to, subject, text)) return true;
+    if (await this.sendViaResend(to, subject, text, html)) return true;
+    if (await this.sendViaBrevo(to, subject, text, html)) return true;
     const transporter = this.getTransporter();
     if (!transporter) return false;
     const from =
@@ -78,7 +79,7 @@ export class MailService {
       process.env.MAIL_USER ??
       '';
     try {
-      await transporter.sendMail({ from, to, subject, text });
+      await transporter.sendMail({ from, to, subject, text, html });
       return true;
     } catch (error) {
       this.logger.error(`Gửi OTP tới ${to} thất bại: ${String(error)}`);
@@ -86,10 +87,40 @@ export class MailService {
     }
   }
 
+  // Template HTML branded (inline CSS để Gmail app render đúng).
+  private buildOtpHtml(text: string, code: string): string {
+    const title = this.i18n.t('mail.otpTitle');
+    const footer = this.i18n.t('mail.footer');
+    const digits = code
+      .split('')
+      .map(
+        (d) =>
+          `<td style="background:#F6F7F6;border-radius:12px;padding:12px 0;width:44px;text-align:center;font-size:24px;font-weight:800;color:#17281F;">${d}</td><td style="width:8px;"></td>`,
+      )
+      .join('');
+    return `<div style="background:#F6F7F6;padding:24px 0;font-family:Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
+<table width="480" cellpadding="0" cellspacing="0" style="background:#FFFFFF;border-radius:20px;max-width:480px;width:100%;">
+<tr><td align="center" style="padding:28px 24px 8px;">
+<div style="width:56px;height:56px;border-radius:28px;background:#2E9E5B;color:#FFFFFF;font-size:28px;font-weight:800;line-height:56px;">B</div>
+<div style="font-size:22px;font-weight:800;color:#17281F;margin-top:12px;">BeroHealth</div>
+</td></tr>
+<tr><td align="center" style="padding:8px 24px 0;font-size:16px;font-weight:700;color:#17281F;">${title}</td></tr>
+<tr><td align="center" style="padding:16px 24px 0;">
+<table cellpadding="0" cellspacing="0"><tr>${digits}</tr></table>
+</td></tr>
+<tr><td align="center" style="padding:16px 24px 0;font-size:13px;color:#6E8577;">${text}</td></tr>
+<tr><td align="center" style="padding:20px 24px 28px;font-size:12px;color:#9AA5A0;">${footer}</td></tr>
+</table>
+</td></tr></table>
+</div>`;
+  }
+
   private async sendViaResend(
     to: string,
     subject: string,
     text: string,
+    html: string,
   ): Promise<boolean> {
     const apiKey =
       this.configService.get<string>('RESEND_API_KEY') ??
@@ -106,7 +137,7 @@ export class MailService {
           Authorization: `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ from, to, subject, text }),
+        body: JSON.stringify({ from, to, subject, text, html }),
         signal: AbortSignal.timeout(20000),
       });
       if (!res.ok) {
@@ -126,6 +157,7 @@ export class MailService {
     to: string,
     subject: string,
     text: string,
+    html: string,
   ): Promise<boolean> {
     const apiKey =
       this.configService.get<string>('BREVO_API_KEY') ??
@@ -150,6 +182,7 @@ export class MailService {
           to: [{ email: to }],
           subject,
           textContent: text,
+          htmlContent: html,
         }),
         signal: AbortSignal.timeout(20000),
       });

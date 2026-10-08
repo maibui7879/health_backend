@@ -31,6 +31,8 @@ export const en: Record<TranslationKey, string> = {
   'mail.otpBody':
     'Your OTP is: {code}. Valid for 10 minutes. If this was not you, ignore this email.',
   'mail.sendFailed': 'Could not send email right now. Please try again later.',
+  'mail.otpTitle': 'Your verification code',
+  'mail.footer': 'Automatic email, please do not reply.',
 
   'users.notFound': 'User not found',
   'users.profileNotFound': 'Profile not found',
