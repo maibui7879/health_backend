@@ -36,6 +36,11 @@ export class MailService {
       port,
       secure: port === 465,
       auth: { user, pass },
+      // Fail nhanh thay vì treo ~2 phút mặc định của nodemailer
+      // (SMTP bị chặn ở firewall sẽ timeout kết nối).
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 20000,
     });
     return this.transporter;
   }

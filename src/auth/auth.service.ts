@@ -124,7 +124,13 @@ export class AuthService {
       ),
     });
     await this.registrationOtpRepository.save(pending);
-    await this.mailService.sendRegistrationOtp(email, code);
+    const mailed = await this.mailService.sendRegistrationOtp(email, code);
+    if (!mailed) {
+      throw new HttpException(
+        this.i18n.t('mail.sendFailed'),
+        HttpStatus.SERVICE_UNAVAILABLE,
+      );
+    }
     return { message: this.i18n.t('auth.registerOtpSent') };
   }
 
@@ -262,7 +268,13 @@ export class AuthService {
         ),
       });
       await this.otpRepository.save(otp);
-      await this.mailService.sendOtp(email, code);
+      const mailed = await this.mailService.sendOtp(email, code);
+      if (!mailed) {
+        throw new HttpException(
+          this.i18n.t('mail.sendFailed'),
+          HttpStatus.SERVICE_UNAVAILABLE,
+        );
+      }
     }
     return { message: this.i18n.t('auth.otpSent') };
   }
