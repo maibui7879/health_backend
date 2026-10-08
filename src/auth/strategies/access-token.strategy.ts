@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,13 +10,7 @@ export interface AccessTokenPayload {
   sub: string;
   email: string;
   token_type: 'access';
-  role: UserRole;
-}
-
-export interface AccessTokenPayload {
-  sub: string;
-  email: string;
-  token_type: 'access';
+  role?: string;
 }
 
 @Injectable()
@@ -24,6 +18,8 @@ export class AccessTokenStrategy extends PassportStrategy(
   Strategy,
   'jwt-access',
 ) {
+  private readonly logger = new Logger(AccessTokenStrategy.name);
+
   constructor(
     private readonly i18n: LocalizationService,
     @InjectRepository(User)
@@ -46,7 +42,11 @@ export class AccessTokenStrategy extends PassportStrategy(
     // Chặn session của tài khoản vừa bị BAN (không chờ token hết hạn).
     // Strategy cùng module AuthModule nên User repo resolve bình thường.
     const user = await this.userRepo.findOne({ where: { id: payload.sub } });
-    if (!user || user.status === 'BANNED') {
+    if (!user) {
+      this.logger?.warn?.(`access denied: user not found sub=${payload.sub}`);
+      throw new UnauthorizedException(this.i18n.t('auth.invalidAccessToken'));
+    }
+    if (user.status === 'BANNED') {
       throw new UnauthorizedException(this.i18n.t('auth.invalidAccessToken'));
     }
 
