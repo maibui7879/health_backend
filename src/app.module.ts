@@ -15,6 +15,8 @@ import { WorkoutModule } from './workout/workout.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { I18nModule } from './i18n/i18n.module';
 import { ModerationModule } from './moderation/moderation.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -52,5 +54,7 @@ import { ModerationModule } from './moderation/moderation.module';
     CommunityModule,
     ModerationModule,
   ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
