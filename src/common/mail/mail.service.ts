@@ -64,6 +64,11 @@ export class MailService {
     bodyKey: 'mail.otpBody' | 'mail.registerOtpBody',
     code: string,
   ): Promise<boolean> {
+    const subject = this.i18n.t(subjectKey);
+    const text = this.i18n.t(bodyKey, { code });
+    // Ưu tiên email API qua HTTPS (qua được firewall chặn SMTP của HF).
+    if (await this.sendViaResend(to, subject, text)) return true;
+    if (await this.sendViaBrevo(to, subject, text)) return true;
     const transporter = this.getTransporter();
     if (!transporter) return false;
     const from =
@@ -73,15 +78,90 @@ export class MailService {
       process.env.MAIL_USER ??
       '';
     try {
-      await transporter.sendMail({
-        from,
-        to,
-        subject: this.i18n.t(subjectKey),
-        text: this.i18n.t(bodyKey, { code }),
-      });
+      await transporter.sendMail({ from, to, subject, text });
       return true;
     } catch (error) {
       this.logger.error(`Gửi OTP tới ${to} thất bại: ${String(error)}`);
+      return false;
+    }
+  }
+
+  private async sendViaResend(
+    to: string,
+    subject: string,
+    text: string,
+  ): Promise<boolean> {
+    const apiKey =
+      this.configService.get<string>('RESEND_API_KEY') ??
+      process.env.RESEND_API_KEY;
+    if (!apiKey) return false;
+    const from =
+      this.configService.get<string>('RESEND_FROM') ??
+      process.env.RESEND_FROM ??
+      'onboarding@resend.dev';
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ from, to, subject, text }),
+        signal: AbortSignal.timeout(20000),
+      });
+      if (!res.ok) {
+        this.logger.error(
+          `Resend từ chối (${res.status}): ${await res.text().catch(() => '')}`,
+        );
+        return false;
+      }
+      return true;
+    } catch (error) {
+      this.logger.error(`Gửi OTP qua Resend thất bại: ${String(error)}`);
+      return false;
+    }
+  }
+
+  private async sendViaBrevo(
+    to: string,
+    subject: string,
+    text: string,
+  ): Promise<boolean> {
+    const apiKey =
+      this.configService.get<string>('BREVO_API_KEY') ??
+      process.env.BREVO_API_KEY;
+    if (!apiKey) return false;
+    const from =
+      this.configService.get<string>('BREVO_FROM') ??
+      process.env.BREVO_FROM ??
+      this.configService.get<string>('MAIL_USER') ??
+      process.env.MAIL_USER ??
+      '';
+    try {
+      const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': apiKey,
+          'Content-Type': 'application/json',
+          accept: 'application/json',
+        },
+        body: JSON.stringify({
+          sender: { email: from },
+          to: [{ email: to }],
+          subject,
+          textContent: text,
+        }),
+        signal: AbortSignal.timeout(20000),
+      });
+      if (!res.ok) {
+        this.logger.error(
+          `Brevo từ chối (${res.status}): ${await res.text().catch(() => '')}`,
+        );
+        return false;
+      }
+      return true;
+    } catch (error) {
+      this.logger.error(`Gửi OTP qua Brevo thất bại: ${String(error)}`);
       return false;
     }
   }
