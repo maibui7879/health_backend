@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from '../auth/auth.module';
 import { CommunityComment } from '../community/entities/comment.entity';
 import { Post } from '../community/entities/post.entity';
 import { Food } from '../nutrition/entities/food.entity';
@@ -24,7 +23,6 @@ import { ReportsService } from './reports.service';
       ExerciseTemplate,
       Food,
     ]),
-    AuthModule,
     NotificationsModule,
   ],
   controllers: [ReportsController, AdminReportsController],

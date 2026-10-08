@@ -4,7 +4,14 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LocalizationService } from '../../i18n/localization.service';
-import { User } from '../../users/entities/user.entity';
+import { User, UserRole } from '../../users/entities/user.entity';
+
+export interface AccessTokenPayload {
+  sub: string;
+  email: string;
+  token_type: 'access';
+  role: UserRole;
+}
 
 export interface AccessTokenPayload {
   sub: string;
@@ -37,6 +44,7 @@ export class AccessTokenStrategy extends PassportStrategy(
       throw new UnauthorizedException(this.i18n.t('auth.invalidAccessToken'));
     }
     // Chặn session của tài khoản vừa bị BAN (không chờ token hết hạn).
+    // Strategy cùng module AuthModule nên User repo resolve bình thường.
     const user = await this.userRepo.findOne({ where: { id: payload.sub } });
     if (!user || user.status === 'BANNED') {
       throw new UnauthorizedException(this.i18n.t('auth.invalidAccessToken'));

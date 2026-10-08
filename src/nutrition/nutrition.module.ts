@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from '../auth/auth.module';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { UsersModule } from '../users/users.module';
 import { DailyNutrition } from './entities/daily-nutrition.entity';
@@ -40,7 +39,6 @@ import { ModerationService } from './moderation.service';
     ]),
     UsersModule,
     InsightsModule,
-    AuthModule,
     NotificationsModule,
   ],
   controllers: [

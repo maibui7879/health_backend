@@ -5,19 +5,18 @@ import { RolesGuard } from './guards/roles.guard';
 import { User, UserRole } from '../users/entities/user.entity';
 import { localizationMockProvider } from '../i18n/localization.mock';
 
-function ctx(userId?: string) {
+function ctx(role?: string) {
   return {
     getHandler: () => jest.fn(),
     getClass: () => jest.fn(),
     switchToHttp: () => ({
-      getRequest: () => ({ user: userId ? { sub: userId } : undefined }),
+      getRequest: () => ({ user: role ? { sub: 'u1', role } : undefined }),
     }),
   } as any;
 }
 
 describe('RolesGuard', () => {
   let guard: RolesGuard;
-  const mockUserRepo = { findOne: jest.fn() };
   const reflector = {
     getAllAndOverride: jest.fn(),
   };
@@ -28,7 +27,8 @@ describe('RolesGuard', () => {
         RolesGuard,
         localizationMockProvider,
         { provide: Reflector, useValue: reflector },
-        { provide: getRepositoryToken(User), useValue: mockUserRepo },
+        // Guard đọc role từ JWT, không cần User repo.
+        { provide: getRepositoryToken(User), useValue: {} },
       ],
     }).compile();
     guard = module.get<RolesGuard>(RolesGuard);
@@ -40,21 +40,17 @@ describe('RolesGuard', () => {
 
   it('route không gắn @Roles thì qua', async () => {
     reflector.getAllAndOverride.mockReturnValue(undefined);
-    await expect(guard.canActivate(ctx('u1'))).resolves.toBe(true);
+    await expect(guard.canActivate(ctx('USER'))).resolves.toBe(true);
   });
 
   it('ADMIN qua, USER bị 403', async () => {
     reflector.getAllAndOverride.mockReturnValue([UserRole.ADMIN]);
-    mockUserRepo.findOne.mockResolvedValue({ id: 'a1', role: UserRole.ADMIN });
-    await expect(guard.canActivate(ctx('a1'))).resolves.toBe(true);
-
-    mockUserRepo.findOne.mockResolvedValue({ id: 'u1', role: UserRole.USER });
-    await expect(guard.canActivate(ctx('u1'))).rejects.toThrow();
+    await expect(guard.canActivate(ctx('ADMIN'))).resolves.toBe(true);
+    await expect(guard.canActivate(ctx('USER'))).rejects.toThrow();
   });
 
   it('chưa login nhường AuthGuard', async () => {
     reflector.getAllAndOverride.mockReturnValue([UserRole.ADMIN]);
     await expect(guard.canActivate(ctx(undefined))).resolves.toBe(true);
-    expect(mockUserRepo.findOne).not.toHaveBeenCalled();
   });
 });
