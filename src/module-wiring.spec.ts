@@ -78,6 +78,9 @@ describe('Module wiring (no DB)', () => {
   let module: TestingModule;
 
   beforeAll(async () => {
+    // EmbeddingsService thật new Groq() ngay khi construct → thiếu key là
+    // ném. Set key giả để test wiring self-contained (không cần .env).
+    process.env.GROQ_API_KEY ??= 'wiring-test-key';
     let builder = Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({ isGlobal: true }),

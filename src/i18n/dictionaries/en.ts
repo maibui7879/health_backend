@@ -24,6 +24,8 @@ export const en: Record<TranslationKey, string> = {
   'auth.registerDone': 'Registration successful.',
   'auth.forbidden': 'You are not allowed to perform this action.',
   'auth.banned': 'Account suspended for violations. Contact support to appeal.',
+  'auth.tooManyAttempts':
+    'Too many login attempts. Please try again in {minutes} minutes.',
   'mail.registerOtpSubject': 'BeroHealth registration OTP',
   'mail.registerOtpBody':
     'Your registration OTP is: {code}. Valid for 10 minutes. If this was not you, ignore this email.',

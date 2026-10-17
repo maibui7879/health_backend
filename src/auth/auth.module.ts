@@ -11,6 +11,7 @@ import { MailService } from '../common/mail/mail.service';
 import { AccessTokenStrategy } from './strategies/access-token.strategy';
 import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
 import { RolesGuard } from './guards/roles.guard';
+import { LoginThrottleGuard } from './guards/login-throttle.guard';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { RolesGuard } from './guards/roles.guard';
     AccessTokenStrategy,
     RefreshTokenStrategy,
     RolesGuard,
+    LoginThrottleGuard,
   ],
   exports: [AccessTokenStrategy, RefreshTokenStrategy, RolesGuard],
 })

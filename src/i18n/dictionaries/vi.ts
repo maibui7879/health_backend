@@ -22,15 +22,17 @@ export const vi = {
     'Mã OTP đã được gửi tới email. Mã có hiệu lực 10 phút.',
   'auth.registerDone': 'Đăng ký thành công.',
   'auth.forbidden': 'Bạn không có quyền thực hiện thao tác này.',
-  'auth.banned': 'Tài khoản đã bị khóa do vi phạm. Liên hệ hỗ trợ để khiếu nại.',
+  'auth.banned':
+    'Tài khoản đã bị khóa do vi phạm. Liên hệ hỗ trợ để khiếu nại.',
+  'auth.tooManyAttempts':
+    'Bạn đăng nhập quá nhiều lần. Vui lòng thử lại sau {minutes} phút.',
   'mail.registerOtpSubject': 'Mã OTP đăng ký BeroHealth',
   'mail.registerOtpBody':
     'Mã OTP đăng ký của bạn là: {code}. Mã có hiệu lực 10 phút. Nếu không phải bạn yêu cầu, hãy bỏ qua email này.',
   'mail.otpSubject': 'Mã OTP đặt lại mật khẩu BeroHealth',
   'mail.otpBody':
     'Mã OTP của bạn là: {code}. Mã có hiệu lực 10 phút. Nếu không phải bạn yêu cầu, hãy bỏ qua email này.',
-  'mail.sendFailed':
-    'Không gửi được email lúc này. Vui lòng thử lại sau.',
+  'mail.sendFailed': 'Không gửi được email lúc này. Vui lòng thử lại sau.',
   'mail.otpTitle': 'Mã xác thực của bạn',
   'mail.footer': 'Email tự động, vui lòng không trả lời.',
 

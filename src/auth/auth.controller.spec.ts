@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { LoginThrottleGuard } from './guards/login-throttle.guard';
+import { localizationMockProvider } from '../i18n/localization.mock';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -13,6 +15,8 @@ describe('AuthController', () => {
           provide: AuthService,
           useValue: {},
         },
+        LoginThrottleGuard,
+        localizationMockProvider,
       ],
     }).compile();
 

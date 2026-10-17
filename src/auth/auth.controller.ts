@@ -12,6 +12,7 @@ import { RegisterRequestOtpDto } from './dto/register-request-otp.dto';
 import { RegisterVerifyOtpDto } from './dto/register-verify-otp.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { RefreshTokenPayload } from './strategies/refresh-token.strategy';
+import { LoginThrottleGuard } from './guards/login-throttle.guard';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -58,6 +59,8 @@ export class AuthController {
   }
 
   @Post('login')
+  // Chống brute-force: 5 lần/5 phút theo (IP + email), 60 lần/5 phút theo IP.
+  @UseGuards(LoginThrottleGuard)
   @ApiOperation({ summary: 'Đăng nhập' })
   @ApiResponse({
     status: 201,
@@ -66,6 +69,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 400, description: 'Dữ liệu đăng nhập không hợp lệ.' })
   @ApiResponse({ status: 401, description: 'Email hoặc mật khẩu không đúng.' })
+  @ApiResponse({ status: 429, description: 'Thử đăng nhập quá nhiều lần.' })
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }

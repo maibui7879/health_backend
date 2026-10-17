@@ -20,6 +20,10 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     bufferLogs: true,
   });
+  // App nằm sau proxy của HF Space: tin 1 proxy để req.ip là IP thật của
+  // client (LoginThrottleGuard đếm theo IP; thiếu setting này mọi request
+  // sẽ dùng chung IP proxy → throttle sai người).
+  app.set('trust proxy', 1);
   // Serve file upload local (avatar...). Lưu ý: disk container (HF Space)
   // là ephemeral — production nên chuyển object storage (VD: Supabase Storage).
   const uploadDir = process.env.UPLOAD_DIR ?? join(process.cwd(), 'uploads');
