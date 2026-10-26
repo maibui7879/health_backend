@@ -75,6 +75,7 @@ export const vi = {
   'foods.submissionNotFound': 'Không tìm thấy yêu cầu hoặc đã xử lý',
   'foods.approved': 'Đã duyệt và đưa vào catalog',
   'foods.rejected': 'Đã từ chối món này',
+  'workout.dateRequired': 'Thiếu tham số date',
   'workout.notFound': 'Không tìm thấy bài tập',
   'workout.deleted': 'Đã xóa bài tập và cập nhật lại Calo đốt cháy',
   'workout.mediaRequired': 'Vui lòng đính kèm file media.',

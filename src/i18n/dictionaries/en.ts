@@ -76,6 +76,7 @@ export const en: Record<TranslationKey, string> = {
   'foods.approved': 'Approved and added to catalog',
   'foods.rejected': 'Submission rejected',
 
+  'workout.dateRequired': 'Missing date parameter',
   'workout.notFound': 'Workout not found',
   'workout.deleted': 'Workout deleted and burned calories updated',
   'workout.mediaRequired': 'Please attach a media file.',

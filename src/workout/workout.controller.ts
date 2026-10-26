@@ -159,6 +159,10 @@ export class WorkoutController {
     },
   })
   getWorkouts(@CurrentUser('sub') userId: string, @Query('date') date: string) {
+    // Bắt buộc có date: thiếu thì 400 thay vì để TypeORM ném 500 với where date=undefined
+    if (!date) {
+      throw new BadRequestException(t('workout.dateRequired'));
+    }
     return this.workoutService.getWorkoutsByDate(userId, date);
   }
 
