@@ -16,6 +16,7 @@ export class UserSetting {
   @OneToOne('User', 'setting', {
     onDelete: 'CASCADE',
   })
+  
   @JoinColumn({ name: 'user_id' })
   user!: User;
 
