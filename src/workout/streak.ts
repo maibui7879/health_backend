@@ -1,6 +1,6 @@
 // Tính streak tập (Phase 5C) — hàm thuần để dễ test.
-// Một ngày được tính nếu có ≥1 log; nếu ngày đó có log gắn media thì
-// phải có ≥1 media đã xem hết (media_viewed_at). Ngày tương lai bỏ qua.
+// Một ngày được tính nếu có ít nhất một bài đã ghi nhận hoàn thành.
+// Xem media không phải điều kiện hoàn thành bài tập.
 export type DayActivity = {
   date: string;
   hasWorkout: boolean;
@@ -9,9 +9,7 @@ export type DayActivity = {
 };
 
 export function dayCounts(d: DayActivity): boolean {
-  if (!d.hasWorkout) return false;
-  if (d.hasMedia && !d.hasViewedMedia) return false;
-  return true;
+  return d.hasWorkout;
 }
 
 export function toISODate(d: Date): string {

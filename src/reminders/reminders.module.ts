@@ -7,6 +7,7 @@ import { UserSetting } from '../users/entities/user-setting.entity';
 import { Reminder } from './entities/reminder.entity';
 import { RemindersController } from './reminders.controller';
 import { RemindersService } from './reminders.service';
+import { AutomaticRemindersService } from './automatic-reminders.service';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { RemindersService } from './reminders.service';
     NotificationsModule,
   ],
   controllers: [RemindersController],
-  providers: [RemindersService, PushService],
+  providers: [RemindersService, AutomaticRemindersService, PushService],
   exports: [RemindersService],
 })
 export class RemindersModule {}

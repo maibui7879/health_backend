@@ -10,6 +10,7 @@ import { UpdateDailyLogDto } from './dto/update-daily-log.dto';
 import { DailyLog } from './entities/daily-log.entity';
 import { LocalizationService } from '../i18n/localization.service';
 import { UsersService } from '../users/users.service';
+import { localDate, dateRange } from '../common/local-date';
 
 @Injectable()
 export class TrackingService {
@@ -21,27 +22,34 @@ export class TrackingService {
   ) {}
 
   async createDailyLog(userId: string, dto: CreateDailyLogDto) {
-    const previousDate = this.getPreviousDate(dto.log_date);
-    const previousLog = await this.dailyLogRepo.findOne({
-      where: { user_id: userId, log_date: previousDate },
-    });
-    const isStreakDay = previousLog !== null;
+    dateRange(dto.log_date, dto.log_date);
+    if (dto.log_date > localDate())
+      throw new BadRequestException('Không ghi nhật ký cho ngày tương lai.');
+    const me = await this.usersService.getMe(userId);
+    const target = me.profile?.daily_water_target;
+    const isStreakDay = !!target && dto.water_consumed_ml >= target;
 
     const existing = await this.dailyLogRepo.findOne({
       where: { user_id: userId, log_date: dto.log_date },
     });
 
     if (existing) {
-      Object.assign(existing, dto, { is_streak_day: isStreakDay });
+      Object.assign(existing, dto, {
+        is_streak_day: isStreakDay,
+        water_target_ml: existing.water_target_ml ?? target,
+      });
       const savedLog = await this.dailyLogRepo.save(existing);
 
-      if (dto.weight_log !== undefined) {
+      if (dto.weight_log !== undefined && dto.log_date === localDate()) {
         await this.usersService.updateProfile(userId, {
           current_weight_kg: dto.weight_log,
         });
       }
 
-      return savedLog;
+      return {
+        ...savedLog,
+        ...(await this.canonicalCalories(userId, dto.log_date)),
+      };
     }
 
     const log = this.dailyLogRepo.create({
@@ -56,19 +64,23 @@ export class TrackingService {
 
     const savedLog = await this.dailyLogRepo.save(log);
 
-    if (dto.weight_log !== undefined) {
+    if (dto.weight_log !== undefined && dto.log_date === localDate()) {
       await this.usersService.updateProfile(userId, {
         current_weight_kg: dto.weight_log,
       });
     }
 
-    return savedLog;
+    return {
+      ...savedLog,
+      ...(await this.canonicalCalories(userId, dto.log_date)),
+    };
   }
 
   async getDailyLog(userId: string, date: string) {
     if (!date) {
       throw new BadRequestException(this.i18n.t('tracking.dateRequired'));
     }
+    dateRange(date, date);
 
     const log = await this.dailyLogRepo.findOne({
       where: { user_id: userId, log_date: date },
@@ -79,14 +91,13 @@ export class TrackingService {
         user_id: userId,
         log_date: date,
         water_consumed_ml: 0,
-        total_kcal_in: 0,
-        total_kcal_out: 0,
+        ...(await this.canonicalCalories(userId, date)),
         weight_log: null,
         is_streak_day: false,
       };
     }
 
-    return log;
+    return { ...log, ...(await this.canonicalCalories(userId, date)) };
   }
 
   async updateDailyLog(userId: string, logId: string, dto: UpdateDailyLogDto) {
@@ -98,16 +109,29 @@ export class TrackingService {
       throw new NotFoundException(this.i18n.t('tracking.logNotFound'));
     }
 
-    Object.assign(log, dto);
+    if (dto.log_date !== undefined && dto.log_date !== log.log_date) {
+      throw new BadRequestException(
+        'Không đổi ngày bản ghi; hãy tạo bản ghi cho ngày mới.',
+      );
+    }
+    Object.assign(
+      log,
+      Object.fromEntries(
+        Object.entries(dto).filter(([, value]) => value !== undefined),
+      ),
+    );
     const savedLog = await this.dailyLogRepo.save(log);
 
-    if (dto.weight_log !== undefined) {
+    if (dto.weight_log !== undefined && log.log_date === localDate()) {
       await this.usersService.updateProfile(userId, {
         current_weight_kg: dto.weight_log,
       });
     }
 
-    return savedLog;
+    return {
+      ...savedLog,
+      ...(await this.canonicalCalories(userId, log.log_date)),
+    };
   }
 
   async deleteDailyLog(userId: string, logId: string) {
@@ -124,9 +148,23 @@ export class TrackingService {
     return { message: this.i18n.t('tracking.logDeleted') };
   }
 
-  private getPreviousDate(date: string): string {
-    const previousDate = new Date(`${date}T00:00:00.000Z`);
-    previousDate.setUTCDate(previousDate.getUTCDate() - 1);
-    return previousDate.toISOString().slice(0, 10);
+  private async canonicalCalories(userId: string, date: string) {
+    const rows = await this.dailyLogRepo.query<
+      {
+        total_kcal_in: number;
+        total_kcal_out: number;
+        is_streak_day?: boolean;
+        water_target_ml?: number | null;
+      }[]
+    >(
+      `SELECT COALESCE(n.total_kcal, 0) AS total_kcal_in,
+      COALESCE(n.total_burned_kcal, 0) AS total_kcal_out,
+      COALESCE(l.is_streak_day, false) AS is_streak_day, l.water_target_ml
+      FROM (SELECT 1) anchor
+      LEFT JOIN daily_nutritions n ON n.user_id = $1 AND n.date = $2
+      LEFT JOIN daily_logs l ON l.user_id = $1 AND l.log_date = $2`,
+      [userId, date],
+    );
+    return rows[0] ?? { total_kcal_in: 0, total_kcal_out: 0 };
   }
 }

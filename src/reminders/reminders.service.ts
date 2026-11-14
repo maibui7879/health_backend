@@ -17,6 +17,7 @@ import { User } from '../users/entities/user.entity';
 import { UserSetting } from '../users/entities/user-setting.entity';
 import { CreateReminderDto, UpdateReminderDto } from './dto/reminder.dto';
 import { Reminder, ReminderType } from './entities/reminder.entity';
+import { APP_TIMEZONE, localDate } from '../common/local-date';
 
 const DEFAULT_TITLE: Record<ReminderType, TranslationKey> = {
   [ReminderType.MEAL]: 'reminders.defaultMealTitle',
@@ -155,6 +156,41 @@ export class RemindersService {
         this.settingRepo.findOne({ where: { user_id: r.user_id } }),
       ]);
       if (!isGatedBySettings(r.type, setting)) continue;
+      if (r.type === ReminderType.WATER) {
+        const time = new Intl.DateTimeFormat('en-GB', {
+          timeZone: APP_TIMEZONE,
+          hour: '2-digit',
+          minute: '2-digit',
+          hourCycle: 'h23',
+        }).format(now);
+        if (
+          time < (setting?.water_start_time ?? '11:00') ||
+          time > (setting?.water_end_time ?? '20:30')
+        )
+          continue;
+        const rows = await this.userRepo.query<
+          {
+            daily_water_target: number | null;
+            hydration_restricted: boolean;
+            consumed: number;
+          }[]
+        >(
+          `SELECT p.daily_water_target, p.hydration_restricted,
+          COALESCE(l.water_consumed_ml, 0) AS consumed FROM user_profiles p
+          LEFT JOIN daily_logs l ON l.user_id = p.user_id AND l.log_date = $2::date
+          WHERE p.user_id = $1`,
+          [r.user_id, localDate(now)],
+        );
+        const progress = rows[0];
+        const threshold = time >= '19:00' ? 0.75 : time >= '14:00' ? 0.4 : 0.25;
+        if (
+          !progress ||
+          progress.hydration_restricted ||
+          !(Number(progress.daily_water_target) > 0) ||
+          progress.consumed / Number(progress.daily_water_target) >= threshold
+        )
+          continue;
+      }
       const lang: AppLocale =
         setting?.locale === 'en' || setting?.locale === 'vi'
           ? setting.locale

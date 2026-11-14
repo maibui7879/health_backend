@@ -13,6 +13,8 @@ import { SearchHistoryDto } from './dto/search-history.dto';
 import { DailyNutrition } from './entities/daily-nutrition.entity';
 import { Meal } from './entities/meal.entity';
 import { MealItem } from './entities/meal-item.entity';
+import { UpdateMealDto } from './dto/update-meal.dto';
+import { dateRange, localDate } from '../common/local-date';
 
 @Injectable()
 export class NutritionService {
@@ -81,6 +83,57 @@ export class NutritionService {
     return meal;
   }
 
+  async updateMeal(userId: string, mealId: string, dto: UpdateMealDto) {
+    return this.dailyRepo.manager.transaction(async (manager) => {
+      const rows = await manager.query<Meal[]>(
+        `SELECT m.*, n.user_id FROM meals m
+        JOIN daily_nutritions n ON n.id = m.daily_nutrition_id
+        WHERE m.id = $1 AND n.user_id = $2 FOR UPDATE OF n, m`,
+        [mealId, userId],
+      );
+      if (!rows.length)
+        throw new NotFoundException(this.i18n.t('nutrition.mealNotFound'));
+      const meal = rows[0];
+      const kcal =
+        dto.items?.reduce((sum, item) => sum + item.estimated_kcal, 0) ??
+        meal.meal_kcal;
+      const safe = dto.items
+        ? dto.items.every((item) => !item.is_allergen && !item.warnings?.length)
+        : meal.is_safe;
+      await manager.query(
+        'UPDATE meals SET meal_type = $2, meal_kcal = $3, is_safe = $4 WHERE id = $1',
+        [mealId, dto.meal_type ?? meal.meal_type, kcal, safe],
+      );
+      if (dto.items) {
+        await manager.query('DELETE FROM meal_items WHERE meal_id = $1', [
+          mealId,
+        ]);
+        for (const item of dto.items) {
+          await manager.query(
+            `INSERT INTO meal_items(meal_id, food_name_vi, food_name_en, estimated_kcal, is_allergen, warnings)
+            VALUES ($1, $2, $3, $4, $5, $6::jsonb)`,
+            [
+              mealId,
+              item.food_name_vi,
+              item.food_name_en ?? '',
+              item.estimated_kcal,
+              item.is_allergen,
+              JSON.stringify(item.warnings ?? []),
+            ],
+          );
+        }
+      }
+      await manager.query(
+        `UPDATE daily_nutritions SET total_kcal = GREATEST(0, total_kcal + $2), updated_at = now()
+        WHERE id = $1`,
+        [meal.daily_nutrition_id, kcal - meal.meal_kcal],
+      );
+      return manager
+        .getRepository(Meal)
+        .findOne({ where: { id: mealId }, relations: { items: true } });
+    });
+  }
+
   async getDailyDashboard(userId: string, date: string) {
     const daily = await this.dailyRepo.findOne({
       where: { user_id: userId, date },
@@ -91,7 +144,7 @@ export class NutritionService {
       },
     });
 
-    const diary: Record<string, any[]> = {
+    const diary: Record<string, Meal[]> = {
       BREAKFAST: [],
       LUNCH: [],
       DINNER: [],
@@ -231,12 +284,9 @@ export class NutritionService {
   }
 
   async getWeeklyStats(userId: string) {
-    const today = new Date();
-    const sevenDaysAgo = new Date(today);
-    sevenDaysAgo.setDate(today.getDate() - 6);
-
-    const startDate = sevenDaysAgo.toISOString().split('T')[0];
-    const endDate = today.toISOString().split('T')[0];
+    const dates = dateRange();
+    const startDate = dates[0];
+    const endDate = localDate();
 
     const stats = await this.dailyRepo
       .createQueryBuilder('daily')
@@ -246,7 +296,17 @@ export class NutritionService {
       .orderBy('daily.date', 'ASC')
       .getMany();
 
-    return stats;
+    return dates.map(
+      (date) =>
+        stats.find((row) => row.date === date) ?? {
+          date,
+          total_kcal: 0,
+          total_burned_kcal: 0,
+          total_protein: 0,
+          total_carbs: 0,
+          total_fat: 0,
+        },
+    );
   }
 
   async getMacroTargets(userId: string) {

@@ -17,6 +17,7 @@ import { I18nModule } from './i18n/i18n.module';
 import { ModerationModule } from './moderation/moderation.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { WellnessModule } from './wellness/wellness.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { AppService } from './app.service';
     RemindersModule,
     CommunityModule,
     ModerationModule,
+    WellnessModule,
   ],
   controllers: [AppController],
   providers: [AppService],

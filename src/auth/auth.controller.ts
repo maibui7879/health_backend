@@ -17,6 +17,11 @@ import { LoginThrottleGuard } from './guards/login-throttle.guard';
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
+  @Post('logout')
+  @UseGuards(AuthGuard('jwt-access'))
+  logout(@Request() request: { user: { sub: string } }) {
+    return this.authService.logout(request.user.sub);
+  }
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')

@@ -32,6 +32,8 @@ import { SuggestPlanRequestDto } from './dto/suggest-plan-request.dto';
 import { SuggestPlanResponseDto } from './dto/suggest-plan-response.dto';
 import { ReviewDayDto } from './dto/review-day.dto';
 import { AiService } from './ai.service';
+import { fallbackMenu, fallbackPlan } from '../nutrition/menu-fallback';
+import { UserProfile } from '../users/entities/user-profile.entity';
 
 @ApiTags('AI')
 @ApiBearerAuth()
@@ -154,23 +156,32 @@ export class AiController {
       dto.kcal_target ??
       (dto.meal_type ? Math.round(dailyTarget / 3) : dailyTarget);
 
-    const menu = await this.aiService.suggestMenu({
-      userAllergies,
-      dietType,
-      kcalTarget,
-      mealType: dto.meal_type,
-      goalType: profile.goal_type ?? 'MAINTAIN',
-      age,
-      gender: profile.gender,
-      weightKg: Number(profile.current_weight_kg) || undefined,
-      consumedKcal,
-      remainingKcal,
-      macroProteinG: macroProtein,
-      macroCarbsG: macroCarbs,
-      macroFatG: macroFat,
-      note: dto.note,
-      tasteContext: await this.insights.tasteContextBlock(userId),
-    });
+    const menu = await this.aiService
+      .suggestMenu({
+        userAllergies,
+        dietType,
+        kcalTarget,
+        mealType: dto.meal_type,
+        goalType: profile.goal_type ?? 'MAINTAIN',
+        age,
+        gender: profile.gender,
+        weightKg: Number(profile.current_weight_kg) || undefined,
+        consumedKcal,
+        remainingKcal,
+        macroProteinG: macroProtein,
+        macroCarbsG: macroCarbs,
+        macroFatG: macroFat,
+        note: dto.note,
+        tasteContext: await this.insights.tasteContextBlock(userId),
+      })
+      .catch(() =>
+        fallbackMenu({
+          kcalTarget,
+          mealType: dto.meal_type,
+          dietType,
+          userAllergies,
+        }),
+      );
 
     return {
       success: true,
@@ -193,7 +204,7 @@ export class AiController {
     @Body() dto: SuggestPlanRequestDto,
   ) {
     const user = await this.usersService.getMe(userId);
-    const profile = (user.profile ?? {}) as Record<string, any>;
+    const profile = (user.profile ?? {}) as Partial<UserProfile>;
     const userAllergies =
       user.allergies?.map((allergy) => allergy.allergen_name) ?? [];
 
@@ -219,22 +230,31 @@ export class AiController {
       }
     }
 
-    const plan = await this.aiService.suggestPlan({
-      userAllergies,
-      dietType: profile.diet_type ?? 'STANDARD',
-      goalType: profile.goal_type ?? 'MAINTAIN',
-      age,
-      gender: profile.gender,
-      heightCm: Number(profile.height_cm) || undefined,
-      weightKg: Number(profile.current_weight_kg) || undefined,
-      activityLevel: profile.activity_level,
-      dailyKcalTarget: Number(profile.daily_kcal_target ?? 1800) || 1800,
-      macroProteinG: macroProtein,
-      macroCarbsG: macroCarbs,
-      macroFatG: macroFat,
-      durationDays: dto.duration_days ?? 7,
-      tasteContext: await this.insights.tasteContextBlock(userId),
-    });
+    const plan = await this.aiService
+      .suggestPlan({
+        userAllergies,
+        dietType: profile.diet_type ?? 'STANDARD',
+        goalType: profile.goal_type ?? 'MAINTAIN',
+        age,
+        gender: profile.gender,
+        heightCm: Number(profile.height_cm) || undefined,
+        weightKg: Number(profile.current_weight_kg) || undefined,
+        activityLevel: profile.activity_level,
+        dailyKcalTarget: Number(profile.daily_kcal_target ?? 1800) || 1800,
+        macroProteinG: macroProtein,
+        macroCarbsG: macroCarbs,
+        macroFatG: macroFat,
+        durationDays: dto.duration_days ?? 7,
+        tasteContext: await this.insights.tasteContextBlock(userId),
+      })
+      .catch(() =>
+        fallbackPlan({
+          dailyKcalTarget: Number(profile.daily_kcal_target ?? 1800),
+          durationDays: dto.duration_days ?? 7,
+          dietType: profile.diet_type ?? 'STANDARD',
+          userAllergies,
+        }),
+      );
 
     return {
       success: true,

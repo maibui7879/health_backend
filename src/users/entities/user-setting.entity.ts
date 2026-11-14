@@ -10,13 +10,27 @@ import type { User } from './user.entity';
 
 @Entity('user_settings')
 export class UserSetting {
+  @Column({ type: 'boolean', default: true })
+  show_water!: boolean;
+
+  @Column({ type: 'boolean', default: true })
+  show_calories!: boolean;
+
+  @Column({ type: 'boolean', default: true })
+  show_workout!: boolean;
+
+  @Column({ type: 'varchar', length: 5, default: '11:00' })
+  water_start_time!: string;
+
+  @Column({ type: 'varchar', length: 5, default: '20:30' })
+  water_end_time!: string;
+
   @PrimaryColumn('uuid')
   user_id!: string;
 
   @OneToOne('User', 'setting', {
     onDelete: 'CASCADE',
   })
-  
   @JoinColumn({ name: 'user_id' })
   user!: User;
 

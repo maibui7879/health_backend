@@ -23,6 +23,9 @@ export enum UserRole {
 
 @Entity('users')
 export class User {
+  @Column({ type: 'int', default: 0 })
+  token_version!: number;
+
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 

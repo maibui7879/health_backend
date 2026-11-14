@@ -36,6 +36,11 @@ describe('RemindersService', () => {
     createQueryBuilder: jest.fn(),
   };
   const mockUserRepo = {
+    query: jest
+      .fn()
+      .mockResolvedValue([
+        { daily_water_target: 2000, consumed: 0, hydration_restricted: false },
+      ]),
     findOne: jest.fn(),
     createQueryBuilder: jest.fn(),
   };

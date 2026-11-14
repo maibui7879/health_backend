@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { unlink } from 'fs/promises';
 import { join } from 'path';
@@ -7,14 +11,11 @@ import { User } from './entities/user.entity';
 import { UserProfile } from './entities/user-profile.entity';
 import { UserAllergy } from './entities/user-allergy.entity';
 import { UserSetting } from './entities/user-setting.entity';
-import {
-  ActivityLevel,
-  GoalType,
-  UpdateProfileDto,
-} from './dto/update-profile.dto';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { LocalizationService } from '../i18n/localization.service';
 import { bmiCategory, calcBmi } from './bmi';
+import { healthMetrics } from './health-metrics';
 
 @Injectable()
 export class UsersService {
@@ -55,7 +56,12 @@ export class UsersService {
     }
     return {
       ...safeUser,
-      profile: { ...user.profile, bmi, bmi_category: bmiCategory(bmi) },
+      profile: {
+        ...user.profile,
+        ...healthMetrics(user.profile),
+        bmi,
+        bmi_category: bmiCategory(bmi),
+      },
     };
   }
 
@@ -74,40 +80,14 @@ export class UsersService {
       if (dto[key] === undefined) delete dto[key];
     }
     Object.assign(profile, dto);
-
-    if (
-      profile.height_cm &&
-      profile.current_weight_kg &&
-      profile.date_of_birth &&
-      profile.gender
-    ) {
-      const dob = new Date(profile.date_of_birth);
-      const age = new Date().getFullYear() - dob.getFullYear();
-
-      let bmr =
-        10 * profile.current_weight_kg + 6.25 * profile.height_cm - 5 * age;
-      bmr += profile.gender === 'MALE' ? 5 : -161;
-
-      const activityLevel =
-        (profile.activity_level as ActivityLevel | undefined) ??
-        ActivityLevel.SEDENTARY;
-      const activityMultipliers: Record<ActivityLevel, number> = {
-        [ActivityLevel.SEDENTARY]: 1.2,
-        [ActivityLevel.LIGHT]: 1.375,
-        [ActivityLevel.MODERATE]: 1.55,
-        [ActivityLevel.ACTIVE]: 1.725,
-      };
-
-      const tdee = bmr * activityMultipliers[activityLevel];
-
-      const goalType = profile.goal_type as GoalType | undefined;
-      let adjustedTdee = tdee;
-      if (goalType === GoalType.LOSE_WEIGHT) adjustedTdee -= 500;
-      if (goalType === GoalType.GAIN_MUSCLE) adjustedTdee += 300;
-
-      profile.daily_kcal_target = Math.round(adjustedTdee);
-      profile.daily_water_target = Math.round(profile.current_weight_kg * 35);
+    if (profile.date_of_birth && new Date(profile.date_of_birth) > new Date()) {
+      throw new BadRequestException('Ngày sinh không được ở tương lai.');
     }
+    const metrics = healthMetrics(profile);
+    profile.bmr = metrics.bmr;
+    profile.tdee = metrics.tdee;
+    profile.daily_kcal_target = metrics.daily_kcal_target as number;
+    profile.daily_water_target = metrics.daily_water_target as number;
 
     return this.profileRepo.save(profile);
   }
@@ -166,6 +146,23 @@ export class UsersService {
       Object.assign(setting, dto);
     }
 
+    if (
+      (setting.water_start_time ?? '11:00') >=
+      (setting.water_end_time ?? '20:30')
+    ) {
+      throw new BadRequestException('Giờ bắt đầu phải trước giờ kết thúc.');
+    }
+    if (
+      dto.meal_times &&
+      Object.entries(dto.meal_times).some(
+        ([key, value]) =>
+          !['breakfast', 'lunch', 'dinner'].includes(key) ||
+          !/^([01]\d|2[0-3]):[0-5]\d$/.test(value),
+      )
+    ) {
+      throw new BadRequestException('Giờ ăn không hợp lệ.');
+    }
+
     return this.settingRepo.save(setting);
   }
 
@@ -184,6 +181,11 @@ export class UsersService {
         remind_meals: true,
         meal_times: null,
         locale: 'vi',
+        show_water: true,
+        show_calories: true,
+        show_workout: true,
+        water_start_time: '11:00',
+        water_end_time: '20:30',
       }
     );
   }

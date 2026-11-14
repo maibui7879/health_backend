@@ -58,7 +58,7 @@ describe('runMigrations', () => {
     const inserts = executed.filter((s) =>
       s.startsWith('INSERT INTO schema_migrations'),
     );
-    expect(inserts).toHaveLength(25);
+    expect(inserts).toHaveLength(26);
     // Repair chạy từng câu sau cùng — vẫn phải có câu vá bảng OTP.
     expect(executed.some((s) => s.includes('password_reset_otps'))).toBe(true);
   });
@@ -90,6 +90,7 @@ describe('runMigrations', () => {
       '024-food-moderation.sql',
       '025-reports.sql',
       '026-notifications.sql',
+      '027-mvp-health.sql',
     ];
     await runMigrations();
     const executed: string[] = query.mock.calls.map(

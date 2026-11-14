@@ -19,11 +19,10 @@ import {
   longestStreak,
   toISODate,
 } from './streak';
+import { localDate } from '../common/local-date';
 
 function utcToday(): string {
-  const d = new Date();
-  d.setUTCHours(0, 0, 0, 0);
-  return toISODate(d);
+  return localDate();
 }
 
 @Injectable()
@@ -99,7 +98,7 @@ export class WorkoutGoalsService {
 
   // Cron 1AM: chốt ACTIVE -> COMPLETED (đủ ngày liên tiếp tới end_date,
   // badge 'STREAK_<N>') hoặc FAILED (đứt mạch ngày đã qua).
-  @Cron(CronExpression.EVERY_DAY_AT_1AM)
+  @Cron(CronExpression.EVERY_DAY_AT_1AM, { timeZone: 'Asia/Ho_Chi_Minh' })
   async settleGoals() {
     const actives = await this.goalRepo.find({
       where: { status: WorkoutGoalStatus.ACTIVE },
@@ -142,7 +141,10 @@ export class WorkoutGoalsService {
       void this.notifications
         .notify(goal.user_id, {
           type: NotificationType.GOAL_COMPLETED,
-          title: { vi: 'Chúc mừng! Hoàn thành mục tiêu', en: 'Congrats! Goal completed' },
+          title: {
+            vi: 'Chúc mừng! Hoàn thành mục tiêu',
+            en: 'Congrats! Goal completed',
+          },
           body: {
             vi: `Bạn đã tập liên tiếp ${goal.target_days} ngày. Huy hiệu ${goal.badge}.`,
             en: `${goal.target_days}-day streak done. Badge ${goal.badge}.`,

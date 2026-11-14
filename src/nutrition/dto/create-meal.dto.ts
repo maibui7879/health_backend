@@ -6,6 +6,9 @@ import {
   IsEnum,
   IsNumber,
   IsString,
+  IsOptional,
+  Min,
+  ArrayMinSize,
   ValidateNested,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
@@ -17,11 +20,13 @@ export class MealItemDto {
   food_name_vi!: string;
 
   @ApiPropertyOptional({ example: 'Grilled Lobster' })
+  @IsOptional()
   @IsString()
   food_name_en?: string;
 
   @ApiProperty({ example: 550 })
   @IsNumber()
+  @Min(0)
   estimated_kcal!: number;
 
   @ApiProperty({ example: true })
@@ -29,6 +34,7 @@ export class MealItemDto {
   is_allergen!: boolean;
 
   @ApiPropertyOptional({ example: ['Món ăn chứa hải sản'] })
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   warnings?: string[];
@@ -49,6 +55,7 @@ export class CreateMealDto {
 
   @ApiProperty({ type: [MealItemDto] })
   @IsArray()
+  @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => MealItemDto)
   items!: MealItemDto[];

@@ -22,10 +22,13 @@ export class DailyLog {
   @Column({ type: 'int', default: 0 })
   water_consumed_ml!: number;
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ type: 'int', nullable: true })
+  water_target_ml!: number | null;
+
+  @Column({ type: 'float', default: 0 })
   total_kcal_in!: number;
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ type: 'float', default: 0 })
   total_kcal_out!: number;
 
   @Column({ type: 'float', nullable: true, default: null })

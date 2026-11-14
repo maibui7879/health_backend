@@ -1,4 +1,5 @@
 import {
+  Patch,
   Body,
   Controller,
   Delete,
@@ -8,6 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { UpdateMealDto } from './dto/update-meal.dto';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBearerAuth,
@@ -29,6 +31,14 @@ import { SuggestService } from './suggest.service';
 @UseGuards(AuthGuard('jwt-access'))
 @Controller('nutrition')
 export class NutritionController {
+  @Patch('meals/:id')
+  updateMeal(
+    @CurrentUser('sub') userId: string,
+    @Param('id') id: string,
+    @Body() dto: UpdateMealDto,
+  ) {
+    return this.nutritionService.updateMeal(userId, id, dto);
+  }
   constructor(
     private readonly nutritionService: NutritionService,
     private readonly suggestService: SuggestService,

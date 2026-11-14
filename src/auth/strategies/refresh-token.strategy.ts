@@ -7,6 +7,7 @@ export interface RefreshTokenPayload {
   sub: string;
   email: string;
   token_type: 'refresh';
+  token_version?: number;
 }
 
 @Injectable()

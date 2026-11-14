@@ -118,7 +118,7 @@ describe('UsersService', () => {
       const result = await service.updateProfile('user-id', updateDto);
 
       expect(result.height_cm).toEqual(170);
-      expect(result.daily_water_target).toEqual(70 * 35); // Water target logic
+      expect(result.daily_water_target).toEqual(2664);
       expect(result.daily_kcal_target).toBeDefined();
       expect(mockProfileRepo.save).toHaveBeenCalled();
     });
@@ -135,7 +135,7 @@ describe('UsersService', () => {
       const result = await service.updateProfile('user-id', updateDto);
 
       expect(result.height_cm).toEqual(170);
-      expect(result.daily_kcal_target).toBeUndefined(); // shouldn't calculate
+      expect(result.daily_kcal_target).toBeNull();
       expect(mockProfileRepo.save).toHaveBeenCalled();
     });
   });

@@ -11,6 +11,33 @@ import type { User } from './user.entity';
 
 @Entity('user_profiles')
 export class UserProfile {
+  @Column({ type: 'varchar', length: 8, nullable: true })
+  blood_type!: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  occupation!: string | null;
+
+  @Column({ type: 'text', nullable: true })
+  activity_habits!: string | null;
+
+  @Column({ type: 'text', array: true, default: '{}' })
+  medical_conditions!: string[];
+
+  @Column({ type: 'boolean', default: false })
+  hydration_restricted!: boolean;
+
+  @Column({ type: 'text', array: true, default: '{nutrition,water,workout}' })
+  enabled_modules!: string[];
+
+  @Column({ type: 'varchar', default: 'MIFFLIN_ST_JEOR' })
+  bmr_formula!: string;
+
+  @Column({ type: 'int', nullable: true })
+  bmr!: number | null;
+
+  @Column({ type: 'int', nullable: true })
+  tdee!: number | null;
+
   @PrimaryColumn('uuid')
   user_id!: string;
 

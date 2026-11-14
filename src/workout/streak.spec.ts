@@ -12,7 +12,7 @@ describe('streak', () => {
     ).toBe(false);
   });
 
-  it('ngày có media nhưng chưa xem hết không tính', () => {
+  it('hoàn thành bài tập vẫn tính khi chưa xem hết media', () => {
     expect(
       dayCounts({
         date: '2026-10-05',
@@ -20,7 +20,7 @@ describe('streak', () => {
         hasMedia: true,
         hasViewedMedia: false,
       }),
-    ).toBe(false);
+    ).toBe(true);
     expect(
       dayCounts({
         date: '2026-10-05',

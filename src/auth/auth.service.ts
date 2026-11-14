@@ -48,6 +48,13 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
+    if (process.env.REQUIRE_REGISTRATION_OTP === 'true') {
+      throw new BadRequestException({
+        message: 'Vui lòng đăng ký bằng OTP email.',
+        code: 'REGISTRATION_OTP_REQUIRED',
+        request_otp: '/auth/register/request-otp',
+      });
+    }
     const { email, password, full_name } = registerDto;
     const existingUser = await this.userRepository.findOne({
       where: { email },
@@ -205,7 +212,7 @@ export class AuthService {
       where: { id: payload.sub },
     });
 
-    if (!user) {
+    if (!user || (payload.token_version ?? 0) !== (user.token_version ?? 0)) {
       throw new UnauthorizedException(this.i18n.t('auth.invalidRefreshToken'));
     }
 
@@ -231,6 +238,7 @@ export class AuthService {
       throw new BadRequestException(this.i18n.t('auth.currentPasswordWrong'));
     }
     user.password_hash = await bcrypt.hash(dto.new_password, 10);
+    user.token_version = (user.token_version ?? 0) + 1;
     await this.userRepository.save(user);
     return { message: this.i18n.t('auth.passwordChanged') };
   }
@@ -310,6 +318,7 @@ export class AuthService {
       throw new BadRequestException(this.i18n.t('auth.otpInvalid'));
     }
     user.password_hash = await bcrypt.hash(dto.new_password, 10);
+    user.token_version = (user.token_version ?? 0) + 1;
     await this.userRepository.save(user);
     otp.used = true;
     await this.otpRepository.save(otp);
@@ -367,7 +376,12 @@ export class AuthService {
   }
 
   private generateToken(user: User) {
-    const payload = { sub: user.id, email: user.email, role: user.role };
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      token_version: user.token_version ?? 0,
+    };
     return {
       access_token: this.jwtService.sign(
         { ...payload, token_type: 'access' },
@@ -391,5 +405,11 @@ export class AuthService {
       ),
       user_id: user.id,
     };
+  }
+
+  async logout(userId: string) {
+    await this.userRepository.increment({ id: userId }, 'token_version', 1);
+    await this.userRepository.update(userId, { device_token: null });
+    return { message: 'Đã đăng xuất và thu hồi các phiên đăng nhập.' };
   }
 }

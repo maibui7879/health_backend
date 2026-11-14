@@ -21,6 +21,8 @@ describe('AuthService', () => {
   let service: AuthService;
 
   const mockUserRepository = {
+    increment: jest.fn(),
+    update: jest.fn(),
     findOne: jest.fn(),
     create: jest.fn(),
     save: jest.fn(),
@@ -86,6 +88,51 @@ describe('AuthService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('requires email OTP when registration enforcement is enabled', async () => {
+    const previous = process.env.REQUIRE_REGISTRATION_OTP;
+    process.env.REQUIRE_REGISTRATION_OTP = 'true';
+    try {
+      await expect(
+        service.register({
+          email: 'a@example.com',
+          password: 'password123',
+          full_name: 'A',
+        }),
+      ).rejects.toThrow('Vui lòng đăng ký bằng OTP email.');
+      expect(mockUserRepository.save).not.toHaveBeenCalled();
+    } finally {
+      if (previous === undefined) delete process.env.REQUIRE_REGISTRATION_OTP;
+      else process.env.REQUIRE_REGISTRATION_OTP = previous;
+    }
+  });
+
+  it('rejects a refresh token issued before logout', async () => {
+    mockUserRepository.findOne.mockResolvedValue({
+      id: 'u1',
+      token_version: 2,
+    });
+    await expect(
+      service.refresh({
+        sub: 'u1',
+        email: 'a@example.com',
+        token_type: 'refresh',
+        token_version: 1,
+      }),
+    ).rejects.toThrow(UnauthorizedException);
+  });
+
+  it('revokes sessions and removes the device token on logout', async () => {
+    await service.logout('u1');
+    expect(mockUserRepository.increment).toHaveBeenCalledWith(
+      { id: 'u1' },
+      'token_version',
+      1,
+    );
+    expect(mockUserRepository.update).toHaveBeenCalledWith('u1', {
+      device_token: null,
+    });
   });
 
   describe('register', () => {

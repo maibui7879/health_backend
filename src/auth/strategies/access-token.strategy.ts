@@ -4,13 +4,14 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LocalizationService } from '../../i18n/localization.service';
-import { User, UserRole } from '../../users/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 
 export interface AccessTokenPayload {
   sub: string;
   email: string;
   token_type: 'access';
   role?: string;
+  token_version?: number;
 }
 
 @Injectable()
@@ -46,7 +47,10 @@ export class AccessTokenStrategy extends PassportStrategy(
       this.logger?.warn?.(`access denied: user not found sub=${payload.sub}`);
       throw new UnauthorizedException(this.i18n.t('auth.invalidAccessToken'));
     }
-    if (user.status === 'BANNED') {
+    if (
+      user.status === 'BANNED' ||
+      (payload.token_version ?? 0) !== (user.token_version ?? 0)
+    ) {
       throw new UnauthorizedException(this.i18n.t('auth.invalidAccessToken'));
     }
 
